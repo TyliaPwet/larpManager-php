@@ -94,28 +94,33 @@ class HomepageControllerProvider implements ControllerProviderInterface
 					->method('GET')
 					->bind('world');
 					
+        /** Affichage de la cartographie du monde de conan */
+		$controllers->match('/worldmap','LarpManager\Controllers\HomepageController::worldmapAction')
+					->method('GET')
+					->bind('worldmap');
+					
 		/** Affichage de la cartographie du monde de conan */
-		$controllers->match('/world/countries.json','LarpManager\Controllers\HomepageController::countriesAction')
+		$controllers->match('/world/countriesjson','LarpManager\Controllers\HomepageController::countriesAction')
 					->method('GET')
 					->bind('world.countries.json');
 						
 		/** Affichage de la cartographie du monde de conan */
-		$controllers->match('/world/regions.json','LarpManager\Controllers\HomepageController::regionsAction')
+		$controllers->match('/world/regionsjson','LarpManager\Controllers\HomepageController::regionsAction')
 					->method('GET')
 					->bind('world.regions.json');
 					
 		/** Affichage de la cartographie du monde de conan */
-		$controllers->match('/world/fiefs.json','LarpManager\Controllers\HomepageController::fiefsAction')
+		$controllers->match('/world/fiefsjson','LarpManager\Controllers\HomepageController::fiefsAction')
 					->method('GET')
 					->bind('world.fiefs.json');
 		
 		/** Affichage de la cartographie du monde de conan */
-		$controllers->match('/world/groupes.json','LarpManager\Controllers\HomepageController::groupesAction')
+		$controllers->match('/world/groupesjson','LarpManager\Controllers\HomepageController::groupesAction')
 					->method('GET')
 					->bind('world.groupes.json');
 					
 		/** Affichage de la cartographie du monde de conan */
-		$controllers->match('/world/langues.json','LarpManager\Controllers\HomepageController::languesAction')
+		$controllers->match('/world/languesjson','LarpManager\Controllers\HomepageController::languesAction')
 					->method('GET')
 					->bind('world.langues.json');
 											

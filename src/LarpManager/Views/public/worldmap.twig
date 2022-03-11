@@ -1,0 +1,309 @@
+{% extends "layout_fs.twig" %}
+
+{% block title %}Le monde{% endblock title %}
+       
+{% block style %}
+
+	    <link rel="stylesheet" href="{{ app.request.basepath }}/ol/ol.css" />
+        
+		<style>		
+		
+		body {
+ 		   padding: 0;
+    	   margin: 0;
+		}
+		html, body, #map {
+    		height: 100vh;
+    		width: 100vw;
+		}
+
+
+			
+			#content {
+				padding: 0px;
+				margin: 0px;
+			}
+			
+			.navbar {
+				margin-bottom: 0px;
+			}
+			
+			#aide {
+				font-style: italic;
+				color: green;
+			}
+			
+			.mapbox {
+			    position: relative;
+			}
+
+			.mapbox .overlay {
+			    position: absolute;
+			    top: 0;
+			    left: 0;
+			    z-index: 314159;
+			    pointer-events: none;
+			}
+			
+			.mapbox .overlay .btn {
+			    pointer-events: initial;
+			}
+												
+			.territoire, .fief, .region, .itineraire, .route, .fortification {
+				padding: 6px 8px;
+				font: 14px/16px Arial, Helvetica, sans-serif;
+				background: white;
+				background: rgba(255,255,255,0.8);
+				box-shadow: 0 0 15px rgba(0,0,0,0.2);
+				border-radius: 5px;
+				width: 300px;
+			}
+			
+			#description {
+				z-index: 314160;
+			}
+			
+			.info  {
+				padding: 6px 8px;
+				font: 14px/16px Arial, Helvetica, sans-serif;
+			}
+			
+			.info h4, .territoire h4, .region h4, .fief h4, .itineraire h4, .route h4, .fortification h4 {
+				margin: 0 0 5px;
+				color: #777;
+			}
+
+
+
+		</style>
+{% endblock %}
+
+{% block content %}
+<div class="clearfix">
+	<div class="mapbox">
+		<div class="row-fluid some" id="map"></div>
+	</div> 		
+</div>
+{% endblock %}
+
+{% block javascript %}
+
+<script src="{{ app.request.basepath }}/ol/ol.js"></script>
+<script src="{{ app.request.basepath }}/js/app/util.js"></script>
+<script src="{{ app.request.basepath }}/js/app/mapconfig.js"></script>
+
+<script>
+var Carte = {
+    map: null,
+    
+    initMap: function(mapName){
+        var self = this;
+        for (var i=0; i<Mapconfig.maps.length; i++) {
+            if(Mapconfig.maps[i].name == mapName) {
+                var config = Mapconfig.maps[i];
+                
+                if (config.useBackground) {  
+                    // pour le moment c'est toujours le cas ; je teste au cas où on veuille changer plus tard
+                    // la projection et l'extent peuvent dépendre de ce qu'on aura choisi comme fond (les données sont en EPSG4326, si on n'a pas le background on peut rester dans cette projection...)
+                    var mapMaxX = Mapconfig.background.tilesX * Mapconfig.background.tileSize;
+                    var mapMaxY = Mapconfig.background.tilesY * Mapconfig.background.tileSize;
+                    var mapCenter = [mapMaxX / 2, mapMaxY / 2];
+                    var lmproj = new ol.proj.Projection({
+                        code: 'LMPROJ',
+                        units: 'pixels',
+                        extent: [0, 0, mapMaxX, mapMaxY]
+                    });
+                    
+                    var projectionExtent = lmproj.getExtent();
+                    var maxResolution = ol.extent.getWidth(projectionExtent) / Mapconfig.background.tileSize;    // 16384 / 256 = 64
+                    var resolutions = [];
+                    for (var z = 0; z <= 6; z++) {
+                        resolutions[z] = maxResolution / Math.pow(2, z); 					// 64, 32, 16, 8, 4, 2, 1 (7 niveaux)
+                    }
+
+                    var backgroundLayer = new ol.layer.Tile({
+                        source: new ol.source.TileImage({
+                            tileUrlFunction: function(tileCoord, pixelRatio, projection) { 
+                                var z = tileCoord[0];
+                                var x = tileCoord[1];
+                                var y = -tileCoord[2] - 1;
+                                return '{{ app.request.basepath }}/' + Mapconfig.background.mapUrl +'/' + z + '/' + x + '/' + y + '.png';
+                            },
+                            projection: lmproj,
+                            tileGrid: new ol.tilegrid.TileGrid({
+                                origin: ol.extent.getTopLeft(projectionExtent),
+                                resolutions: resolutions,
+                                tileSize: Mapconfig.background.tileSize
+                            }),
+                        }),
+                        extent: projectionExtent
+                    }); 
+                    
+                    this.map = new ol.Map({
+                        target: 'map',
+                        view: new ol.View({
+                            projection: lmproj, 
+                            zoom: config.minZoom,
+                            minZoom: config.minZoom,
+                            maxZoom: config.maxZoom,
+                            center: mapCenter, 
+                            extent: projectionExtent
+                        })
+                    });
+                    this.map.addLayer(backgroundLayer);
+                }
+                
+                // ensuite on crée une couche vecteur pour chaque type de données à afficher
+                //var zIndex = 10;
+                $(config.layers).each(function(key, confLayer){
+                    var lay = new ol.layer.Vector({
+                        name: confLayer.layerName,
+                        source: new ol.source.Vector({ features: new ol.Collection([]) })
+                    });
+                    self.map.addLayer(lay);
+                    
+                    $.ajax({
+                        dataType: "json",
+                        url: confLayer.source,
+                        success: function(data) {
+                            $(data).each(function(key, obj) {
+                                if (obj.geom != null)
+                                {	
+                                    var parsedGeom = JSON.parse(obj.geom);		
+                                    
+                                    $(parsedGeom.geometry.coordinates[0]).each(function(toto, coords) {
+                                        coords[0]= coords[0]*64;
+                                        coords[1]= 11264 + coords[1]*64;
+                                    });
+                                    
+                                    // pour l'instant on bidouille parce que notre fichier source n'est pas formaté correctement
+                                    // il faudra créer des urls /world/totojson pour chaque type de source qu'onn nveut exploiter
+                                    
+                                    switch (confLayer.geomType) {
+                                        case "Polygon":
+                                            var newFeature = new ol.Feature({
+                                                geometry: new ol.geom.Polygon(parsedGeom.geometry.coordinates)
+                                            });
+                                            
+                                            newFeature.setStyle(new ol.style.Style ({
+                                                stroke: new ol.style.Stroke ({ 
+                                                    color: Util.hexToRgba(confLayer.styles[0].stroke.color, confLayer.styles[0].stroke.opacity),
+                                                    width: confLayer.styles[0].stroke.width })
+                                                })
+                                            );
+                                            break;
+                                        case "Label":
+                                            var tmpGeom = new ol.geom.Polygon(parsedGeom.geometry.coordinates);
+                                            var ext = tmpGeom.getExtent();
+                                            var areaCenter = [ext[0]+((ext[2]-ext[0])/2), ext[1]+((ext[3]-ext[1])/2)];
+                                            
+                                            var newFeature = new ol.Feature({
+                                                geometry: new ol.geom.Point(areaCenter)
+                                            });
+                                            
+                                            newFeature.setStyle(new ol.style.Style ({
+                                                text: new ol.style.Text({ 
+                                                    font: confLayer.styles[0].text.font,
+                                                    text: obj.name.toUpperCase(),
+                                                    stroke: new ol.style.Stroke ({ color: Util.hexToRgba(confLayer.styles[0].stroke.color, confLayer.styles[0].stroke.opacity), width: confLayer.styles[0].stroke.width}),
+                                                    fill: new ol.style.Fill({ color: Util.hexToRgba(confLayer.styles[0].fill.color, confLayer.styles[0].fill.opacity) })
+                                                    })
+                                                })
+                                            );
+                                            break;
+                                        default:
+                                            console.log("type de geometrie non traité");
+                                            break;
+                                    }
+                                    
+                                    lay.getSource().addFeature(newFeature);
+                                }
+                        });
+                    }
+                    }).error(function() {
+                        console.log("erreur chargement json");
+                    });
+                });
+                break;
+            }
+        }
+    }
+    
+};
+
+Carte.initMap("baseMap");
+
+
+Carte.map.on('click', function(e) {
+    console.log(e.coordinate);
+});
+
+//****************************************************************************
+//**** Création de la couche vecteur et ajout à la carte
+//****************************************************************************	
+/*
+var frontLayer = new ol.layer.Vector({
+	name: "frontLayer",
+	source: new ol.source.Vector({ features: new ol.Collection([]) })
+});
+map.addLayer(frontLayer);
+
+//****************************************************************************
+//**** Chargement des pays
+//****************************************************************************
+$.ajax({
+    dataType: "json",
+    url: "world/countriesjson",
+    success: function(data) {
+        $(data).each(function(key, country) {
+                if (country.geom != null)
+                {	
+                    var parsedGeom = JSON.parse(country.geom);		
+                    
+                    $(parsedGeom.geometry.coordinates[0]).each(function(toto, coords) {
+                        coords[0]= coords[0]*64;
+                        coords[1]= 11264 + coords[1]*64;
+                    });
+                    
+                    var newFeature = new ol.Feature({
+                        geometry: new ol.geom.Polygon(parsedGeom.geometry.coordinates),
+                        labelPoint: new ol.geom.Point(areaCenter)
+                    });
+                    
+                    var ext = newFeature.getGeometry().getExtent();
+                    var areaCenter = [ext[0]+((ext[2]-ext[0])/2), ext[1]+((ext[3]-ext[1])/2)];
+                    
+                    newFeature.setStyle(
+                        [
+                        new ol.style.Style ({
+                            stroke: new ol.style.Stroke ({ 
+                                color: Util.hexToRgba("#8B0004", 1),
+                                width:3 }),
+                            zIndex: 100
+                        }),
+                        new ol.style.Style ({
+                            text: new ol.style.Text({ 
+                                font: "normal 24px Trebuchet",
+                                text: country.name.toUpperCase(),
+                                stroke: new ol.style.Stroke ({ color: Util.hexToRgba("#9A785F",1), width: 1}),
+                                fill: new ol.style.Fill({ color: Util.hexToRgba("#9A785F",1) })
+                            }),
+                            zIndex: 10
+                        })
+                        ]
+                    );
+                    frontLayer.getSource().addFeature(newFeature);
+                }
+        });
+    }
+    }).error(function() {
+        console.log("erreur chargement countries");
+                });
+
+				
+		
+				
+*/
+</script>
+
+{% endblock %}

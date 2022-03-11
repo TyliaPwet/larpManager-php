@@ -209,6 +209,17 @@ class HomepageController
 	}
 	
 	/**
+	 * Affiche une carte du monde
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function worldmapAction(Request $request, Application $app)
+	{
+		return $app['twig']->render('public/worldmap.twig');
+	}
+	
+	/**
 	 * Fourni la liste des pays, leur geographie et leur description
 	 *
 	 * @param Request $request
