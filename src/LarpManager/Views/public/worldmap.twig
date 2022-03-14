@@ -95,7 +95,7 @@
 <script>
 var Carte = {
     map: null,
-    
+    maxResolution: null,
     initMap: function(mapName){
         var self = this;
         for (var i=0; i<Mapconfig.maps.length; i++) {
@@ -115,10 +115,10 @@ var Carte = {
                     });
                     
                     var projectionExtent = lmproj.getExtent();
-                    var maxResolution = ol.extent.getWidth(projectionExtent) / Mapconfig.background.tileSize;    // 16384 / 256 = 64
+                    self.maxResolution = ol.extent.getWidth(projectionExtent) / Mapconfig.background.tileSize;    // 16384 / 256 = 64
                     var resolutions = [];
                     for (var z = 0; z <= 6; z++) {
-                        resolutions[z] = maxResolution / Math.pow(2, z); 					// 64, 32, 16, 8, 4, 2, 1 (7 niveaux)
+                        resolutions[z] = self.maxResolution / Math.pow(2, z); 					// 64, 32, 16, 8, 4, 2, 1 (7 niveaux)
                     }
 
                     var backgroundLayer = new ol.layer.Tile({
@@ -143,7 +143,7 @@ var Carte = {
                         target: 'map',
                         view: new ol.View({
                             projection: lmproj, 
-                            zoom: config.minZoom,
+                            zoom: config.maxZoom,
                             minZoom: config.minZoom,
                             maxZoom: config.maxZoom,
                             center: mapCenter, 
@@ -154,7 +154,7 @@ var Carte = {
                 }
                 
                 // ensuite on crée une couche vecteur pour chaque type de données à afficher
-                //var zIndex = 10;
+                // dans l'ordre de la config (évite de devoir gérer un zIndex)
                 $(config.layers).each(function(key, confLayer){
                     var lay = new ol.layer.Vector({
                         name: confLayer.layerName,
@@ -162,6 +162,50 @@ var Carte = {
                     });
                     self.map.addLayer(lay);
                     
+                    // On crée le style par défaut pour les éléments de cette couche, tel que défini dans la config
+                    // Le style dépend du type d'élément (toujours le même type pour une même couche)
+                    // et de la résolution (épaisseur des traits, des pictogrammes, des pointillés...)
+                    // On doit donc utiliser une fonction de style, et non pas simplement un style ou tableau de styles
+                    var styleFunc = null;
+                    switch(confLayer.geomType){
+                        case "Label": 
+                            styleFunc = function(feat, reso){
+                                var zoomLevel = Math.log2(self.maxResolution / reso);
+                                var found = confLayer.styles.zooms.indexOf(zoomLevel);
+                                if(found != -1) {
+                                    return new ol.style.Style ({
+                                        text: new ol.style.Text({ 
+                                            font: confLayer.styles.text.font[found],
+                                            text: confLayer.styles.text.transformation === "toUpper" ? feat.name.toUpperCase() : feat.name,
+                                            stroke: new ol.style.Stroke ({ color: Util.hexToRgba(confLayer.styles.stroke.color, confLayer.styles.stroke.opacity), width: confLayer.styles.stroke.width[found]}),
+                                            fill: new ol.style.Fill({ color: Util.hexToRgba(confLayer.styles.fill.color, confLayer.styles.fill.opacity) })
+                                            })
+                                        })
+                                }
+                                else return null;
+                            };
+                            break;
+                        case "Polygon":
+                            styleFunc = function(feat, reso){
+                                var zoomLevel = Math.log2(self.maxResolution / reso);
+                                var found = confLayer.styles.zooms.indexOf(zoomLevel);
+                                if(found != -1) {
+                                    return new ol.style.Style ({
+                                        stroke: new ol.style.Stroke ({ 
+                                            color: Util.hexToRgba(confLayer.styles.stroke.color, confLayer.styles.stroke.opacity),
+                                            width: confLayer.styles.stroke.width[found] })
+                                        });
+                                } 
+                                else return null;
+                            };
+                            break;
+                        default:
+                            console.log("erreur, type de géométrie non géré");
+                    }
+                    lay.setStyle(styleFunc);
+                    
+                    // Enfin, on crée les features
+                    // ici aussi les opérations dépendent du type de géométrie de la couche
                     $.ajax({
                         dataType: "json",
                         url: confLayer.source,
@@ -177,20 +221,13 @@ var Carte = {
                                     });
                                     
                                     // pour l'instant on bidouille parce que notre fichier source n'est pas formaté correctement
-                                    // il faudra créer des urls /world/totojson pour chaque type de source qu'onn nveut exploiter
+                                    // il faudra créer des urls /world/totojson pour chaque type de source qu'on veut exploiter
                                     
                                     switch (confLayer.geomType) {
                                         case "Polygon":
                                             var newFeature = new ol.Feature({
                                                 geometry: new ol.geom.Polygon(parsedGeom.geometry.coordinates)
                                             });
-                                            
-                                            newFeature.setStyle(new ol.style.Style ({
-                                                stroke: new ol.style.Stroke ({ 
-                                                    color: Util.hexToRgba(confLayer.styles[0].stroke.color, confLayer.styles[0].stroke.opacity),
-                                                    width: confLayer.styles[0].stroke.width })
-                                                })
-                                            );
                                             break;
                                         case "Label":
                                             var tmpGeom = new ol.geom.Polygon(parsedGeom.geometry.coordinates);
@@ -201,15 +238,7 @@ var Carte = {
                                                 geometry: new ol.geom.Point(areaCenter)
                                             });
                                             
-                                            newFeature.setStyle(new ol.style.Style ({
-                                                text: new ol.style.Text({ 
-                                                    font: confLayer.styles[0].text.font,
-                                                    text: obj.name.toUpperCase(),
-                                                    stroke: new ol.style.Stroke ({ color: Util.hexToRgba(confLayer.styles[0].stroke.color, confLayer.styles[0].stroke.opacity), width: confLayer.styles[0].stroke.width}),
-                                                    fill: new ol.style.Fill({ color: Util.hexToRgba(confLayer.styles[0].fill.color, confLayer.styles[0].fill.opacity) })
-                                                    })
-                                                })
-                                            );
+                                            newFeature.name = obj.name;
                                             break;
                                         default:
                                             console.log("type de geometrie non traité");
@@ -238,72 +267,7 @@ Carte.map.on('click', function(e) {
     console.log(e.coordinate);
 });
 
-//****************************************************************************
-//**** Création de la couche vecteur et ajout à la carte
-//****************************************************************************	
-/*
-var frontLayer = new ol.layer.Vector({
-	name: "frontLayer",
-	source: new ol.source.Vector({ features: new ol.Collection([]) })
-});
-map.addLayer(frontLayer);
 
-//****************************************************************************
-//**** Chargement des pays
-//****************************************************************************
-$.ajax({
-    dataType: "json",
-    url: "world/countriesjson",
-    success: function(data) {
-        $(data).each(function(key, country) {
-                if (country.geom != null)
-                {	
-                    var parsedGeom = JSON.parse(country.geom);		
-                    
-                    $(parsedGeom.geometry.coordinates[0]).each(function(toto, coords) {
-                        coords[0]= coords[0]*64;
-                        coords[1]= 11264 + coords[1]*64;
-                    });
-                    
-                    var newFeature = new ol.Feature({
-                        geometry: new ol.geom.Polygon(parsedGeom.geometry.coordinates),
-                        labelPoint: new ol.geom.Point(areaCenter)
-                    });
-                    
-                    var ext = newFeature.getGeometry().getExtent();
-                    var areaCenter = [ext[0]+((ext[2]-ext[0])/2), ext[1]+((ext[3]-ext[1])/2)];
-                    
-                    newFeature.setStyle(
-                        [
-                        new ol.style.Style ({
-                            stroke: new ol.style.Stroke ({ 
-                                color: Util.hexToRgba("#8B0004", 1),
-                                width:3 }),
-                            zIndex: 100
-                        }),
-                        new ol.style.Style ({
-                            text: new ol.style.Text({ 
-                                font: "normal 24px Trebuchet",
-                                text: country.name.toUpperCase(),
-                                stroke: new ol.style.Stroke ({ color: Util.hexToRgba("#9A785F",1), width: 1}),
-                                fill: new ol.style.Fill({ color: Util.hexToRgba("#9A785F",1) })
-                            }),
-                            zIndex: 10
-                        })
-                        ]
-                    );
-                    frontLayer.getSource().addFeature(newFeature);
-                }
-        });
-    }
-    }).error(function() {
-        console.log("erreur chargement countries");
-                });
-
-				
-		
-				
-*/
 </script>
 
 {% endblock %}
