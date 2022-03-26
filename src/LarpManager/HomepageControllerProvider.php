@@ -94,11 +94,6 @@ class HomepageControllerProvider implements ControllerProviderInterface
 					->method('GET')
 					->bind('world');
 					
-        /** Affichage de la cartographie du monde de conan */
-		$controllers->match('/worldmap','LarpManager\Controllers\HomepageController::worldmapAction')
-					->method('GET')
-					->bind('worldmap');
-					
 		/** Affichage de la cartographie du monde de conan */
 		$controllers->match('/world/countriesjson','LarpManager\Controllers\HomepageController::countriesAction')
 					->method('GET')
@@ -130,7 +125,33 @@ class HomepageControllerProvider implements ControllerProviderInterface
 					->convert('territoire', 'converter.territoire:convert')
 					->bind('world.country.update')
 					->before($mustBeScenariste);				
+        
+        /** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap','LarpManager\Controllers\HomepageController::worldmapAction')
+					->method('GET')
+					->bind('worldmap');
+		
+		/** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/json/countries','LarpManager\Controllers\HomepageController::getCountriesAction')
+					->method('GET')
+					->bind('worldmap.json.countries');
+        
+        /** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/json/countrieslabels','LarpManager\Controllers\HomepageController::getCountriesLabelsAction')
+					->method('GET')
+					->bind('worldmap.json.countrieslabels');
+        
+        /** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/json/fiefs','LarpManager\Controllers\HomepageController::getFiefsAction')
+					->method('GET')
+					->bind('worldmap.json.fiefs');
+        
+        /** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/json/fiefslabels','LarpManager\Controllers\HomepageController::getFiefsLabelsAction')
+					->method('GET')
+					->bind('worldmap.json.fiefslabels');
 
+					
 		/** Page de récapitulatif des liens pour discuter */
 		$controllers->match('/discuter','LarpManager\Controllers\HomepageController::discuterAction')
 					->method('GET')

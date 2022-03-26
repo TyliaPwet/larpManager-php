@@ -113,6 +113,11 @@ class BaseTerritoire
     /**
      * @Column(type="string", length=7, nullable=true)
      */
+    protected $geojson_label;
+
+    /**
+     * @Column(type="string", length=100, nullable=true)
+     */ 
     protected $color;
 
     /**
@@ -674,6 +679,29 @@ class BaseTerritoire
     public function getGeojson()
     {
         return $this->geojson;
+    }
+    
+    /**
+     * Set the value of geojson_label.
+     *
+     * @param string $geojson_label
+     * @return \LarpManager\Entities\Territoire
+     */
+    public function setGeojsonLabel($geojsonLabel)
+    {
+        $this->geojson_label = $geojsonLabel;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of geojson_label.
+     *
+     * @return string
+     */
+    public function getGeojsonLabel()
+    {
+        return $this->geojson_label;
     }
 
     /**
@@ -1423,6 +1451,6 @@ class BaseTerritoire
 
     public function __sleep()
     {
-        return array('id', 'nom', 'description', 'capitale', 'politique', 'dirigeant', 'population', 'symbole', 'tech_level', 'territoire_id', 'territoire_guerre_id', 'appelation_id', 'langue_id', 'topic_id', 'religion_id', 'type_racial', 'inspiration', 'armes_predilection', 'vetements', 'noms_masculin', 'noms_feminin', 'frontieres', 'geojson', 'color', 'groupe_id', 'tresor', 'resistance', 'blason', 'description_secrete', 'statut', 'culture_id', 'ordre_social');
+        return array('id', 'nom', 'description', 'capitale', 'politique', 'dirigeant', 'population', 'symbole', 'tech_level', 'territoire_id', 'territoire_guerre_id', 'appelation_id', 'langue_id', 'topic_id', 'religion_id', 'type_racial', 'inspiration', 'armes_predilection', 'vetements', 'noms_masculin', 'noms_feminin', 'frontieres', 'geojson', 'geojson_label', 'color', 'groupe_id', 'tresor', 'resistance', 'blason', 'description_secrete', 'statut', 'culture_id', 'ordre_social');
     }
 }

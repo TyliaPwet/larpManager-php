@@ -249,6 +249,53 @@ class HomepageController
 	}
 	
 	/**
+	 * Fourni la liste des géométries pays
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function getCountriesAction(Request $request, Application $app)
+	{
+		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
+		$territoires = $repoTerritoire->findRoot();
+	
+		$countries = array();
+		foreach ( $territoires as $territoire)
+		{
+			$countries[] = array(
+					'id' => $territoire->getId(),
+					'geom' => $territoire->getGeojson()
+			);
+		}
+	
+		return $app->json($countries);
+	}
+	
+	/**
+	 * Fourni la liste des géométries pays
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function getCountriesLabelsAction(Request $request, Application $app)
+	{
+		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
+		$territoires = $repoTerritoire->findRoot();
+	
+		$countries = array();
+		foreach ( $territoires as $territoire)
+		{
+			$countries[] = array(
+					'id' => $territoire->getId(),
+					'geom' => $territoire->getGeojsonLabel(),
+					'texte' => $territoire->getNom()
+			);
+		}
+	
+		return $app->json($countries);
+	}
+	
+	/**
 	 * Fourni la liste des régions
 	 *
 	 * @param Request $request
@@ -305,6 +352,51 @@ class HomepageController
 	
 		return $app->json($fiefs);
 	}	
+	
+	/**
+	 * Fourni la liste des géométries des fiefs
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function getFiefsAction(Request $request, Application $app)
+	{
+		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
+		$territoires = $repoTerritoire->findFiefs();
+	
+		$fiefs = array();
+		foreach ( $territoires as $territoire)
+		{
+			$fiefs[] = array(
+					'id' => $territoire->getId(),
+					'geom' => $territoire->getGeojson()
+			);
+		}
+		return $app->json($fiefs);
+	}
+	
+	/**
+	 * Fourni la liste des géométries des labels de fiefs
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function getFiefsLabelsAction(Request $request, Application $app)
+	{
+		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
+		$territoires = $repoTerritoire->findFiefs();
+	
+		$fiefs = array();
+		foreach ( $territoires as $territoire)
+		{
+			$fiefs[] = array(
+					'id' => $territoire->getId(),
+					'geom' => $territoire->getGeojsonLabel(),
+					'texte' => $territoire->getNom()
+			);
+		}
+		return $app->json($fiefs);
+	}
 	
 	/**
 	 * Fourni la liste des langues

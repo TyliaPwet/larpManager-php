@@ -10,7 +10,7 @@ var Mapconfig = {
         {
             name : "baseMap",
             minZoom : 2,
-            maxZoom : 5,
+            maxZoom : 4,
             printZoom : 2,
             useBackground : true,
             layers : [
@@ -24,50 +24,49 @@ var Mapconfig = {
                 // ******* lors d'un prochain dev, il faudra que ce paramétrage puisse être stocké en base et modifié directement par les orgas sous larpmanager
                 {
                     layerName : "label pays",
-                    source : "world/countriesjson",
+                    source : "worldmap/json/countrieslabels",
                     geomType : "Label", // Point
                     styles : 
                         {
                             zooms : [2,3,4],
-                            text : {font : ["normal 24px Trebuchet","normal 20px Trebuchet", "normal 16px Trebuchet"] , 
-                                    field : "name", 
+                            text : {font : ["normal 12px Pays","normal 26px Pays", "normal 48px Pays"] , 
+                                    field : "texte", 
                                     transformation : "toUpper"},
-                            stroke : {color : "#B2B2B2", opacity : 1, width : 1},
-                            fill : {color : "#B2B2B2", opacity : 1},
+                            stroke : {color : "CCCCCC", opacity : 1, width : 1},
+                            fill : {color : "CCCCCC", opacity : 1},
                         }
                 },
                 {
                     layerName : "frontieres fiefs",
-                    source : "world/fiefsjson",
+                    source : "worldmap/json/fiefs",
                     geomType : "Polygon", 
                     styles : {
-                        zooms : [2,3,4],
-                        stroke : {color : "#B98B54", opacity : 1, width : [1, 1, 1]}/*,
-                        fill : {color : "#B98B54", opacity : 1},*/
+                        zooms : [3,4],
+                        stroke : {color : "#B98B54", opacity : 1, width : [1, 1, 1]}
                     }
                 },
                 {
                     layerName : "label fiefs",
-                    source : "world/fiefsjson",
+                    source : "worldmap/json/fiefslabels",
                     geomType : "Label", // Point
                     styles:{
-                        zooms : [2,3,4],
-                        text : {font : ["normal 12px Trebuchet", "normal 10px Trebuchet", "normal 8px Trebuchet"], 
-                                field : "name", 
+                        zooms : [3,4],
+                        text : {font : ["normal 12px Fiefs", "normal 20px Fiefs"], 
+                                field : "texte", 
                                 transformation : "none"},
-                        stroke : {color : "#B98B54", opacity : 1, width : 1},
-                        fill : {color : "#B98B54", opacity : 1},
+                        stroke : {color : "000000", opacity : 1, width : 1},
+                        fill : {color : "000000", opacity : 1},
                     }
                 },
                 {
                     layerName : "frontieres pays",
-                    source : "world/countriesjson",
+                    source : "worldmap/json/countries",
                     geomType : "Polygon", 
                     styles : {
                         zooms : [2,3,4],
                         stroke : {color : "8B0004", opacity : 1, width : [2, 3, 4]}
                     }
-                },
+                }
                 
             ]
         },
