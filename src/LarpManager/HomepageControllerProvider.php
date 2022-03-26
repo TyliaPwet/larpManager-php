@@ -150,7 +150,12 @@ class HomepageControllerProvider implements ControllerProviderInterface
 		$controllers->match('/worldmap/json/fiefslabels','LarpManager\Controllers\HomepageController::getFiefsLabelsAction')
 					->method('GET')
 					->bind('worldmap.json.fiefslabels');
-
+        
+        /** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/labelterritoire/{territoire}/update','LarpManager\Controllers\HomepageController::updateLabelTerritoireGeomAction')
+					->method('POST')
+					->convert('territoire', 'converter.territoire:convert')
+					->bind('worldmap.labelterritoire.update');
 					
 		/** Page de récapitulatif des liens pour discuter */
 		$controllers->match('/discuter','LarpManager\Controllers\HomepageController::discuterAction')

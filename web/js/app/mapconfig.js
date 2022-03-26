@@ -16,9 +16,8 @@ var Mapconfig = {
             layers : [
                 // les layers sont rangées de la plus au fond à la plus en surface
                 // -----------------
-                // on pourrait tout mettre dans la même layer avec juste un zIndex différent mais cela risque de poser des soucis plus tard pour les modifications / dessin
-                // car il pourrait y avoir plusieurs features qui se superposent et ça ne serait pas très ergonnomique de devoir chercher la bonne en cliquant...
-                // ce sera plus simple de pouvoir masquer les couches qu'onn ne veut pas modifier, ou au moins les rendre non sélectionnables
+                // on pourrait tout mettre dans la même layer avec juste un zIndex différent mais on anticipe sur un futur gestionnaire d'affichage des layers
+                // de plus c'est plus pratique pour gérer les modifications / sécuriser les modifs et suppressions car on n'agit que sur 1 couche à la fois
                 // -----------------
                 // ******* il faudra lister les valeurs "fixes "utilisées" pour une aide à la création de nouvelles couches pour faire une "aide"
                 // ******* lors d'un prochain dev, il faudra que ce paramétrage puisse être stocké en base et modifié directement par les orgas sous larpmanager

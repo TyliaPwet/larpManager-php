@@ -554,6 +554,30 @@ class HomepageController
 	}
 	
 	/**
+	 * Met à jour la localisation du label territoire
+	 * 
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function updateLabelTerritoireGeomAction(Request $request, Application $app)
+	{
+		$territoire = $request->get('territoire');
+		$geom = $request->get('geom');
+		
+		$territoire->setGeojsonLabel($geom);
+		
+		$app['orm.em']->persist($territoire);
+		$app['orm.em']->flush();
+		
+		$land = array(
+					'id' => $territoire->getId(),
+					'geom' => $territoire->getGeojsonLabel(),
+					'texte' => $territoire->getNom()
+				);
+		return $app->json($land);
+	}
+	
+	/**
 	 * Affiche une page récapitulatif des liens pour discuter
 	 *
 	 * @param Request $request

@@ -186,15 +186,9 @@ var Carte = {
                                             break;
                                         case "Label":
                                             Util.LonLatToLM(parsedGeom.coordinates);
-                                            /*
-                                            var tmpGeom = new ol.geom.Polygon(parsedGeom.geometry.coordinates);
-                                            var ext = tmpGeom.getExtent();
-                                            var areaCenter = [ext[0]+((ext[2]-ext[0])/2), ext[1]+((ext[3]-ext[1])/2)];
-                                            */
                                             var newFeature = new ol.Feature({
                                                 geometry: new ol.geom.Point(parsedGeom.coordinates)
                                             });
-                                            
                                             newFeature.texte = obj.texte;
                                             newFeature.territoireId = obj.id;
                                             break;
@@ -219,28 +213,70 @@ var Carte = {
     initInteractions: function() {
         var self = this;
         // dans un premier temps on gère uniquement la modification de ce qui existe déjà, on verra plus tard pour ajouter ce qui manque
-        // 1 interaction pour modifier les tracés des fiefs (et uniquement des fiefs, les régions et pays sont calculés)
+        // 1 interaction pour modifier les tracés des fiefs (et uniquement des fiefs, les régions et pays seront calculés)
         // 1 interaction pour déplacer les labels des fiefs et pays (les labels des régions ne sont pas affichés)
-        //console.log(self.olMap.getLayers().getArray()[1].getSource().getFeatures());
         
+        // pour Basemap, les layers sont les suivantes :
+        // 0: Background image
+        // 1: noms de pays => Point => Translate
+        // 2: frontières fiefs => Polygon => Modify        
+        // 3: noms de fiefs => Point => Translate
+        // 4: frontières pays => Polygon => pas d'interaction pour le moment (calculé)
+        
+        /*
         var modify = new ol.interaction.Modify({
-        features: self.olMap.getLayers().getArray()[2].getSource().getFeaturesCollection(),
-        // the SHIFT key must be pressed to delete vertices, so
-        // that new vertices can be drawn at the same position
-        // of existing vertices
-        deleteCondition: function(event) {
-          return ol.events.condition.shiftKeyOnly(event) &&
-              ol.events.condition.singleClick(event);
-        }
-      });
-      self.olMap.addInteraction(modify);
+            features: self.olMap.getLayers().getArray()[2].getSource().getFeaturesCollection(),
+            // the SHIFT key must be pressed to delete vertices, so
+            // that new vertices can be drawn at the same position
+            // of existing vertices
+            deleteCondition: function(event) {
+            return ol.events.condition.shiftKeyOnly(event) &&
+                ol.events.condition.singleClick(event);
+            }
+        });
+        self.olMap.addInteraction(modify);
+        */
         
+        var translate = new ol.interaction.Translate({ // Layer 1 pour les noms de pays, 3 pour les noms de fiefs
+                layers: [
+                    self.olMap.getLayers().getArray()[1],
+                    self.olMap.getLayers().getArray()[3]
+                ],
+                hitTolerance: 5
+        });
+        translate.on('translatestart', function (e) {console.log(e.coordinate); }, this);
+        translate.on('translateend', function (e) { 
+            // l'event translateend est appelé avant que la feature d'origine soit mise à jour avec les nouvelles coordonnées
+            // comme Javascript fonctionne par référence, il faut "ruser" pour dupliquer nos objets pour les modifier
+            var newGeom = e.features.getArray()[0].getGeometry().clone();
+            newGeom.setCoordinates(e.coordinate); // clone de e.coordinate
+            var newCoords = newGeom.getCoordinates();
+            Util.LMToLonLat(newCoords);
+            newGeom.setCoordinates(newCoords);
+            var convert = new ol.format.GeoJSON;
+            var geojson = convert.writeGeometry(newGeom);
+            
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: "worldmap/labelterritoire/"+e.features.getArray()[0].territoireId+"/update",
+                data: {geom: geojson},
+                success: function(data) {
+                    // alert("la geographie a été enregistrée");
+                    // a priori rien de spécial à faire pour l'instant!
+                }
+            }).error(function() {
+                alert("désolé, une erreur est survenue");
+            });
+            
+        }, this);
+        self.olMap.addInteraction(translate);
     }
     
 };
 
 Carte.createMap("baseMap");
-//Carte.initInteractions();
+Carte.initInteractions();
 
 // A déplacer dans l'objet Carte
 Carte.olMap.on('click', function(e) {
