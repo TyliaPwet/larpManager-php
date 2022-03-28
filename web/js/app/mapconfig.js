@@ -28,7 +28,7 @@ var Mapconfig = {
                     styles : 
                         {
                             zooms : [2,3,4],
-                            text : {font : ["normal 12px Pays","normal 26px Pays", "normal 48px Pays"] , 
+                            text : {font : [{style: "normal", size: "12", font: "Pays"},{style: "normal", size: "26", font: "Pays"}, {style: "normal", size: "48", font: "Pays"}] , 
                                     field : "texte", 
                                     transformation : "toUpper"},
                             stroke : {color : "CCCCCC", opacity : 1, width : 1},
@@ -45,19 +45,6 @@ var Mapconfig = {
                     }
                 },
                 {
-                    layerName : "label fiefs",
-                    source : "worldmap/json/fiefslabels",
-                    geomType : "Label", // Point
-                    styles:{
-                        zooms : [3,4],
-                        text : {font : ["normal 12px Fiefs", "normal 20px Fiefs"], 
-                                field : "texte", 
-                                transformation : "none"},
-                        stroke : {color : "000000", opacity : 1, width : 1},
-                        fill : {color : "000000", opacity : 1},
-                    }
-                },
-                {
                     layerName : "frontieres pays",
                     source : "worldmap/json/countries",
                     geomType : "Polygon", 
@@ -65,7 +52,21 @@ var Mapconfig = {
                         zooms : [2,3,4],
                         stroke : {color : "8B0004", opacity : 1, width : [2, 3, 4]}
                     }
+                },
+                {
+                    layerName : "label fiefs",
+                    source : "worldmap/json/fiefslabels",
+                    geomType : "Label", // Point
+                    styles:{
+                        zooms : [3,4],
+                        text : {font : [{style: "normal", size: "12", font: "Fiefs"}, {style: "normal", size: "20", font: "Fiefs"}], 
+                                field : "texte", 
+                                transformation : "none"},
+                        stroke : {color : "000000", opacity : 1, width : 1},
+                        fill : {color : "000000", opacity : 1},
+                    }
                 }
+                
                 
             ]
         },

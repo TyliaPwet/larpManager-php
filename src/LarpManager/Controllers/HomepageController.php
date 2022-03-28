@@ -288,7 +288,7 @@ class HomepageController
 			$countries[] = array(
 					'id' => $territoire->getId(),
 					'geom' => $territoire->getGeojsonLabel(),
-					'texte' => $territoire->getNom()
+					'texte' => $territoire->getTexteLabel()
 			);
 		}
 	
@@ -392,7 +392,7 @@ class HomepageController
 			$fiefs[] = array(
 					'id' => $territoire->getId(),
 					'geom' => $territoire->getGeojsonLabel(),
-					'texte' => $territoire->getNom()
+					'texte' => $territoire->getTexteLabel()
 			);
 		}
 		return $app->json($fiefs);
@@ -572,7 +572,7 @@ class HomepageController
 		$land = array(
 					'id' => $territoire->getId(),
 					'geom' => $territoire->getGeojsonLabel(),
-					'texte' => $territoire->getNom()
+					'texte' => $territoire->getTexteLabel()
 				);
 		return $app->json($land);
 	}

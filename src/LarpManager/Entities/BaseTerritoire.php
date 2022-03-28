@@ -111,13 +111,18 @@ class BaseTerritoire
     protected $geojson;
 
     /**
-     * @Column(type="string", length=7, nullable=true)
-     */
-    protected $geojson_label;
-
-    /**
      * @Column(type="string", length=100, nullable=true)
      */ 
+    protected $geojson_label;
+    
+    /**
+     * @Column(type="string", length=45, nullable=true)
+     */
+    protected $texte_label;
+    
+    /**
+     * @Column(type="string", length=7, nullable=true)
+     */
     protected $color;
 
     /**
@@ -702,6 +707,29 @@ class BaseTerritoire
     public function getGeojsonLabel()
     {
         return $this->geojson_label;
+    }
+
+    /**
+     * Set the value of texte_label.
+     *
+     * @param string texte_label
+     * @return \LarpManager\Entities\Territoire
+     */
+    public function setTexteLabel($texte_label)
+    {
+        $this->texte_label = $texte_label;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of texte_label.
+     *
+     * @return string
+     */
+    public function getTexteLabel()
+    {
+        return $this->texte_label;
     }
 
     /**
