@@ -10,7 +10,7 @@ var Mapconfig = {
         {
             name : "baseMap",
             minZoom : 2,
-            maxZoom : 4,
+            maxZoom : 6,
             printZoom : 2,
             useBackground : true,
             layers : [
@@ -27,8 +27,14 @@ var Mapconfig = {
                     geomType : "Label", // Point
                     styles : 
                         {
-                            zooms : [2,3,4],
-                            text : {font : [{style: "normal", size: "12", font: "Pays"},{style: "normal", size: "26", font: "Pays"}, {style: "normal", size: "48", font: "Pays"}] , 
+                            zooms : [2,3,4,5,6],
+                            text : {font : [
+                                        {style: "normal", size: "12", font: "Pays"},
+                                        {style: "normal", size: "24", font: "Pays"}, 
+                                        {style: "normal", size: "48", font: "Pays"}, 
+                                        {style: "normal", size: "96", font: "Pays"},
+                                        {style: "normal", size: "190", font: "Pays"}],
+                                    interligne : 300,
                                     field : "texte", 
                                     transformation : "toUpper"},
                             stroke : {color : "CCCCCC", opacity : 1, width : 1},
@@ -40,7 +46,7 @@ var Mapconfig = {
                     source : "worldmap/json/fiefs",
                     geomType : "Polygon", 
                     styles : {
-                        zooms : [3,4],
+                        zooms : [4,5,6],
                         stroke : {color : "#B98B54", opacity : 1, width : [1, 1, 1]}
                     }
                 },
@@ -49,8 +55,8 @@ var Mapconfig = {
                     source : "worldmap/json/countries",
                     geomType : "Polygon", 
                     styles : {
-                        zooms : [2,3,4],
-                        stroke : {color : "8B0004", opacity : 1, width : [2, 3, 4]}
+                        zooms : [2,3,4,5,6],
+                        stroke : {color : "8B0004", opacity : 1, width : [2,3,4,5,6]}
                     }
                 },
                 {
@@ -58,8 +64,12 @@ var Mapconfig = {
                     source : "worldmap/json/fiefslabels",
                     geomType : "Label", // Point
                     styles:{
-                        zooms : [3,4],
-                        text : {font : [{style: "normal", size: "12", font: "Fiefs"}, {style: "normal", size: "20", font: "Fiefs"}], 
+                        zooms : [4,5,6],
+                        text : {font : [
+                                    {style: "normal", size: "16", font: "Fiefs"},
+                                    {style: "normal", size: "32", font: "Fiefs"},
+                                    {style: "normal", size: "64", font: "Fiefs"}],
+                                interligne : 84,
                                 field : "texte", 
                                 transformation : "none"},
                         stroke : {color : "000000", opacity : 1, width : 1},
@@ -68,6 +78,24 @@ var Mapconfig = {
                 }
                 
                 
+            ]
+        },
+        {
+            name : "fiefsSeuls",
+            minZoom : 2,
+            maxZoom : 6,
+            printZoom : 4,
+            useBackground : true,
+            layers : [
+                {
+                    layerName : "frontieres fiefs",
+                    source : "worldmap/json/fiefs",
+                    geomType : "Polygon", 
+                    styles : {
+                        zooms : [3,4,5,6],
+                        stroke : {color : "#FF0000", opacity : 1, width : [1, 1, 1]}
+                    }
+                }
             ]
         },
         {
