@@ -125,38 +125,7 @@ class HomepageControllerProvider implements ControllerProviderInterface
 					->convert('territoire', 'converter.territoire:convert')
 					->bind('world.country.update')
 					->before($mustBeScenariste);				
-        
-        /** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap','LarpManager\Controllers\HomepageController::worldmapAction')
-					->method('GET')
-					->bind('worldmap');
-		
-		/** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/json/countries','LarpManager\Controllers\HomepageController::getCountriesAction')
-					->method('GET')
-					->bind('worldmap.json.countries');
-        
-        /** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/json/countrieslabels','LarpManager\Controllers\HomepageController::getCountriesLabelsAction')
-					->method('GET')
-					->bind('worldmap.json.countrieslabels');
-        
-        /** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/json/fiefs','LarpManager\Controllers\HomepageController::getFiefsAction')
-					->method('GET')
-					->bind('worldmap.json.fiefs');
-        
-        /** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/json/fiefslabels','LarpManager\Controllers\HomepageController::getFiefsLabelsAction')
-					->method('GET')
-					->bind('worldmap.json.fiefslabels');
-        
-        /** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/labelterritoire/{territoire}/update','LarpManager\Controllers\HomepageController::updateLabelTerritoireGeomAction')
-					->method('POST')
-					->convert('territoire', 'converter.territoire:convert')
-					->bind('worldmap.labelterritoire.update');
-					
+							
 		/** Page de récapitulatif des liens pour discuter */
 		$controllers->match('/discuter','LarpManager\Controllers\HomepageController::discuterAction')
 					->method('GET')
@@ -202,6 +171,42 @@ class HomepageControllerProvider implements ControllerProviderInterface
 					->method('GET')
 					->bind('dev.metrics');
 		
+		/** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap','LarpManager\Controllers\HomepageController::worldmapAction')
+					->method('GET')
+					->bind('worldmap');
+					
+		/** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/json/countries','LarpManager\Controllers\HomepageController::getCountriesAction')
+					->method('GET')
+					->bind('worldmap.json.countries');
+        
+        /** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/json/countrieslabels','LarpManager\Controllers\HomepageController::getCountriesLabelsAction')
+					->method('GET')
+					->bind('worldmap.json.countrieslabels');
+        
+        /** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/json/fiefs','LarpManager\Controllers\HomepageController::getFiefsAction')
+					->method('GET')
+					->bind('worldmap.json.fiefs');
+        
+        /** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/json/fiefslabels','LarpManager\Controllers\HomepageController::getFiefsLabelsAction')
+					->method('GET')
+					->bind('worldmap.json.fiefslabels');
+        
+        /** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/labelterritoire/{territoire}/update','LarpManager\Controllers\HomepageController::updateLabelTerritoireGeomAction')
+					->method('POST')
+					->convert('territoire', 'converter.territoire:convert')
+					->bind('worldmap.labelterritoire.update');
+        
+        /** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/json/pictos/{type}','LarpManager\Controllers\HomepageController::getPictos')
+					->method('GET')
+					->bind('worldmap.json.pictos');
+
 		return $controllers;
 	}
 }

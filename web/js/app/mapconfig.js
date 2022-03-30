@@ -29,16 +29,16 @@ var Mapconfig = {
                         {
                             zooms : [2,3,4,5,6],
                             text : {font : [
-                                        {style: "normal", size: "12", font: "Pays"},
-                                        {style: "normal", size: "24", font: "Pays"}, 
-                                        {style: "normal", size: "48", font: "Pays"}, 
-                                        {style: "normal", size: "96", font: "Pays"},
-                                        {style: "normal", size: "190", font: "Pays"}],
+                                        {style: "normal", size: "12", font: "Trebuchet"},
+                                        {style: "normal", size: "24", font: "Trebuchet"}, 
+                                        {style: "normal", size: "48", font: "Trebuchet"}, 
+                                        {style: "normal", size: "96", font: "Trebuchet"},
+                                        {style: "normal", size: "192", font: "Trebuchet"}],
                                     interligne : 300,
                                     field : "texte", 
                                     transformation : "toUpper"},
-                            stroke : {color : "CCCCCC", opacity : 1, width : 1},
-                            fill : {color : "CCCCCC", opacity : 1},
+                            stroke : {color : "#FFFFFF", opacity : 1, width : 1},
+                            fill : {color : "#FFFFFF", opacity : 1},
                         }
                 },
                 {
@@ -56,7 +56,7 @@ var Mapconfig = {
                     geomType : "Polygon", 
                     styles : {
                         zooms : [2,3,4,5,6],
-                        stroke : {color : "8B0004", opacity : 1, width : [2,3,4,5,6]}
+                        stroke : {color : "#8B0004", opacity : 1, width : [2,3,4,4,4]}
                     }
                 },
                 {
@@ -72,12 +72,29 @@ var Mapconfig = {
                                 interligne : 84,
                                 field : "texte", 
                                 transformation : "none"},
-                        stroke : {color : "000000", opacity : 1, width : 1},
-                        fill : {color : "000000", opacity : 1},
+                        stroke : {color : "#000000", opacity : 1, width : 1},
+                        fill : {color : "#000000", opacity : 1},
                     }
-                }
-                
-                
+                },
+                {
+                    layerName : "pictos",
+                    source : "worldmap/json/pictos/ville",
+                    geomType : "Point", 
+                    styles : {
+                        zooms : [4,5,6],
+                        radius : [5,10,20],
+                        fill : {color : "#8B0004", opacity : 1}
+                    }
+                }/*,
+                {
+                    layerName : "explos",
+                    source : "worldmap/json/pictos/exploration",
+                    geomType : "Point", 
+                    styles : {
+                        zooms : [2,3,4,5,6],
+                        size: [0,0,8,16,32]
+                    }
+                }*/
             ]
         },
         {

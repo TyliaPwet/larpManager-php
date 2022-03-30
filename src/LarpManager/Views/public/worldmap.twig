@@ -87,7 +87,7 @@ var Carte = {
                         target: 'map',
                         view: new ol.View({
                             projection: lmproj, 
-                            zoom: config.maxZoom,
+                            zoom: 3, //config.maxZoom,
                             minZoom: config.minZoom,
                             maxZoom: config.maxZoom,
                             center: mapCenter, 
@@ -166,25 +166,40 @@ var Carte = {
                                 else return null;
                             };
                             break;
+                        case "Point":
+                            styleFunc = function(feat, reso) {
+                            var zoomLevel = Math.log2(self.maxResolution / reso);
+                                var found = confLayer.styles.zooms.indexOf(zoomLevel);
+                                if(found != -1) {
+                                    // on regarde quel type d'image on
+                                    var imgStyle = null;
+                                    switch (feat.url) {
+                                        case 'cercle' :
+                                            imgStyle = new ol.style.Circle({
+                                                radius : confLayer.styles.radius[found],
+                                                fill : new ol.style.Fill ({color: Util.hexToRgba(confLayer.styles.fill.color, confLayer.styles.fill.opacity) })
+                                            });
+                                        break;
+                                        default : 
+                                            imgStyle = new ol.style.Icon({
+                                                size: [confLayer.styles.size[found],confLayer.styles.size[found]],
+                                                src: '{{ app.request.basepath }}/' + feat.url
+                                            });
+                                    }
+                                    return new ol.style.Style ({
+                                        image: imgStyle
+                                    });
+                                } 
+                                else return null;
+                            }
+                            break;
                         default:
                             console.log("erreur, type de géométrie non géré");
                     }
                     lay.setStyle(styleFunc);
                     
                     // Enfin, on crée les features
-                    // ici aussi les opérations dépendent du type de géométrie de la couche
-                    var coordsToLM = function(tab) {
-                        if (Array.isArray(tab[0])) {
-                            var tabXY = []
-                            for (var p=0; p<tab.length; p++) {
-                                tabXY.push(coordsToLM(tab[p]));
-                            }
-                            return tabXY;
-                        } else {
-                            return Util.LonLatToLM([tab[0], tab[1]]);
-                        }
-                    };
-                    
+                    // ici aussi les opérations dépendent du type de géométrie de la couche                    
                     $.ajax({
                         dataType: "json",
                         url: confLayer.source,
@@ -199,27 +214,29 @@ var Carte = {
                                     
                                     switch (confLayer.geomType) {
                                         case "Polygon":
-                                            $(parsedGeom.geometry.coordinates[0]).each(function(toto, coords) {
-                                                Util.LonLatToLM(coords);
-                                            });
                                             var newFeature = new ol.Feature({
                                                 geometry: new ol.geom.Polygon(parsedGeom.geometry.coordinates)
                                             });
                                             newFeature.territoireId = obj.id;
                                             break;
                                         case "Label":
-                                            Util.LonLatToLM(parsedGeom.coordinates);
                                             var newFeature = new ol.Feature({
                                                 geometry: new ol.geom.Point(parsedGeom.coordinates)
                                             });
                                             newFeature.texte = obj.texte;
                                             newFeature.territoireId = obj.id;
                                             break;
+                                        case "Point":
+                                            var newFeature = new ol.Feature({
+                                                geometry: new ol.geom.Point(parsedGeom.coordinates)
+                                            });
+                                            newFeature.url = obj.url;
+                                            break;
                                         default:
                                             console.log("type de geometrie non traité");
                                             break;
                                     }
-                                    
+                                    Util.transform(newFeature.getGeometry(), 'EPSG:4326', 'LMPROJ');
                                     lay.getSource().addFeature(newFeature);
                                 }
                         });
@@ -257,7 +274,7 @@ var Carte = {
     
     initTranslateLabelsTerritoiresInteractions : function (save) { //FONCTIONNE
         var self = this;
-        var translate = new ol.interaction.Translate({ // Layer 1 pour les noms de pays, 4 pour les noms de fiefs
+        var translate = new ol.interaction.Translate({ // Layer 1 pour les noms de pays, 4 pour les noms de fiefs ======> à rendre paramétrable
                 layers: [
                     self.olMap.getLayers().getArray()[1],
                     self.olMap.getLayers().getArray()[4]
@@ -268,12 +285,10 @@ var Carte = {
         if(save) {
             translate.on('translateend', function (e) { 
                 // l'event translateend est appelé avant que la feature d'origine soit mise à jour avec les nouvelles coordonnées
-                // comme Javascript fonctionne par référence, il faut "ruser" pour dupliquer nos objets pour les modifier
+                // on affecte donc les nouvelles coordonnées nnnous-mêmes à une géométrie qui ne sert que pour la sauvegarde
                 var newGeom = e.features.getArray()[0].getGeometry().clone();
-                newGeom.setCoordinates(e.coordinate); // clone de e.coordinate
-                var newCoords = newGeom.getCoordinates();
-                Util.LMToLonLat(newCoords);
-                newGeom.setCoordinates(newCoords);
+                newGeom.setCoordinates(e.coordinate);
+                Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
                 var convert = new ol.format.GeoJSON;
                 var geojson = convert.writeGeometry(newGeom);
                 
@@ -289,21 +304,68 @@ var Carte = {
                 }).error(function() {
                     alert("désolé, une erreur est survenue");
                 });
-                
             }, this);
         }
         self.olMap.addInteraction(translate);
-    }
+    },
     
+    showCountriesColors : function (show) { // affichage des pays en couleur transparente comme sur la prod, pour voir le rendu uniquement ---- juste pour mon dev ----
+        
+        if (show) {
+            var lay = new ol.layer.Vector({
+                name: "surcouche",
+                source: new ol.source.Vector({ features: new ol.Collection([]) })
+            });
+            this.olMap.addLayer(lay);
+            
+            $.ajax({
+                dataType: "json",
+                url: "world/countriesjson",
+                success: function(data) {
+                    $(data).each(function(key, obj) {
+                        if (obj.geom != null)
+                        {	
+                            var parsedGeom = JSON.parse(obj.geom);		
+                            $(parsedGeom.geometry.coordinates[0]).each(function(toto, coords) {
+                                Util.LonLatToLM(coords);
+                            });
+                            var newFeature = new ol.Feature({
+                                geometry: new ol.geom.Polygon(parsedGeom.geometry.coordinates)
+                            });
+                            var style = new ol.style.Style({
+                                fill: new ol.style.Fill({ color: Util.hexToRgba(obj.color, 0.2) })
+                            });
+                            newFeature.setStyle(style);
+                            lay.getSource().addFeature(newFeature);
+                        }
+                });
+            }
+            }).error(function() {
+                console.log("erreur chargement json");
+            });
+            
+        }
+    }
+        
 };
 
 Carte.createMap("baseMap");
+
+Carte.showCountriesColors(true); // pour afficher la surcouche des pays en couleur
+
+
 //Carte.initModifyFiefsInteraction(false);
 //Carte.initTranslateLabelsTerritoiresInteractions(false);
 
-// A déplacer dans l'objet Carte
+// Cette fonctione me sers uniquement pour le dev, pour créer des objets sans avoir à créer les routes, etc...
 Carte.olMap.on('click', function(e) {
-    console.log(e.coordinate);
+    var newPoint = new ol.geom.Point(e.coordinates);
+    Util.transform(newPoint, 'LMPROJ', 'EPSG:4326');
+    var convert = new ol.format.GeoJSON;
+    var geojson = convert.writeGeometry(newGeom);
+    
+    var str = "INSERT INTO geo_picto (`type`, geojson, url, rotation) VALUES ('exploration', '" + geojson +"', 'img/pictos/exploration.svg', 0);"
+    console.log(str);
 });
 
 

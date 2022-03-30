@@ -49,12 +49,11 @@ var Util = {
 	},
     
     /**
-	 * Functions LonLatToLM() et LMtoLonLat()
+	 * Functions transform, LonLatToLM() et LMtoLonLat()
 	 * ---------------------
      * On ne devrait pas avoir à créer ces fonctions... OpenLayers permet de créer une projection custom et les fonctions des transformation de coordonnées de/vers LonLat
      * Mais je n'arrive pas à le faire fonctionner... Ca marcherait avec une définition proj4 mais je ne sais pas le faire
      * TRANSFORME directement les coordonnées passées en paramètre
-     * On présume que les coordonnées sont bien à deux dimensions
 	 **/
     LonLatToLM: function (coords) {
         coords[0]= coords[0]*64;
@@ -63,6 +62,32 @@ var Util = {
     LMToLonLat: function (coords) {
         coords[0]= Math.round(coords[0])/64;
         coords[1]= (Math.round(coords[1])-11264)/64;
-    }    
+    },
+    transform: function (geom, origin, dest) {
+        var self = this;
+        var coords = geom.getCoordinates();
+        var laFonction;
+        
+        if (origin == 'EPSG:4326') { laFonction = self.LonLatToLM; } 
+        else { 
+            if (origin == 'LMPROJ') { laFonction = self.LMToLonLat;}
+            else { console.log('projection inconnue');
+                   return; }
+        } // je ne teste pas la valeur de dest car on n'a pas l'usage pour l'instant mais je mets ce paramètre pour plus de lisibilité et au cas où évolution plus tard
+        
+        var coordsToLM = function(tab) {
+            if (Array.isArray(tab[0])) {
+                var XY = [];
+                for (var p=0; p<tab.length; p++) {
+                    XY.push(coordsToLM(tab[p]));
+                }
+                return XY;
+            } else {
+                return laFonction(tab);
+            }
+        };        
+        coordsToLM(coords);
+        geom.setCoordinates(coords);  
+    }
     
 };

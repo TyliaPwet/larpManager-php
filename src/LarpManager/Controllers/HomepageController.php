@@ -209,17 +209,6 @@ class HomepageController
 	}
 	
 	/**
-	 * Affiche une carte du monde
-	 *
-	 * @param Request $request
-	 * @param Application $app
-	 */
-	public function worldmapAction(Request $request, Application $app)
-	{
-		return $app['twig']->render('public/worldmap.twig');
-	}
-	
-	/**
 	 * Fourni la liste des pays, leur geographie et leur description
 	 *
 	 * @param Request $request
@@ -242,53 +231,6 @@ class HomepageController
 					'groupes' =>  array_values($territoire->getGroupesPj()),
 					'desordre' => $territoire->getStatutIndex(),
 					'langue' => $territoire->getLanguePrincipale(),
-			);
-		}
-	
-		return $app->json($countries);
-	}
-	
-	/**
-	 * Fourni la liste des géométries pays
-	 *
-	 * @param Request $request
-	 * @param Application $app
-	 */
-	public function getCountriesAction(Request $request, Application $app)
-	{
-		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
-		$territoires = $repoTerritoire->findRoot();
-	
-		$countries = array();
-		foreach ( $territoires as $territoire)
-		{
-			$countries[] = array(
-					'id' => $territoire->getId(),
-					'geom' => $territoire->getGeojson()
-			);
-		}
-	
-		return $app->json($countries);
-	}
-	
-	/**
-	 * Fourni la liste des géométries pays
-	 *
-	 * @param Request $request
-	 * @param Application $app
-	 */
-	public function getCountriesLabelsAction(Request $request, Application $app)
-	{
-		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
-		$territoires = $repoTerritoire->findRoot();
-	
-		$countries = array();
-		foreach ( $territoires as $territoire)
-		{
-			$countries[] = array(
-					'id' => $territoire->getId(),
-					'geom' => $territoire->getGeojsonLabel(),
-					'texte' => $territoire->getTexteLabel()
 			);
 		}
 	
@@ -352,51 +294,6 @@ class HomepageController
 	
 		return $app->json($fiefs);
 	}	
-	
-	/**
-	 * Fourni la liste des géométries des fiefs
-	 *
-	 * @param Request $request
-	 * @param Application $app
-	 */
-	public function getFiefsAction(Request $request, Application $app)
-	{
-		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
-		$territoires = $repoTerritoire->findFiefs();
-	
-		$fiefs = array();
-		foreach ( $territoires as $territoire)
-		{
-			$fiefs[] = array(
-					'id' => $territoire->getId(),
-					'geom' => $territoire->getGeojson()
-			);
-		}
-		return $app->json($fiefs);
-	}
-	
-	/**
-	 * Fourni la liste des géométries des labels de fiefs
-	 *
-	 * @param Request $request
-	 * @param Application $app
-	 */
-	public function getFiefsLabelsAction(Request $request, Application $app)
-	{
-		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
-		$territoires = $repoTerritoire->findFiefs();
-	
-		$fiefs = array();
-		foreach ( $territoires as $territoire)
-		{
-			$fiefs[] = array(
-					'id' => $territoire->getId(),
-					'geom' => $territoire->getGeojsonLabel(),
-					'texte' => $territoire->getTexteLabel()
-			);
-		}
-		return $app->json($fiefs);
-	}
 	
 	/**
 	 * Fourni la liste des langues
@@ -552,31 +449,7 @@ class HomepageController
 				);
 		return $app->json($country);
 	}
-	
-	/**
-	 * Met à jour la localisation du label territoire
-	 * 
-	 * @param Request $request
-	 * @param Application $app
-	 */
-	public function updateLabelTerritoireGeomAction(Request $request, Application $app)
-	{
-		$territoire = $request->get('territoire');
-		$geom = $request->get('geom');
-		
-		$territoire->setGeojsonLabel($geom);
-		
-		$app['orm.em']->persist($territoire);
-		$app['orm.em']->flush();
-		
-		$land = array(
-					'id' => $territoire->getId(),
-					'geom' => $territoire->getGeojsonLabel(),
-					'texte' => $territoire->getTexteLabel()
-				);
-		return $app->json($land);
-	}
-	
+			
 	/**
 	 * Affiche une page récapitulatif des liens pour discuter
 	 *
@@ -631,4 +504,157 @@ class HomepageController
 	{
 		return $app['twig']->render('homepage/metrics/report.html');
 	}
+	
+	/**
+	 * Affiche une carte du monde
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function worldmapAction(Request $request, Application $app)
+	{
+		return $app['twig']->render('public/worldmap.twig');
+	}
+
+	/**
+	 * Fourni la liste des géométries pays
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function getCountriesAction(Request $request, Application $app)
+	{
+		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
+		$territoires = $repoTerritoire->findRoot();
+	
+		$countries = array();
+		foreach ( $territoires as $territoire)
+		{
+			$countries[] = array(
+					'id' => $territoire->getId(),
+					'geom' => $territoire->getGeojson()
+			);
+		}
+		return $app->json($countries);
+	}
+	
+	/**
+	 * Fourni la liste des géométries pays
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function getCountriesLabelsAction(Request $request, Application $app)
+	{
+		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
+		$territoires = $repoTerritoire->findRoot();
+	
+		$countries = array();
+		foreach ( $territoires as $territoire)
+		{
+			$countries[] = array(
+					'id' => $territoire->getId(),
+					'geom' => $territoire->getGeojsonLabel(),
+					'texte' => $territoire->getTexteLabel()
+			);
+		}
+		return $app->json($countries);
+	}
+	
+	/**
+	 * Fourni la liste des géométries des fiefs
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function getFiefsAction(Request $request, Application $app)
+	{
+		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
+		$territoires = $repoTerritoire->findFiefs();
+	
+		$fiefs = array();
+		foreach ( $territoires as $territoire)
+		{
+			$fiefs[] = array(
+					'id' => $territoire->getId(),
+					'geom' => $territoire->getGeojson()
+			);
+		}
+		return $app->json($fiefs);
+	}
+	
+	/**
+	 * Fourni la liste des géométries des labels de fiefs
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function getFiefsLabelsAction(Request $request, Application $app)
+	{
+		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
+		$territoires = $repoTerritoire->findFiefs();
+	
+		$fiefs = array();
+		foreach ( $territoires as $territoire)
+		{
+			$fiefs[] = array(
+					'id' => $territoire->getId(),
+					'geom' => $territoire->getGeojsonLabel(),
+					'texte' => $territoire->getTexteLabel()
+			);
+		}
+		return $app->json($fiefs);
+	}
+	
+	/**
+	 * Met à jour la localisation du label territoire
+	 * 
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function updateLabelTerritoireGeomAction(Request $request, Application $app)
+	{
+		$territoire = $request->get('territoire');
+		$geom = $request->get('geom');
+		
+		$territoire->setGeojsonLabel($geom);
+		
+		$app['orm.em']->persist($territoire);
+		$app['orm.em']->flush();
+		
+		$land = array(
+					'id' => $territoire->getId(),
+					'geom' => $territoire->getGeojsonLabel(),
+					'texte' => $territoire->getTexteLabel()
+				);
+		return $app->json($land);
+	}
+	
+	/**
+	 * Fourni la liste des pictos selon le type
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function getPictos(Request $request, Application $app)
+	{
+		$repoGeoPicto = $app['orm.em']->getRepository('LarpManager\Entities\GeoPicto');
+		$type = $request->get('type');
+		$results = $repoGeoPicto->findByType($type);
+	
+		$pictos = array();
+		foreach ( $results as $result)
+		{
+			$pictos[] = array(
+					'id' => $result->getId(),
+					'geom' => $result->getGeojson(),
+					'url' => $result->getUrl(),
+					'type' => $result->getPictoType(),
+					'rotation' => $result->getRotation()
+			);
+		}
+		return $app->json($pictos);
+	}
+	
+	
 }
