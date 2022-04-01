@@ -203,9 +203,14 @@ class HomepageControllerProvider implements ControllerProviderInterface
 					->bind('worldmap.labelterritoire.update');
         
         /** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/json/pictos/{type}','LarpManager\Controllers\HomepageController::getPictos')
+		$controllers->match('/worldmap/json/pictos/{cat}','LarpManager\Controllers\HomepageController::getPictos')
 					->method('GET')
 					->bind('worldmap.json.pictos');
+
+		/** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/json/lignes/{cat}','LarpManager\Controllers\HomepageController::getLignes')
+					->method('GET')
+					->bind('worldmap.json.lignes');
 
 		return $controllers;
 	}

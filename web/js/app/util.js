@@ -89,5 +89,4 @@ var Util = {
         coordsToLM(coords);
         geom.setCoordinates(coords);  
     }
-    
 };

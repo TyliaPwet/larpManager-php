@@ -7,15 +7,15 @@
 namespace LarpManager\Entities;
 
 /**
- * LarpManager\Entities\GeoPicto
+ * LarpManager\Entities\GeoLigne
  *
  * @Entity()
- * @Table(name="geo_picto")
+ * @Table(name="geo_ligne")
  * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="discr", type="string")
- * @DiscriminatorMap({"base":"BaseGeoPicto", "extended":"GeoPicto"})
+ * @DiscriminatorMap({"base":"BaseGeoLigne", "extended":"GeoLigne"})
  */
-class BaseGeoPicto
+class BaseGeoLigne
 {
     /**
      * @Id
@@ -34,16 +34,6 @@ class BaseGeoPicto
      */
     protected $geojson;
     
-    /**
-     * @Column(type="string",length=255, nullable=false)
-     */
-    protected $src;
-
-    /**
-     * @Column(type="integer")
-     */
-    protected $rotation;
-    
 
     public function __construct()
     {
@@ -53,7 +43,7 @@ class BaseGeoPicto
      * Set the value of id.
      *
      * @param integer $id
-     * @return \LarpManager\Entities\GeoPicto
+     * @return \LarpManager\Entities\GeoLigne
      */
     public function setId($id)
     {
@@ -76,7 +66,7 @@ class BaseGeoPicto
      * Set the value of categ.
      *
      * @param string $categ
-     * @return \LarpManager\Entities\GeoPicto
+     * @return \LarpManager\Entities\GeoLigne
      */
     public function setCateg($categ)
     {
@@ -99,7 +89,7 @@ class BaseGeoPicto
      * Set the value of geojson.
      *
      * @param string $geojson
-     * @return \LarpManager\Entities\GeoPicto
+     * @return \LarpManager\Entities\GeoLigne
      */
     public function setGeojson($geojson)
     {
@@ -107,7 +97,7 @@ class BaseGeoPicto
 
         return $this;
     }
-    
+
     /**
      * Get the value of geojson.
      *
@@ -117,56 +107,9 @@ class BaseGeoPicto
     {
         return $this->geojson;
     }
-
-    /**
-     * Set the value of src.
-     *
-     * @param string $src
-     * @return \LarpManager\Entities\GeoPicto
-     */
-    public function setSrc($src)
-    {
-        $this->src = $src;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of src.
-     *
-     * @return string
-     */
-    public function getSrc()
-    {
-        return $this->src;
-    }
-    
-    /**
-     * Set the value of rotation.
-     *
-     * @param integer $angle
-     * @return \LarpManager\Entities\GeoPicto
-     */
-    public function setRotation($angle)
-    {
-        $this->rotation = $angle;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of rotation.
-     *
-     * @return integer
-     */
-    public function getRotation()
-    {
-        return $this->rotation;
-    }
-
     
     public function __sleep()
     {
-        return array('id', 'categ', 'geojson', 'src', 'rotation');
+        return array('id', 'categ', 'geojson');
     }
 }

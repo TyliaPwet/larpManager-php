@@ -631,7 +631,7 @@ class HomepageController
 	}
 	
 	/**
-	 * Fourni la liste des pictos selon le type
+	 * Fournit la liste des pictos selon la catégorie
 	 *
 	 * @param Request $request
 	 * @param Application $app
@@ -639,8 +639,8 @@ class HomepageController
 	public function getPictos(Request $request, Application $app)
 	{
 		$repoGeoPicto = $app['orm.em']->getRepository('LarpManager\Entities\GeoPicto');
-		$type = $request->get('type');
-		$results = $repoGeoPicto->findByType($type);
+		$cat = $request->get('cat');
+		$results = $repoGeoPicto->findByCateg($cat);
 	
 		$pictos = array();
 		foreach ( $results as $result)
@@ -648,12 +648,36 @@ class HomepageController
 			$pictos[] = array(
 					'id' => $result->getId(),
 					'geom' => $result->getGeojson(),
-					'url' => $result->getUrl(),
-					'type' => $result->getPictoType(),
+					'src' => $result->getSrc(),
+					'categ' => $result->getCateg(),
 					'rotation' => $result->getRotation()
 			);
 		}
 		return $app->json($pictos);
+	}
+
+	/**
+	 * Fournit la liste des linéaires selon la catégorie
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	public function getLignes(Request $request, Application $app)
+	{
+		$repoGeoLigne = $app['orm.em']->getRepository('LarpManager\Entities\GeoLigne');
+		$cat = $request->get('cat');
+		$results = $repoGeoLigne->findByCateg($cat);
+	
+		$lignes = array();
+		foreach ( $results as $result)
+		{
+			$lignes[] = array(
+					'id' => $result->getId(),
+					'geom' => $result->getGeojson(),
+					'categ' => $result->getCateg()
+			);
+		}
+		return $app->json($lignes);
 	}
 	
 	

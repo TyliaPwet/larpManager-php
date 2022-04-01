@@ -24,6 +24,14 @@
 
 {% block content %}
 <div class="clearfix">
+	<form class="form-inline">
+      	<label>Action &nbsp;</label>
+      	<select id="action_select">
+       		<option value="none">Voir</option>
+        	<option value="translate_label">Déplacer labels</option>
+        	<option value="modify_label">Modifier labels</option>
+      	</select>
+    </form>
 	<div class="mapbox">
 		<div id="map"></div>
 	</div> 		
@@ -47,24 +55,38 @@ var Carte = {
         for (var i=0; i<Mapconfig.maps.length; i++) {
             if(Mapconfig.maps[i].name == mapName) {
                 var config = Mapconfig.maps[i];
-                
-                if (config.useBackground) {  
-                    // pour le moment c'est toujours le cas ; je mets dans un if au cas où on veuille changer plus tard
-                    var mapMaxX = Mapconfig.background.tilesX * Mapconfig.background.tileSize;
-                    var mapMaxY = Mapconfig.background.tilesY * Mapconfig.background.tileSize;
-                    var mapCenter = [1673, 7923]; //[4190, 9838];//[mapMaxX / 2, mapMaxY / 2];
-                    var lmproj = new ol.proj.Projection({
-                        code: 'LMPROJ',
-                        units: 'pixels',
-                        extent: [0, 0, mapMaxX, mapMaxY]
-                    });
+  
+                var mapMaxX = Mapconfig.background.tilesX * Mapconfig.background.tileSize;
+                var mapMaxY = Mapconfig.background.tilesY * Mapconfig.background.tileSize;
+                var mapCenter = [mapMaxX / 2, mapMaxY / 2];//[1673, 7923]; //[4190, 9838];//[mapMaxX / 2, mapMaxY / 2];
+                var lmproj = new ol.proj.Projection({
+                    code: 'LMPROJ',
+                    units: 'pixels',
+                    extent: [0, 0, mapMaxX, mapMaxY]
+                });
 
-                    self.maxResolution = mapMaxX / Mapconfig.background.tileSize;    // 16384 / 256 = 64
-                    var resolutions = [];
-                    for (var z = 0; z <= 6; z++) {
-                        resolutions[z] = self.maxResolution / Math.pow(2, z); 					// 64, 32, 16, 8, 4, 2, 1 (7 niveaux)
-                    }
+                self.maxResolution = mapMaxX / Mapconfig.background.tileSize;    // 16384 / 256 = 64
+                var resolutions = [];
+                for (var z = 0; z <= 6; z++) {
+                    resolutions[z] = self.maxResolution / Math.pow(2, z); 					// 64, 32, 16, 8, 4, 2, 1 (7 niveaux)
+                }
 
+                this.olMap = new ol.Map({
+                    target: 'map',
+                    view: new ol.View({
+                        projection: lmproj, 
+                        zoom: 3, //config.maxZoom,
+                        minZoom: config.minZoom,
+                        maxZoom: config.maxZoom,
+                        center: mapCenter, 
+                        extent: lmproj.getExtent(),
+                        enableRotation: false
+                    })
+                });
+
+				// Ajout de la première couche = la plus au fond = la couche image vide
+				// pour le moment on utilise toujours cette couche en fond mais je le mets dans un if pour plus tard au cas où
+                if (config.useBackground) {
                     var backgroundLayer = new ol.layer.Tile({
                         source: new ol.source.TileImage({
                             tileUrlFunction: function(tileCoord, pixelRatio, projection) { 
@@ -82,18 +104,6 @@ var Carte = {
                         }),
                         extent: lmproj.getExtent()
                     }); 
-                    
-                    this.olMap = new ol.Map({
-                        target: 'map',
-                        view: new ol.View({
-                            projection: lmproj, 
-                            zoom: 3, //config.maxZoom,
-                            minZoom: config.minZoom,
-                            maxZoom: config.maxZoom,
-                            center: mapCenter, 
-                            extent: lmproj.getExtent()
-                        })
-                    });
                     this.olMap.addLayer(backgroundLayer);
                 }
                 
@@ -108,94 +118,7 @@ var Carte = {
                     
                     // On crée le style par défaut pour les éléments de cette couche, tel que défini dans la config
                     // Le style dépend du type d'élément (toujours le même type pour une même couche)
-                    // et de la résolution (épaisseur des traits, des pictogrammes, des pointillés...)
-                    // On doit donc utiliser une fonction de style, et non pas simplement un style ou tableau de styles
-                    var styleFunc = null;
-                    switch(confLayer.geomType){
-                        case "Label": 
-                            styleFunc = function(feat, reso){
-                                var zoomLevel = Math.log2(self.maxResolution / reso);
-                                var found = confLayer.styles.zooms.indexOf(zoomLevel);
-                                if(found != -1) {
-                                    var lignes = feat.texte.split('#');
-                                    var styles = [];
-                                    $(lignes).each(function(key, value) { 
-                                        if (key==0) {
-                                            styles.push(new ol.style.Style ({
-                                                text: new ol.style.Text({ 
-                                                    font: confLayer.styles.text.font[found].style +' '+confLayer.styles.text.font[found].size +'px '+ confLayer.styles.text.font[found].font,
-                                                    text: confLayer.styles.text.transformation === "toUpper" ? value.toUpperCase() : value,
-                                                    stroke: new ol.style.Stroke ({ color: Util.hexToRgba(confLayer.styles.stroke.color, confLayer.styles.stroke.opacity), width: confLayer.styles.stroke.width[found]}),
-                                                    fill: new ol.style.Fill({ color: Util.hexToRgba(confLayer.styles.fill.color, confLayer.styles.fill.opacity) })
-                                                    })
-                                            }));
-                                        } else {
-                                            styles.push(new ol.style.Style ({
-                                                text: new ol.style.Text({ 
-                                                    font: confLayer.styles.text.font[found].style +' '+confLayer.styles.text.font[found].size +'px '+ confLayer.styles.text.font[found].font,
-                                                    text: confLayer.styles.text.transformation === "toUpper" ? value.toUpperCase() : value,
-                                                    stroke: new ol.style.Stroke ({ color: Util.hexToRgba(confLayer.styles.stroke.color, confLayer.styles.stroke.opacity), width: confLayer.styles.stroke.width[found]}),
-                                                    fill: new ol.style.Fill({ color: Util.hexToRgba(confLayer.styles.fill.color, confLayer.styles.fill.opacity) })
-                                                    }),
-                                                geometry: function(feature) {
-                                                        // on crée un point d'ancrage décalé de x pixels (dans la config) pour les lignes suivantes
-                                                        var coordinates = feature.getGeometry().getCoordinates();
-                                                        coordinates[1] = coordinates[1] - confLayer.styles.text.interligne *key;
-                                                        return new ol.geom.Point(coordinates);
-                                                    }
-                                                }) 
-                                            );
-                                        }
-                                    });
-                                    if (lignes.length==1) { return styles[0]; } else { return styles; }
-                                }
-                                else return null;
-                            };
-                            break;
-                        case "Polygon":
-                            styleFunc = function(feat, reso){
-                                var zoomLevel = Math.log2(self.maxResolution / reso);
-                                var found = confLayer.styles.zooms.indexOf(zoomLevel);
-                                if(found != -1) {
-                                    return new ol.style.Style ({
-                                        stroke: new ol.style.Stroke ({ 
-                                            color: Util.hexToRgba(confLayer.styles.stroke.color, confLayer.styles.stroke.opacity),
-                                            width: confLayer.styles.stroke.width[found] })
-                                        });
-                                } 
-                                else return null;
-                            };
-                            break;
-                        case "Point":
-                            styleFunc = function(feat, reso) {
-                            var zoomLevel = Math.log2(self.maxResolution / reso);
-                                var found = confLayer.styles.zooms.indexOf(zoomLevel);
-                                if(found != -1) {
-                                    // on regarde quel type d'image on
-                                    var imgStyle = null;
-                                    switch (feat.url) {
-                                        case 'cercle' :
-                                            imgStyle = new ol.style.Circle({
-                                                radius : confLayer.styles.radius[found],
-                                                fill : new ol.style.Fill ({color: Util.hexToRgba(confLayer.styles.fill.color, confLayer.styles.fill.opacity) })
-                                            });
-                                        break;
-                                        default : 
-                                            imgStyle = new ol.style.Icon({
-                                                size: [confLayer.styles.size[found],confLayer.styles.size[found]],
-                                                src: '{{ app.request.basepath }}/' + feat.url
-                                            });
-                                    }
-                                    return new ol.style.Style ({
-                                        image: imgStyle
-                                    });
-                                } 
-                                else return null;
-                            }
-                            break;
-                        default:
-                            console.log("erreur, type de géométrie non géré");
-                    }
+                    var styleFunc = self.createStyleFunc(confLayer.geomType, confLayer.styles.zooms, confLayer.styles);
                     lay.setStyle(styleFunc);
                     
                     // Enfin, on crée les features
@@ -208,9 +131,6 @@ var Carte = {
                                 if (obj.geom != null)
                                 {	
                                     var parsedGeom = JSON.parse(obj.geom);		
-
-                                    // pour l'instant on bidouille parce que notre fichier source n'est pas formaté correctement
-                                    // il faudra créer des urls /world/totojson pour chaque type de source qu'on veut exploiter
                                     
                                     switch (confLayer.geomType) {
                                         case "Polygon":
@@ -230,7 +150,12 @@ var Carte = {
                                             var newFeature = new ol.Feature({
                                                 geometry: new ol.geom.Point(parsedGeom.coordinates)
                                             });
-                                            newFeature.url = obj.url;
+                                            newFeature.src = obj.src;
+                                            break;
+                                        case "Line" :
+                                            var newFeature = new ol.Feature({
+                                                geometry: new ol.geom.LineString(parsedGeom.coordinates)
+                                            });
                                             break;
                                         default:
                                             console.log("type de geometrie non traité");
@@ -249,6 +174,129 @@ var Carte = {
             }
         }
     },
+    
+	createStyleFunc : function(categ, zooms, props) { 
+		// A faire : gestion d'erreurs
+		var self = this;
+		var styleFunc;
+		
+		 switch(categ){
+            case "Label": 
+                styleFunc = function(feat, reso){
+                    var zoomLevel = Math.log2(self.maxResolution / reso);
+                    if (zooms.indexOf(zoomLevel) == -1) { return null; } // si le zoom affiché n'est pas dans la liste des zooms de visibilité de la couche) on n'affiche rien                 
+                    var found = props.zooms.indexOf(zoomLevel);
+                                    
+                    var txt = props.textTransformation === "toUpper" ? feat.texte.toUpperCase() : feat.texte; 
+                    var lignes = txt.split('#');
+                    var styles = [];
+                    
+                    if(found != -1) {                       
+                        $(lignes).each(function(key, value) { 
+                            if (key==0) {
+                                styles.push(new ol.style.Style ({
+                                    text: new ol.style.Text({ 
+                                        font: props.fontWeight +' '+props.fontSize[found] +'px '+ props.fontFamily,
+                                        text: value,
+                                        stroke: new ol.style.Stroke ({ color: Util.hexToRgba(props.strokeColor, props.strokeOpacity), width: props.strokeWidth}),
+                                        fill: new ol.style.Fill({ color: Util.hexToRgba(props.fillColor, props.fillOpacity) })
+                                    })
+                                }));
+                            } else {
+                                styles.push(new ol.style.Style ({
+                                    text: new ol.style.Text({ 
+                                        font: props.fontWeight +' '+props.fontSize[found] +'px '+ props.fontFamily,
+                                        text: value,
+                                        stroke: new ol.style.Stroke ({ color: Util.hexToRgba(props.strokeColor, props.strokeOpacity), width: props.strokeWidth}),
+                                        fill: new ol.style.Fill({ color: Util.hexToRgba(props.fillColor, props.fillOpacity) })
+                                    }),
+                                    geometry: function(feature) {
+                                            // on crée un point d'ancrage décalé de x pixels (dans la config) pour les lignes suivantes
+                                            var coordinates = feature.getGeometry().getCoordinates();
+                                            coordinates[1] = coordinates[1] - props.interligne *key;
+                                            return new ol.geom.Point(coordinates);
+                                        }
+                                    }) 
+                                );
+                            }
+                        });
+                        if (lignes.length==1) { return styles[0]; } else { return styles; }
+                    }
+                    else return null;
+                };
+                break;
+            case "Polygon":
+                styleFunc = function(feat, reso){
+                    var zoomLevel = Math.log2(self.maxResolution / reso);
+ 					if (zooms.indexOf(zoomLevel) == -1) { return null; }
+                    var found = props.zooms.indexOf(zoomLevel);
+                    if(found != -1) {
+                    	// on peut afficher soir le contour, soit l'intérieur, soit les deux
+                    	var leStyle = new ol.style.Style();                   	
+                    	if (props.fillColor !== undefined) { 
+                    		leStyle.setFill(new ol.style.Fill({ color: Util.hexToRgba(props.fillColor, props.fillOpacity) })); 
+                    	}
+                    	if (props.strokeColor !== undefined) {
+                    		leStyle.setStroke (new ol.style.Stroke ({ 
+                                color: Util.hexToRgba(props.strokeColor, props.strokeOpacity),
+                                width: props.strokeWidth[found] }));
+                    	}
+                    	return leStyle;
+                    } 
+                    else return null;
+                };
+                break;
+            case "Point":
+                styleFunc = function(feat, reso) {
+                    var zoomLevel = Math.log2(self.maxResolution / reso);
+					if (zooms.indexOf(zoomLevel) == -1) { return null; }
+                    var found = props.zooms.indexOf(zoomLevel);
+                    if(found != -1) {
+                        // on regarde quel type d'image on a
+                        var imgStyle = null; console.log(feat.src);
+                        switch (feat.src) {
+                            case 'cercle' :
+                                imgStyle = new ol.style.Circle({
+                                    radius : props.pointRadius[found],
+                                    fill : new ol.style.Fill ({color: Util.hexToRgba(props.fillColor, props.fillOpacity) })
+                                });
+                            break;
+                            default :
+                                imgStyle = new ol.style.Icon({
+                                    size: [props.imgHeight[found], props.imgWidth[found]],
+                                    src: '{{ app.request.basepath }}/' + feat.src
+                                });
+                        }
+                        return new ol.style.Style ({
+                            image: imgStyle
+                        });
+                    } 
+                    else return null;
+                };
+                break;
+            case "Line":
+                styleFunc = function(feat, reso){
+                    var zoomLevel = Math.log2(self.maxResolution / reso);
+                    if (zooms.indexOf(zoomLevel) == -1) { return null; }
+                    var found = props.zooms.indexOf(zoomLevel);
+                    if(found != -1) {
+                        return new ol.style.Style ({
+                            stroke: new ol.style.Stroke ({ 
+                                color: Util.hexToRgba(props.strokeColor, props.strokeOpacity),
+                                width: props.strokeWidth[found], 
+                                lineDash: props.strokeDashArray[found],
+                                lineCap : props.strokeCap 
+                            })
+                        });
+                    } 
+                    else return null;
+                }; 
+                break;
+            default:
+                console.log("erreur, type de géométrie non géré");
+        } 
+        return styleFunc;	
+	},
     
     initModifyFiefsInteraction: function(save) { //NE FONNCTIONNE PAS
         var self = this;
@@ -308,7 +356,7 @@ var Carte = {
         }
         self.olMap.addInteraction(translate);
     },
-    
+    /*
     showCountriesColors : function (show) { // affichage des pays en couleur transparente comme sur la prod, pour voir le rendu uniquement ---- juste pour mon dev ----
         
         if (show) {
@@ -345,26 +393,58 @@ var Carte = {
             });
             
         }
-    }
-        
+    },
+*/
+    initDrawLine : function() {
+        var feats = new ol.Collection();
+        var drawLine = new ol.interaction.Draw({ 
+                features: feats,
+                type: "LineString" 
+        });  
+        this.olMap.addInteraction(drawLine);
+        drawLine.on('drawend', function(e) {
+            //console.log(e.feature.getGeometry());
+            var newLine = e.feature.getGeometry().clone();
+            Util.transform(newLine, 'LMPROJ', 'EPSG:4326');
+            var convert = new ol.format.GeoJSON;
+            var geojson = convert.writeGeometry(newLine);
+
+            var str = "INSERT INTO geo_surf (`type`, geojson) VALUES ('caravane', '" + geojson +"');" ; 
+            console.log(str);
+        });
+
+    }      
 };
 
-Carte.createMap("baseMap");
+    
+var actionSelect = document.getElementById('action_select');
+actionSelect.onchange = function() {
+	//map.removeInteraction(draw);
+	//addInteraction();
+};
 
+
+Carte.createMap("baseMap");
 Carte.showCountriesColors(true); // pour afficher la surcouche des pays en couleur
 
 
+
+
+
 //Carte.initModifyFiefsInteraction(false);
-//Carte.initTranslateLabelsTerritoiresInteractions(false);
+//Carte.initTranslateLabelsTerritoiresInteractions(true);
+//Carte.initDrawLine();
 
 // Cette fonctione me sers uniquement pour le dev, pour créer des objets sans avoir à créer les routes, etc...
-Carte.olMap.on('click', function(e) {
-    var newPoint = new ol.geom.Point(e.coordinates);
+Carte.olMap.on('click', function(e) { 
+    var newPoint = new ol.geom.Point(e.coordinate);
     Util.transform(newPoint, 'LMPROJ', 'EPSG:4326');
     var convert = new ol.format.GeoJSON;
-    var geojson = convert.writeGeometry(newGeom);
+    var geojson = convert.writeGeometry(newPoint);
     
-    var str = "INSERT INTO geo_picto (`type`, geojson, url, rotation) VALUES ('exploration', '" + geojson +"', 'img/pictos/exploration.svg', 0);"
+//    var str = "INSERT INTO geo_picto (`type`, geojson, url, rotation) VALUES ('exploration', '" + geojson +"', 'img/pictos/exploration.svg', 0);";
+  var str = "INSERT INTO geo_picto (`type`, geojson, url, rotation) VALUES ('ville', '" + geojson +"', 'cercle', 0);" ;
+
     console.log(str);
 });
 

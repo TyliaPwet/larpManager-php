@@ -27,18 +27,18 @@ use Doctrine\ORM\EntityRepository;
  *  
  * @author Tylia
  */
-class GeoPictoRepository extends EntityRepository
+class GeoLigneRepository extends EntityRepository
 {
 	/**
-	 * Fourni la liste des pictos du type demandé
+	 * Fourni la liste des lignes du type demandé
 	 * @return \Doctrine\Common\Collections\Collection
 	 */
 	public function findByCateg($categ)
 	{
-		$pictos = $this->getEntityManager()
-                ->createQuery("SELECT p FROM LarpManager\Entities\GeoPicto p WHERE p.categ='".$categ."'")
+		$lignes = $this->getEntityManager()
+                ->createQuery("SELECT p FROM LarpManager\Entities\GeoLigne p WHERE p.categ='".$categ."'")
                 ->getResult();
 	
-		return $pictos;
+		return $lignes;
 	}
 }
