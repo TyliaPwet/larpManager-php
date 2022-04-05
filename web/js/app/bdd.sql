@@ -17,9 +17,7 @@ UPDATE territoire SET geojson_label = '{"type":"Point","coordinates":[155.296875
 
 /* création des tables de stockage des autres géométries de fond */
 CREATE TABLE geo_ligne (id INT UNSIGNED AUTO_INCREMENT NOT NULL, categ VARCHAR(50) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL, geojson LONGTEXT, discr VARCHAR(255) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL DEFAULT 'extended', PRIMARY KEY(id)) ENGINE =InnoDB;
-CREATE TABLE geo_surf (id INT UNSIGNED AUTO_INCREMENT NOT NULL, categ VARCHAR(50) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL, geojson LONGTEXT, discr VARCHAR(255) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL DEFAULT 'extended', PRIMARY KEY(id)) ENGINE =InnoDB;
 CREATE TABLE geo_picto (id INT UNSIGNED AUTO_INCREMENT NOT NULL, categ VARCHAR(50) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL, geojson LONGTEXT, src VARCHAR(255), rotation INT DEFAULT 0, discr VARCHAR(255) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL DEFAULT 'extended', PRIMARY KEY(id)) ENGINE =InnoDB;
-CREATE TABLE geo_label (id INT UNSIGNED AUTO_INCREMENT NOT NULL, categ VARCHAR(50) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL, geojson LONGTEXT, texte VARCHAR(45) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL DEFAULT 'à définir!!', rotation INT DEFAULT 0, discr VARCHAR(255) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL DEFAULT 'extended', PRIMARY KEY(id)) ENGINE =InnoDB;
 
 /* Exemples de villes en Vanaheim */
 INSERT INTO geo_picto (categ, geojson, src, rotation) VALUES ('ville', '{"type":"Point","coordinates":[48.390625,-15.8125]}', 'cercle', 0);
@@ -43,48 +41,9 @@ INSERT INTO geo_picto (categ, geojson, src, rotation) VALUES ('exploration', '{"
 /* Exemples de segments de route commerciale */
 INSERT INTO geo_ligne (categ, geojson) VALUES ('caravane', '{"type":"LineString","coordinates":[[38.03125,-100.015625],[41.65625,-96.171875],[43.0625,-96.015625],[43.34375,-94.640625],[44.625,-94.703125],[45.96875,-93.703125],[46.6875,-91.328125],[47.75,-90.984375],[49.125,-90.609375],[49.6875,-89.328125],[49.90625,-87.984375],[49.65625,-86.984375],[50.15625,-86.265625],[51.375,-84.859375],[51.46875,-84.046875],[51.75,-83.109375],[52.4375,-82.609375],[53.375,-82.359375],[53.90625,-81.921875],[54.71875,-80.921875],[55,-79.578125],[55.46875,-78.546875],[56.34375,-77.984375],[56.875,-77.796875]]}');
 
-/* création de la table qui stocke les styles */
-CREATE TABLE geo_style (id INT UNSIGNED AUTO_INCREMENT NOT NULL, `nom` VARCHAR(50) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL, zoom INT NOT NULL, stylejson LONGTEXT NOT NULL, discr VARCHAR(255) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL DEFAULT 'extended', PRIMARY KEY(id)) ENGINE =InnoDB;
 
-/* Préfixe du nom de style :
-A_ pour un objet surfacique (Polygon)
-L_ pour un linéaire (Line)
-P_ pour un ponctuel/picto (Point)
-T_ pour un label (Point) */
+/* A créer */
+CREATE TABLE geo_surf (id INT UNSIGNED AUTO_INCREMENT NOT NULL, categ VARCHAR(50) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL, geojson LONGTEXT, discr VARCHAR(255) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL DEFAULT 'extended', PRIMARY KEY(id)) ENGINE =InnoDB;
+CREATE TABLE geo_label (id INT UNSIGNED AUTO_INCREMENT NOT NULL, categ VARCHAR(50) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL, geojson LONGTEXT, texte VARCHAR(45) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL DEFAULT 'à définir!!', rotation INT DEFAULT 0, discr VARCHAR(255) CHARACTER SET utf8 COLLATE `utf8_unicode_ci` NOT NULL DEFAULT 'extended', PRIMARY KEY(id)) ENGINE =InnoDB;
 
-/* propriétés possibles pour chaque type de style :
-A_ : strokeColor, strokeOpacity, strokeWidth, strokeDashArray, fillColor, fillOpacity,
-L_ : strokeColot, strokeOpacity, strokeWidth, strokeDashArray, strokeCap, (strokeEnd = peut-être à ajouter pour les flèches de soutien entre domaines, à voir plus tard)
-P_ : imgType (icon | shape), src (url | shapeName), angle, imgColor, imgOpacity, imgRadius
-T_ : fontFamily, fontWeight, fontSize, strokeColor, strokeOpacity, strokeWidth, fillColor, fillOpacity, angle
 
-/* Init de styles pour la carte de base */
-/* je ne vois pas l'intérêt de mettre un style pour les zooms 0 et 1 qui sont trop petits pour être exploités, à mon avis...*/
-/* frontières pays */
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('A_contours1',2,'{strokeColor: "#8B0004", strokeOpacity: 1, strokeWidth: 2');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('A_contours1',3,'{strokeColor: "#8B0004", strokeOpacity: 1, strokeWidth: 3');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('A_contours1',4,'{strokeColor: "#8B0004", strokeOpacity: 1, strokeWidth: 4');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('A_contours1',5,'{strokeColor: "#8B0004", strokeOpacity: 1, strokeWidth: 4');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('A_contours1',6,'{strokeColor: "#8B0004", strokeOpacity: 1, strokeWidth: 4');
-
-/* frontières fiefs */
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('A_contours2',4,'{strokeColor: "#B98B54", strokeOpacity: 1, strokeWidth: 1');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('A_contours2',5,'{strokeColor: "#B98B54", strokeOpacity: 1, strokeWidth: 1');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('A_contours2',6,'{strokeColor: "#B98B54", strokeOpacity: 1, strokeWidth: 1');
-
-/* villes rond rouge */
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('P_rond1',4,'{imgType: "shape", src: "cercle", imgColor: "#8B0004", imgOpacity: 1, imgRadius:5');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('P_rond1',5,'{imgType: "shape", src: "cercle", imgColor: "#8B0004", imgOpacity: 1, imgRadius:10');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('P_rond1',6,'{imgType: "shape", src: "cercle", imgColor: "#8B0004", imgOpacity: 1, imgRadius:20');
-
-/* labels pays */
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('T_titre1',2,'{fontFamily: "Trebuchet", fontWeight: "normal", fontSize: "12", strokeColor: "#FFFFFF", strokeOpacity: 1, strokeWidth: 1, fillColor: "#FFFFFF", fillOpacity:1, interligne: 300, transformation: "toUpper"}');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('T_titre1',3,'{fontFamily: "Trebuchet", fontWeight: "normal", fontSize: "24", strokeColor: "#FFFFFF", strokeOpacity: 1, strokeWidth: 1, fillColor: "#FFFFFF", fillOpacity:1, interligne: 300, transformation: "toUpper"}');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('T_titre1',4,'{fontFamily: "Trebuchet", fontWeight: "normal", fontSize: "48", strokeColor: "#FFFFFF", strokeOpacity: 1, strokeWidth: 1, fillColor: "#FFFFFF", fillOpacity:1, interligne: 300, transformation: "toUpper"}');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('T_titre1',5,'{fontFamily: "Trebuchet", fontWeight: "normal", fontSize: "96", strokeColor: "#FFFFFF", strokeOpacity: 1, strokeWidth: 1, fillColor: "#FFFFFF", fillOpacity:1, interligne: 300, transformation: "toUpper"}');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('T_titre1',6,'{fontFamily: "Trebuchet", fontWeight: "normal", fontSize: "192", strokeColor: "#FFFFFF", strokeOpacity: 1, strokeWidth: 1, fillColor: "#FFFFFF", fillOpacity:1, interligne: 300, transformation: "toUpper"}');
-
-/* labels fiefs */
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('T_texte1',4,'{fontFamily: "Fiefs", fontWeight: "normal", fontSize: "16", strokeColor: "#000000", strokeOpacity: 1, strokeWidth: 1, fillColor: "#FFFFFF", fillOpacity:1, interligne: 84, transformation: "none"}');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('T_texte1',5,'{fontFamily: "Fiefs", fontWeight: "normal", fontSize: "32", strokeColor: "#000000", strokeOpacity: 1, strokeWidth: 1, fillColor: "#FFFFFF", fillOpacity:1, interligne: 84, transformation: "none"}');
-INSERT INTO geo_style (nom, zoom, stylejson) VALUES ('T_texte1',6,'{fontFamily: "Fiefs", fontWeight: "normal", fontSize: "64", strokeColor: "#000000", strokeOpacity: 1, strokeWidth: 1, fillColor: "#FFFFFF", fillOpacity:1, interligne: 84, transformation: "none"}');

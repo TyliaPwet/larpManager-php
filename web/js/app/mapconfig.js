@@ -25,83 +25,54 @@ var Mapconfig = {
                     layerName : "labels pays",
                     source : "worldmap/json/countrieslabels",
                     geomType : "Label", // Point
-                    styles : 
-                        {
-                            zooms : [2,3,4,5,6],
-                            fontWeight: "normal", 
-                            fontSize: ["12","24","46","96","192"], 
-                            fontFamily: "Trebuchet",
-                            interligne : 300,
-                            textTransformation : "toUpper",
-                            strokeColor : "#FFFFFF", 
-                            strokeOpacity : 1, 
-                            strokeWidth : 1,
-                            fillColor : "#FFFFFF", 
-                            fillOpacity : 1
-                        }
+                    style : {
+                    	zooms: [2,3,4,5,6],
+                    	styles: "titre1"
+                	}
                 },
                 {
                     layerName : "frontieres fiefs",
                     source : "worldmap/json/fiefs",
                     geomType : "Polygon", 
-                    styles : {
-                        zooms : [4,5,6],
-                        strokeColor : "#9A785F", 
-                        strokeOpacity : 1, 
-                        strokeWidth : [1, 1, 1]
-                    }
+                    style : {
+                    	zooms: [2,3,4,5,6],
+                    	styles: "ligne2"
+                	}
                 },
                 {
                     layerName : "frontieres pays",
                     source : "worldmap/json/countries",
                     geomType : "Polygon", 
-                    styles : {
+                    style : {
                         zooms : [2,3,4,5,6],
-                        strokeColor : "#8B0004", 
-                        strokeOpacity : 1, 
-                        strokeWidth : [2,3,4,4,4]
+                        styles: "ligne1"
                     }
                 },
                 {
                     layerName : "labels fiefs",
                     source : "worldmap/json/fiefslabels",
                     geomType : "Label", // Point
-                    styles:{
+                    style: {
                         zooms : [4,5,6],
-                    	fontWeight: "normal", 
-                        fontSize: ["18","36","72"], 
-                        fontFamily: "Fiefs",
-                        interligne : 74,
-                        textTransformation : "none",
-                        strokeColor : "#000000", 
-                        strokeOpacity : 1, 
-                        strokeWidth : 1,
-                        fillColor : "#000000", 
-                        fillOpacity : 1
+                        styles: "texte1"
                     }
                 },
                 {
                     layerName : "villes",
                     source : "worldmap/json/pictos/ville",
                     geomType : "Point", 
-                    styles : {
+                    style : {
                         zooms : [4,5,6],
-                        pointRadius : [5,10,20],
-                        fillColor : "#8B0004", 
-                        fillOpacity : 1
+                        styles: "cercle1"
                     }
                 },
                 {
                     layerName : "caravane",
                     source : "worldmap/json/lignes/caravane",
                     geomType : "Line", 
-                    styles : {
+                    style : {
                         zooms : [4,5,6],
-                        strokeColor: "#6600A1", 
-                        strokeOpacity: 1, 
-                        strokeWidth: [8,16,32], 
-                        strokeDashArray: [[3,3,6,6], [6,6,12,12], [12,12,24,24]],
-                        strokeCap : "butt"
+                        styles: "ligne3"
                     }
                 }
             ]
@@ -154,4 +125,95 @@ var defaultStyleProperties = {
 		
 		rotation: 0
 	};
+
+
+// Ici on définit les styles possibles, pour tous les zooms possibles
+// Il n'est pas dit que tous les niveaux de zooms seront utilisés pour toutes les cartes
+// A faire : gestion d'erreur en cas d'appel à un niveau de zoom non défini ici
+// A faire : mettre tout ça en base de données
+var bddStyles = {
+	"titre1" : {
+        zooms : [2,3,4,5,6],
+        fontWeight: "normal", 
+        fontSize: ["12","24","46","96","192"], 
+        fontFamily: "Trebuchet",
+        interligne : 300,
+        textTransformation : "toUpper",
+        strokeColor : "#FFFFFF", 
+        strokeOpacity : 1, 
+        strokeWidth : 1,
+        fillColor : "#FFFFFF", 
+        fillOpacity : 1		
+	},
+	"texte1" : {
+		 zooms : [4,5,6],
+    	fontWeight: "normal", 
+        fontSize: ["18","36","72"], 
+        fontFamily: "Fiefs",
+        interligne : 74,
+        textTransformation : "none",
+        strokeColor : "#000000", 
+        strokeOpacity : 1, 
+        strokeWidth : 1,
+        fillColor : "#000000", 
+        fillOpacity : 1
+	},
+	"ligne1" : {
+        zooms : [2,3,4,5,6],
+        strokeColor : "#8B0004", 
+        strokeOpacity : 1, 
+        strokeWidth : [2,3,4,4,4]
+	},
+	"ligne2" : {
+        zooms : [2,3,4,5,6],
+        strokeColor : "#9A785F", 
+        strokeOpacity : 1, 
+        strokeWidth : [1,1,1, 1, 1]
+    },
+    "ligne3" : {
+        zooms : [4,5,6],
+        strokeColor: "#6600A1", 
+        strokeOpacity: 1, 
+        strokeWidth: [8,16,32], 
+        strokeDashArray: [[3,3,6,6], [6,6,12,12], [12,12,24,24]],
+        strokeCap : "butt"
+    },
+    "cercle1" : {
+        zooms : [2,3,4,5,6],
+        pointRadius : [1,2,5,10,20],
+        fillColor : "#8B0004", 
+        fillOpacity : 1
+    }
+    
+	
+	
+}
+
+// On définit quelles propriétés sont attendues selon le type d'objets à afficher
+// pas utilisé pour l'instant
+var allowedStyleProperties = {
+    "Label": [ 
+    	"zooms", "texte",
+        "fontColor", "fontFamily", "fontWeight", "fontSize",
+         "strokeColor", "strokeOpacity", "strokeWidth",
+         "fillColor", "fillOpacity",
+         "interligne"
+    ],
+    "Point": [
+    	"zooms",
+        "fillColor", "fillOpacity", 
+        "imgSrc", "imgHeight", "imgWidth", 
+        "pointRadius", "rotation"
+    ],
+    "Line": [
+    	"zooms",
+		"strokeColor", "strokeOpacity", "strokeWidth",
+		"strokeDashstyle", "strokeCap"
+    ],
+    "Polygon": [
+    	"zooms",
+        "strokeColor", "strokeOpacity", "strokeWidth",
+        "fillColor", "fillOpacity"            
+    ]
+};
 
