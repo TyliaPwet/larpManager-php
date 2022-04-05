@@ -175,43 +175,23 @@ class HomepageControllerProvider implements ControllerProviderInterface
 		$controllers->match('/worldmap','LarpManager\Controllers\HomepageController::worldmapAction')
 					->method('GET')
 					->bind('worldmap');
-					
-		/** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/json/countries','LarpManager\Controllers\HomepageController::getCountriesAction')
-					->method('GET')
-					->bind('worldmap.json.countries');
-        
-        /** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/json/countrieslabels','LarpManager\Controllers\HomepageController::getCountriesLabelsAction')
-					->method('GET')
-					->bind('worldmap.json.countrieslabels');
-        
-        /** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/json/fiefs','LarpManager\Controllers\HomepageController::getFiefsAction')
-					->method('GET')
-					->bind('worldmap.json.fiefs');
-        
-        /** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/json/fiefslabels','LarpManager\Controllers\HomepageController::getFiefsLabelsAction')
-					->method('GET')
-					->bind('worldmap.json.fiefslabels');
-        
+					      
         /** Nouvelle cartographie - TESTS */
 		$controllers->match('/worldmap/labelterritoire/{territoire}/update','LarpManager\Controllers\HomepageController::updateLabelTerritoireGeomAction')
 					->method('POST')
 					->convert('territoire', 'converter.territoire:convert')
 					->bind('worldmap.labelterritoire.update');
-        
-        /** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/json/pictos/{cat}','LarpManager\Controllers\HomepageController::getPictos')
+        					
+		/** Nouvelle cartographie - TESTS */
+		$controllers->match('/worldmap/features/get/{categ}','LarpManager\Controllers\HomepageController::getFeatures')
 					->method('GET')
-					->bind('worldmap.json.pictos');
+					->bind('worldmap.features.get');
 
 		/** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/json/lignes/{cat}','LarpManager\Controllers\HomepageController::getLignes')
-					->method('GET')
-					->bind('worldmap.json.lignes');
-
+		$controllers->match('/worldmap/features/update','LarpManager\Controllers\HomepageController::updateFeatures')
+					->method('POST')
+					->bind('worldmap.features.update');
+					
 		return $controllers;
 	}
 }

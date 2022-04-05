@@ -161,6 +161,8 @@ var Carte = {
                                             console.log("type de geometrie non traité");
                                             break;
                                     }
+                                    newFeature.categ = obj.categ;
+									newFeature.bddId = obj.id;
                                     Util.transform(newFeature.getGeometry(), 'EPSG:4326', 'LMPROJ');
                                     lay.getSource().addFeature(newFeature);
                                 }

@@ -16,14 +16,10 @@ var Mapconfig = {
             layers : [
                 // les layers sont rangées de la plus au fond à la plus en surface
                 // -----------------
-                // on pourrait tout mettre dans la même layer avec juste un zIndex différent mais on anticipe sur un futur gestionnaire d'affichage des layers
-                // de plus c'est plus pratique pour gérer les modifications / sécuriser les modifs et suppressions car on n'agit que sur 1 couche à la fois
-                // -----------------
-                // ******* il faudra lister les valeurs "fixes "utilisées" pour une aide à la création de nouvelles couches pour faire une "aide"
-                // ******* lors d'un prochain dev, il faudra que ce paramétrage puisse être stocké en base et modifié directement par les orgas sous larpmanager
+                // ******* A faire : stocker ce paramétrage en base et faire les écrans de gestion associés
                 {
                     layerName : "labels pays",
-                    source : "worldmap/json/countrieslabels",
+                    source : "worldmap/features/get/label_pays",
                     geomType : "Label", // Point
                     style : {
                     	zooms: [2,3,4,5,6],
@@ -32,7 +28,7 @@ var Mapconfig = {
                 },
                 {
                     layerName : "frontieres fiefs",
-                    source : "worldmap/json/fiefs",
+                    source : "worldmap/features/get/fief",
                     geomType : "Polygon", 
                     style : {
                     	zooms: [2,3,4,5,6],
@@ -41,7 +37,7 @@ var Mapconfig = {
                 },
                 {
                     layerName : "frontieres pays",
-                    source : "worldmap/json/countries",
+                    source : "worldmap/features/get/pays",
                     geomType : "Polygon", 
                     style : {
                         zooms : [2,3,4,5,6],
@@ -50,7 +46,7 @@ var Mapconfig = {
                 },
                 {
                     layerName : "labels fiefs",
-                    source : "worldmap/json/fiefslabels",
+                    source : "worldmap/features/get/label_fief",
                     geomType : "Label", // Point
                     style: {
                         zooms : [4,5,6],
@@ -59,7 +55,7 @@ var Mapconfig = {
                 },
                 {
                     layerName : "villes",
-                    source : "worldmap/json/pictos/ville",
+					source : "worldmap/features/get/ville", 
                     geomType : "Point", 
                     style : {
                         zooms : [4,5,6],
@@ -68,7 +64,7 @@ var Mapconfig = {
                 },
                 {
                     layerName : "caravane",
-                    source : "worldmap/json/lignes/caravane",
+					source : "worldmap/features/get/caravane",
                     geomType : "Line", 
                     style : {
                         zooms : [4,5,6],

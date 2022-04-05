@@ -517,96 +517,6 @@ class HomepageController
 	}
 
 	/**
-	 * Fourni la liste des géométries pays
-	 *
-	 * @param Request $request
-	 * @param Application $app
-	 */
-	public function getCountriesAction(Request $request, Application $app)
-	{
-		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
-		$territoires = $repoTerritoire->findRoot();
-	
-		$countries = array();
-		foreach ( $territoires as $territoire)
-		{
-			$countries[] = array(
-					'id' => $territoire->getId(),
-					'geom' => $territoire->getGeojson()
-			);
-		}
-		return $app->json($countries);
-	}
-	
-	/**
-	 * Fourni la liste des géométries pays
-	 *
-	 * @param Request $request
-	 * @param Application $app
-	 */
-	public function getCountriesLabelsAction(Request $request, Application $app)
-	{
-		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
-		$territoires = $repoTerritoire->findRoot();
-	
-		$countries = array();
-		foreach ( $territoires as $territoire)
-		{
-			$countries[] = array(
-					'id' => $territoire->getId(),
-					'geom' => $territoire->getGeojsonLabel(),
-					'texte' => $territoire->getTexteLabel()
-			);
-		}
-		return $app->json($countries);
-	}
-	
-	/**
-	 * Fourni la liste des géométries des fiefs
-	 *
-	 * @param Request $request
-	 * @param Application $app
-	 */
-	public function getFiefsAction(Request $request, Application $app)
-	{
-		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
-		$territoires = $repoTerritoire->findFiefs();
-	
-		$fiefs = array();
-		foreach ( $territoires as $territoire)
-		{
-			$fiefs[] = array(
-					'id' => $territoire->getId(),
-					'geom' => $territoire->getGeojson()
-			);
-		}
-		return $app->json($fiefs);
-	}
-	
-	/**
-	 * Fourni la liste des géométries des labels de fiefs
-	 *
-	 * @param Request $request
-	 * @param Application $app
-	 */
-	public function getFiefsLabelsAction(Request $request, Application $app)
-	{
-		$repoTerritoire = $app['orm.em']->getRepository('LarpManager\Entities\Territoire');
-		$territoires = $repoTerritoire->findFiefs();
-	
-		$fiefs = array();
-		foreach ( $territoires as $territoire)
-		{
-			$fiefs[] = array(
-					'id' => $territoire->getId(),
-					'geom' => $territoire->getGeojsonLabel(),
-					'texte' => $territoire->getTexteLabel()
-			);
-		}
-		return $app->json($fiefs);
-	}
-	
-	/**
 	 * Met à jour la localisation du label territoire
 	 * 
 	 * @param Request $request
@@ -630,55 +540,44 @@ class HomepageController
 		return $app->json($land);
 	}
 	
+			
 	/**
-	 * Fournit la liste des pictos selon la catégorie
+	 * Fournit la liste des features selon la catégorie demandée
 	 *
 	 * @param Request $request
 	 * @param Application $app
-	 */
-	public function getPictos(Request $request, Application $app)
+	 */			
+	public function getFeatures(Request $request, Application $app)
 	{
-		$repoGeoPicto = $app['orm.em']->getRepository('LarpManager\Entities\GeoPicto');
-		$cat = $request->get('cat');
-		$results = $repoGeoPicto->findByCateg($cat);
+		$params = [
+			'pays' => ['repo' => 'Territoire', 'func' => 'findRoot', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
+			'label_pays' => ['repo' => 'Territoire', 'func' => 'findRoot', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojsonLabel', 'texte'=>'getTexteLabel']],
+			'fief' => ['repo' => 'Territoire', 'func' => 'findFiefs', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
+			'label_fief' => ['repo' => 'Territoire', 'func' => 'findFiefs', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojsonLabel', 'texte'=>'getTexteLabel']],
+			'ville' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'ville', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'src'=>'getSrc']],
+			'caravane' => ['repo' => 'GeoLigne', 'func' => 'findByCateg', 'params'=>'caravane', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
+		];
+		
+		$categ = $request->get('categ');
+		$results = array();
+		
+		$repoStr = 'LarpManager\Entities\\'.$params[$categ]['repo'];
+		$funcStr = $params[$categ]['func'];
+		
+		$repo = $app['orm.em']->getRepository($repoStr);
+		$rows = $repo->$funcStr($params[$categ]['params']);
 	
-		$pictos = array();
-		foreach ( $results as $result)
+		foreach ( $rows as $row)
 		{
-			$pictos[] = array(
-					'id' => $result->getId(),
-					'geom' => $result->getGeojson(),
-					'src' => $result->getSrc(),
-					'categ' => $result->getCateg(),
-					'rotation' => $result->getRotation()
-			);
+			$result = ['categ' => 'pays'];
+			foreach ($params[$categ]['fields'] as $nom => $fonction) {
+				$result[$nom] = $row->$fonction();
+			}
+			
+			$results[] = $result;
 		}
-		return $app->json($pictos);
+		
+		return $app->json($results); 
 	}
 
-	/**
-	 * Fournit la liste des linéaires selon la catégorie
-	 *
-	 * @param Request $request
-	 * @param Application $app
-	 */
-	public function getLignes(Request $request, Application $app)
-	{
-		$repoGeoLigne = $app['orm.em']->getRepository('LarpManager\Entities\GeoLigne');
-		$cat = $request->get('cat');
-		$results = $repoGeoLigne->findByCateg($cat);
-	
-		$lignes = array();
-		foreach ( $results as $result)
-		{
-			$lignes[] = array(
-					'id' => $result->getId(),
-					'geom' => $result->getGeojson(),
-					'categ' => $result->getCateg()
-			);
-		}
-		return $app->json($lignes);
-	}
-	
-	
 }
