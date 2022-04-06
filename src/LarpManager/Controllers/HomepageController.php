@@ -555,7 +555,7 @@ class HomepageController
 			'fief' => ['repo' => 'Territoire', 'func' => 'findFiefs', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
 			'label_fief' => ['repo' => 'Territoire', 'func' => 'findFiefs', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojsonLabel', 'texte'=>'getTexteLabel']],
 			'ville' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'ville', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'src'=>'getSrc']],
-			'caravane' => ['repo' => 'GeoLigne', 'func' => 'findByCateg', 'params'=>'caravane', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
+			'caravane' => ['repo' => 'GeoLigne', 'func' => 'findByCateg', 'params'=>'caravane', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']]
 		];
 		
 		$categ = $request->get('categ');
@@ -569,7 +569,7 @@ class HomepageController
 	
 		foreach ( $rows as $row)
 		{
-			$result = ['categ' => 'pays'];
+			$result = ['categ' => $categ];
 			foreach ($params[$categ]['fields'] as $nom => $fonction) {
 				$result[$nom] = $row->$fonction();
 			}
@@ -579,5 +579,36 @@ class HomepageController
 		
 		return $app->json($results); 
 	}
+	
+	/**
+	 * Met à jour la feature demandée
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */			
+	public function updateFeatures(Request $request, Application $app)
+	{
+		$params = [
+			'label_pays' => ['repo' => 'Territoire', 'fields' =>  ['geom'=>'setGeojsonLabel']],
+			'label_fief' => ['repo' => 'Territoire', 'fields' =>  ['geom'=>'setGeojsonLabel']],
+			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']]
+		];
+		
+		$categ = $request->get('categ');
+		$id = $request->get('id');
+	
+		$repoStr = 'LarpManager\Entities\\'.$params[$categ]['repo'];
+		$row = $app['orm.em']->find($repoStr, $id);
+					
+		foreach ($params[$categ]['fields'] as $nom => $fonction) {
+			$row->$fonction($request->get($nom));
+		}
+		
+		$app['orm.em']->persist($row);
+		$app['orm.em']->flush();
+		
+		return $app->json($row); 
+	}
+	
 
 }

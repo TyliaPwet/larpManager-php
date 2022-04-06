@@ -24,7 +24,11 @@ var Mapconfig = {
                     style : {
                     	zooms: [2,3,4,5,6],
                     	styles: "titre1"
-                	}
+                	},
+		            geomInteractions : {
+		            	translate : true,	// déplacer le point d'ancrage
+		            	modify : true		// modifier le texte
+	            	}
                 },
                 {
                     layerName : "frontieres fiefs",
@@ -33,7 +37,11 @@ var Mapconfig = {
                     style : {
                     	zooms: [2,3,4,5,6],
                     	styles: "ligne2"
-                	}
+                	},
+                	geomInteractions : {
+		            	translate : false,	// déplacer l'ensemble du polygone
+	            		modify : true		// modifier les points du polygone
+	            	}
                 },
                 {
                     layerName : "frontieres pays",
@@ -42,7 +50,11 @@ var Mapconfig = {
                     style : {
                         zooms : [2,3,4,5,6],
                         styles: "ligne1"
-                    }
+                    },
+                    geomInteractions : {
+		                translate : false,
+		                modify : false
+	                }
                 },
                 {
                     layerName : "labels fiefs",
@@ -51,7 +63,11 @@ var Mapconfig = {
                     style: {
                         zooms : [4,5,6],
                         styles: "texte1"
-                    }
+                    },
+                    geomInteractions : {
+                    	translate : true,
+                    	modify : true
+                	}
                 },
                 {
                     layerName : "villes",
@@ -60,7 +76,11 @@ var Mapconfig = {
                     style : {
                         zooms : [4,5,6],
                         styles: "cercle1"
-                    }
+                    },
+                    geomInteractions : {
+                    	translate : true,	// déplacer le point d'ancrage
+                    	modify : false		// n'a pas de sens pour le moment, identique à translate
+                	}
                 },
                 {
                     layerName : "caravane",
@@ -69,6 +89,10 @@ var Mapconfig = {
                     style : {
                         zooms : [4,5,6],
                         styles: "ligne3"
+                    },
+                    geomInteractions : {
+                    	translate : false,	// déplacer l'ensemble du tracé...
+                    	modify : true		// modifier les points du tracé
                     }
                 }
             ]

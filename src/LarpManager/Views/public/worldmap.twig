@@ -28,8 +28,7 @@
       	<label>Action &nbsp;</label>
       	<select id="action_select">
        		<option value="none">Voir</option>
-        	<option value="translate_label">Déplacer labels</option>
-        	<option value="modify_label">Modifier labels</option>
+       		<option value="translate">Déplacer (labels, pictos)</option>
       	</select>
     </form>
 	<div class="mapbox">
@@ -48,6 +47,7 @@
 var Carte = {
     olMap: null,
     maxResolution: null,
+    currentInteraction: null,
 
     createMap: function(mapName){
         var self = this;
@@ -58,7 +58,7 @@ var Carte = {
   
                 var mapMaxX = Mapconfig.background.tilesX * Mapconfig.background.tileSize;
                 var mapMaxY = Mapconfig.background.tilesY * Mapconfig.background.tileSize;
-                var mapCenter = [mapMaxX / 2, mapMaxY / 2];//[1673, 7923]; //[4190, 9838];//[mapMaxX / 2, mapMaxY / 2];
+                var mapCenter = [mapMaxX / 2, mapMaxY / 2];//[1673, 7923]; //[4190, 9838];
                 var lmproj = new ol.proj.Projection({
                     code: 'LMPROJ',
                     units: 'pixels',
@@ -114,6 +114,8 @@ var Carte = {
                         name: confLayer.layerName,
                         source: new ol.source.Vector({ features: new ol.Collection([]) })
                     });
+                    lay.setProperties({	'geomTranslate': confLayer.geomInteractions.translate,
+                    					'geomModify' : confLayer.geomInteractions.modify });
                     self.olMap.addLayer(lay);
                     
                     // On crée le style par défaut pour les éléments de cette couche, tel que défini dans la config
@@ -300,6 +302,56 @@ var Carte = {
         return styleFunc;	
 	},
     
+    removeAllInteractions: function() { // à faire : faire une boucle sur les interactions de la map plutôt que stocker une seule interaction, pour pouvoir en mettre plusieurs
+    	if (this.currentInteraction !== null) {
+	    	this.olMap.removeInteraction(this.currentInteraction);	
+    	}	
+    },
+       
+    initTranslateInteraction : function (save) { //FONCTIONNE
+        var self = this;
+        var translate = new ol.interaction.Translate({ 
+                layers: function(layer) {	                
+                		if (layer.get('geomTranslate')!== undefined) {
+                			return layer.get('geomTranslate');
+                		} else return false;
+                	},
+                hitTolerance: 5
+        });
+        
+        if(save) {
+            translate.on('translateend', function (e) { 
+                // l'event translateend est appelé avant que la feature d'origine soit mise à jour avec les nouvelles coordonnées
+                // on affecte donc les nouvelles coordonnées nnnous-mêmes à une géométrie qui ne sert que pour la sauvegarde
+                var newGeom = e.features.getArray()[0].getGeometry().clone();
+                newGeom.setCoordinates(e.coordinate);
+                Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
+                var convert = new ol.format.GeoJSON;
+                var geojson = convert.writeGeometry(newGeom);
+                
+				var bddId = e.features.getArray()[0].bddId;
+				var categ = e.features.getArray()[0].categ;
+                
+                $.ajax({
+                    type: "POST",
+                    dataType: 'json',
+                   // url: "worldmap/labelterritoire/"+e.features.getArray()[0].territoireId+"/update",
+                   url: "worldmap/features/update",
+                    data: {geom: geojson, id: bddId, categ: categ},
+                    success: function(data) {
+                    	console.log(data);
+                        // alert("la geographie a été enregistrée");
+                        // a priori rien de spécial à faire pour l'instant!
+                    }
+                }).error(function() {
+                    alert("désolé, une erreur est survenue");
+                });
+            }, this);
+        }
+        self.olMap.addInteraction(translate);
+        self.currentInteraction = translate;
+    },
+        
     initModifyFiefsInteraction: function(save) { //NE FONNCTIONNE PAS
         var self = this;
         // pour Basemap, les layers sont les suivantes :
@@ -320,43 +372,6 @@ var Carte = {
             }
         });
         self.olMap.addInteraction(modify);
-    },
-    
-    initTranslateLabelsTerritoiresInteractions : function (save) { //FONCTIONNE
-        var self = this;
-        var translate = new ol.interaction.Translate({ // Layer 1 pour les noms de pays, 4 pour les noms de fiefs ======> à rendre paramétrable
-                layers: [
-                    self.olMap.getLayers().getArray()[1],
-                    self.olMap.getLayers().getArray()[4]
-                ],
-                hitTolerance: 5
-        });
-        
-        if(save) {
-            translate.on('translateend', function (e) { 
-                // l'event translateend est appelé avant que la feature d'origine soit mise à jour avec les nouvelles coordonnées
-                // on affecte donc les nouvelles coordonnées nnnous-mêmes à une géométrie qui ne sert que pour la sauvegarde
-                var newGeom = e.features.getArray()[0].getGeometry().clone();
-                newGeom.setCoordinates(e.coordinate);
-                Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
-                var convert = new ol.format.GeoJSON;
-                var geojson = convert.writeGeometry(newGeom);
-                
-                $.ajax({
-                    type: "POST",
-                    dataType: 'json',
-                    url: "worldmap/labelterritoire/"+e.features.getArray()[0].territoireId+"/update",
-                    data: {geom: geojson},
-                    success: function(data) {
-                        // alert("la geographie a été enregistrée");
-                        // a priori rien de spécial à faire pour l'instant!
-                    }
-                }).error(function() {
-                    alert("désolé, une erreur est survenue");
-                });
-            }, this);
-        }
-        self.olMap.addInteraction(translate);
     },
     /*
     showCountriesColors : function (show) { // affichage des pays en couleur transparente comme sur la prod, pour voir le rendu uniquement ---- juste pour mon dev ----
@@ -421,8 +436,12 @@ var Carte = {
     
 var actionSelect = document.getElementById('action_select');
 actionSelect.onchange = function() {
-	//map.removeInteraction(draw);
-	//addInteraction();
+	
+	Carte.removeAllInteractions();
+	
+	if(actionSelect.value === "translate") {
+		Carte.initTranslateInteraction(true);
+	}	
 };
 
 
