@@ -175,13 +175,7 @@ class HomepageControllerProvider implements ControllerProviderInterface
 		$controllers->match('/worldmap','LarpManager\Controllers\HomepageController::worldmapAction')
 					->method('GET')
 					->bind('worldmap');
-					      
-        /** Nouvelle cartographie - TESTS */
-		$controllers->match('/worldmap/labelterritoire/{territoire}/update','LarpManager\Controllers\HomepageController::updateLabelTerritoireGeomAction')
-					->method('POST')
-					->convert('territoire', 'converter.territoire:convert')
-					->bind('worldmap.labelterritoire.update');
-        					
+		       					
 		/** Nouvelle cartographie - TESTS */
 		$controllers->match('/worldmap/features/get/{categ}','LarpManager\Controllers\HomepageController::getFeatures')
 					->method('GET')

@@ -517,31 +517,6 @@ class HomepageController
 	}
 
 	/**
-	 * Met à jour la localisation du label territoire
-	 * 
-	 * @param Request $request
-	 * @param Application $app
-	 */
-	public function updateLabelTerritoireGeomAction(Request $request, Application $app)
-	{
-		$territoire = $request->get('territoire');
-		$geom = $request->get('geom');
-		
-		$territoire->setGeojsonLabel($geom);
-		
-		$app['orm.em']->persist($territoire);
-		$app['orm.em']->flush();
-		
-		$land = array(
-					'id' => $territoire->getId(),
-					'geom' => $territoire->getGeojsonLabel(),
-					'texte' => $territoire->getTexteLabel()
-				);
-		return $app->json($land);
-	}
-	
-			
-	/**
 	 * Fournit la liste des features selon la catégorie demandée
 	 *
 	 * @param Request $request
@@ -589,8 +564,8 @@ class HomepageController
 	public function updateFeatures(Request $request, Application $app)
 	{
 		$params = [
-			'label_pays' => ['repo' => 'Territoire', 'fields' =>  ['geom'=>'setGeojsonLabel']],
-			'label_fief' => ['repo' => 'Territoire', 'fields' =>  ['geom'=>'setGeojsonLabel']],
+			'label_pays' => ['repo' => 'Territoire', 'fields' =>  ['geom'=>'setGeojsonLabel', 'texte'=>'setTexteLabel']],
+			'label_fief' => ['repo' => 'Territoire', 'fields' =>  ['geom'=>'setGeojsonLabel', 'texte'=>'setTexteLabel']],
 			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']]
 		];
 		
@@ -601,7 +576,9 @@ class HomepageController
 		$row = $app['orm.em']->find($repoStr, $id);
 					
 		foreach ($params[$categ]['fields'] as $nom => $fonction) {
-			$row->$fonction($request->get($nom));
+			if ($request->get($nom) !== null) {
+				$row->$fonction($request->get($nom));
+			}
 		}
 		
 		$app['orm.em']->persist($row);

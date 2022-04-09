@@ -29,6 +29,7 @@
       	<select id="action_select">
        		<option value="none">Voir</option>
        		<option value="translate">Déplacer (labels, pictos)</option>
+       		<option value="modifyLabel">Modifier labels</option>
       	</select>
     </form>
 	<div class="mapbox">
@@ -115,7 +116,8 @@ var Carte = {
                         source: new ol.source.Vector({ features: new ol.Collection([]) })
                     });
                     lay.setProperties({	'geomTranslate': confLayer.geomInteractions.translate,
-                    					'geomModify' : confLayer.geomInteractions.modify });
+                    					'geomModify' : confLayer.geomInteractions.modify,
+                    					'geomType' : confLayer.geomType });
                     self.olMap.addLayer(lay);
                     
                     // On crée le style par défaut pour les éléments de cette couche, tel que défini dans la config
@@ -312,10 +314,10 @@ var Carte = {
         var self = this;
         var translate = new ol.interaction.Translate({ 
                 layers: function(layer) {	                
-                		if (layer.get('geomTranslate')!== undefined) {
-                			return layer.get('geomTranslate');
-                		} else return false;
-                	},
+            		if (layer.get('geomTranslate')!== undefined) {
+            			return layer.get('geomTranslate');
+            		} else return false;
+            	},
                 hitTolerance: 5
         });
         
@@ -352,15 +354,9 @@ var Carte = {
         self.currentInteraction = translate;
     },
         
-    initModifyFiefsInteraction: function(save) { //NE FONNCTIONNE PAS
+    initModifyInteraction: function(save) { //NE FONNCTIONNE PAS
         var self = this;
-        // pour Basemap, les layers sont les suivantes :
-        // 0: Background image
-        // 1: noms de pays => Point => Translate
-        // 2: frontières fiefs => Polygon => Modify        
-        // 3: frontières pays => Polygon => pas d'interaction pour le moment (calculé)
-        // 4: noms de fiefs => Point => Translate
-                
+                        
         var modify = new ol.interaction.Modify({
             features: self.olMap.getLayers().getArray()[1].getSource().getFeaturesCollection(),
             // the SHIFT key must be pressed to delete vertices, so
@@ -372,6 +368,49 @@ var Carte = {
             }
         });
         self.olMap.addInteraction(modify);
+    },
+    
+    initModifyLabelInteraction: function(save) {
+    	var self = this;
+    	
+    	var select = new ol.interaction.Select({
+    		layers: function(layer) { 
+        		if (layer.get('geomModify')!== undefined && layer.get('geomType')=='Label') { 
+        			return layer.get('geomModify');  
+        		} else return false;
+        	}
+    	});
+    	self.olMap.addInteraction(select);
+    	
+    	select.on('select', function(e) { // l'event est appelé au moment de la sélection et de la déselection 
+    		// au moment de la sélection on affiche un dialogue pour saisir le nouveau label
+    		if (e.selected.length > 0) { 
+				var reponse = prompt("Un # provoque un retour à la ligne", e.selected[0].texte);
+				if (reponse != null && reponse != '') { 
+					$.ajax({
+		                type: "POST",
+		                dataType: 'json',
+		               // url: "worldmap/labelterritoire/"+e.features.getArray()[0].territoireId+"/update",
+		               url: "worldmap/features/update",
+		                data: {texte: reponse, id: e.selected[0].bddId, categ: e.selected[0].categ},
+		                success: function(data) {
+		                	e.selected[0].texte = reponse;
+		                	console.log(data);
+		                    // alert("la geographie a été enregistrée");
+		                    // a priori rien de spécial à faire pour l'instant!
+		                }
+		            }).error(function() {
+		                alert("désolé, une erreur est survenue");
+		            });
+				}
+			}
+			
+			// au moment de las déselection, on force le recalcul du style de la feature modifiée
+			if (e.deselected.length > 0) {
+				e.deselected[0].changed();
+			}
+
+    	}, this);
     },
     /*
     showCountriesColors : function (show) { // affichage des pays en couleur transparente comme sur la prod, pour voir le rendu uniquement ---- juste pour mon dev ----
@@ -439,9 +478,14 @@ actionSelect.onchange = function() {
 	
 	Carte.removeAllInteractions();
 	
-	if(actionSelect.value === "translate") {
-		Carte.initTranslateInteraction(true);
-	}	
+	switch(actionSelect.value) {
+		case "translate" :
+			Carte.initTranslateInteraction(true);
+			break;
+		case "modifyLabel" :
+			Carte.initModifyLabelInteraction(false);
+			break;	
+	}
 };
 
 
@@ -466,7 +510,7 @@ Carte.olMap.on('click', function(e) {
 //    var str = "INSERT INTO geo_picto (`type`, geojson, url, rotation) VALUES ('exploration', '" + geojson +"', 'img/pictos/exploration.svg', 0);";
   var str = "INSERT INTO geo_picto (`type`, geojson, url, rotation) VALUES ('ville', '" + geojson +"', 'cercle', 0);" ;
 
-    console.log(str);
+    //console.log(str);
 });
 
 
