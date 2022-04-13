@@ -184,7 +184,8 @@ class HomepageControllerProvider implements ControllerProviderInterface
 		/** Nouvelle cartographie - TESTS */
 		$controllers->match('/worldmap/features/update','LarpManager\Controllers\HomepageController::updateFeatures')
 					->method('POST')
-					->bind('worldmap.features.update');
+					->bind('worldmap.features.update')
+					->before($mustBeCartographe);
 					
 		return $controllers;
 	}

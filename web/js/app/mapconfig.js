@@ -35,7 +35,7 @@ var Mapconfig = {
                     source : "worldmap/features/get/fief",
                     geomType : "Polygon", 
                     style : {
-                    	zooms: [2,3,4,5,6],
+                    	zooms: [3,4,5,6],
                     	styles: "ligne2"
                 	},
                 	geomInteractions : {
@@ -156,7 +156,7 @@ var bddStyles = {
         zooms : [2,3,4,5,6],
         fontWeight: "normal", 
         fontSize: ["12","24","46","96","192"], 
-        fontFamily: "Trebuchet",
+        fontFamily: "Pays",
         interligne : 300,
         textTransformation : "toUpper",
         strokeColor : "#FFFFFF", 
@@ -202,7 +202,8 @@ var bddStyles = {
         zooms : [2,3,4,5,6],
         pointRadius : [1,2,5,10,20],
         fillColor : "#8B0004", 
-        fillOpacity : 1
+        fillOpacity : 1,
+        imgSrc: 'cercle'
     }
     
 	

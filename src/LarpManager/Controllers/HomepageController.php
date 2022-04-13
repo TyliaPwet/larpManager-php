@@ -566,7 +566,9 @@ class HomepageController
 		$params = [
 			'label_pays' => ['repo' => 'Territoire', 'fields' =>  ['geom'=>'setGeojsonLabel', 'texte'=>'setTexteLabel']],
 			'label_fief' => ['repo' => 'Territoire', 'fields' =>  ['geom'=>'setGeojsonLabel', 'texte'=>'setTexteLabel']],
-			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']]
+			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']],
+			'fief' => ['repo' => 'Territoire', 'fields' => ['geom'=>'setGeojson']],
+			'caravane' => ['repo' => 'GeoLigne', 'fields' => ['geom'=>'setGeojson']]
 		];
 		
 		$categ = $request->get('categ');
@@ -580,11 +582,11 @@ class HomepageController
 				$row->$fonction($request->get($nom));
 			}
 		}
-		
+		$res = $row;
 		$app['orm.em']->persist($row);
 		$app['orm.em']->flush();
 		
-		return $app->json($row); 
+		return $app->json($res); 
 	}
 	
 

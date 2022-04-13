@@ -27,10 +27,15 @@
 	<form class="form-inline">
       	<label>Action &nbsp;</label>
       	<select id="action_select">
-       		<option value="none">Voir</option>
+       		<option value="none" selected>Voir</option>
+       		{% if is_granted('ROLE_CARTOGRAPHE', app.user) %}
        		<option value="translate">Déplacer (labels, pictos)</option>
        		<option value="modifyLabel">Modifier labels</option>
-      	</select>
+       		<option value="modifyPolygonLine">Modifier tracés (lignes, polygones)</option>
+       		<option value="addVille">Ajouter pictos ville</option>
+       		<option value="addCaravane">Ajouter route commerciale</option>
+       		{% endif %}
+      	</select>     	
     </form>
 	<div class="mapbox">
 		<div id="map"></div>
@@ -48,7 +53,8 @@
 var Carte = {
     olMap: null,
     maxResolution: null,
-    currentInteraction: null,
+    currentInteractions: [],
+    drawLayer: null,
 
     createMap: function(mapName){
         var self = this;
@@ -135,26 +141,26 @@ var Carte = {
                                 if (obj.geom != null)
                                 {	
                                     var parsedGeom = JSON.parse(obj.geom);		
-                                    
+
                                     switch (confLayer.geomType) {
-                                        case "Polygon":
+                                        case "Polygon": // gestion spécifique des territoires vs le reste du monde - temporaire
+                                        	var coords = (parsedGeom.geometry !== undefined)?parsedGeom.geometry.coordinates : parsedGeom.coordinates;
+											if (parsedGeom.geometry === undefined) {console.log(parsedGeom);}
                                             var newFeature = new ol.Feature({
-                                                geometry: new ol.geom.Polygon(parsedGeom.geometry.coordinates)
+                                                geometry: new ol.geom.Polygon(coords)//parsedGeom.geometry.coordinates)
                                             });
-                                            newFeature.territoireId = obj.id;
                                             break;
                                         case "Label":
                                             var newFeature = new ol.Feature({
                                                 geometry: new ol.geom.Point(parsedGeom.coordinates)
                                             });
                                             newFeature.texte = obj.texte;
-                                            newFeature.territoireId = obj.id;
                                             break;
                                         case "Point":
                                             var newFeature = new ol.Feature({
                                                 geometry: new ol.geom.Point(parsedGeom.coordinates)
                                             });
-                                            newFeature.src = obj.src;
+                                            //newFeature.src = obj.src; => géré au niveau du style
                                             break;
                                         case "Line" :
                                             var newFeature = new ol.Feature({
@@ -179,14 +185,20 @@ var Carte = {
                 break;
             }
         }
+        // on crée une layer pour le dessin de nouvelles features
+    	this.drawLayer = new ol.layer.Vector({
+    		name : "dessin",
+    		source : new ol.source.Vector({features : new ol.Collection([])})
+    	});
+    	this.olMap.addLayer(this.drawLayer);
     },
     
-	createStyleFunc : function(categ, zooms, props) { 
+	createStyleFunc : function(geomType, zooms, props) { 
 		// A faire : gestion d'erreurs
 		var self = this;
 		var styleFunc;
 		
-		 switch(categ){
+		 switch(geomType){
             case "Label": 
                 styleFunc = function(feat, reso){
                     var zoomLevel = Math.log2(self.maxResolution / reso);
@@ -260,7 +272,7 @@ var Carte = {
                     if(found != -1) {
                         // on regarde quel type d'image on a
                         var imgStyle = null; 
-                        switch (feat.src) {
+                        switch (props.imgSrc) {
                             case 'cercle' :
                                 imgStyle = new ol.style.Circle({
                                     radius : props.pointRadius[found],
@@ -270,7 +282,7 @@ var Carte = {
                             default :
                                 imgStyle = new ol.style.Icon({
                                     size: [props.imgHeight[found], props.imgWidth[found]],
-                                    src: '{{ app.request.basepath }}/' + feat.src
+                                    src: '{{ app.request.basepath }}/' + props.imgSrc
                                 });
                         }
                         return new ol.style.Style ({
@@ -304,13 +316,15 @@ var Carte = {
         return styleFunc;	
 	},
     
-    removeAllInteractions: function() { // à faire : faire une boucle sur les interactions de la map plutôt que stocker une seule interaction, pour pouvoir en mettre plusieurs
-    	if (this.currentInteraction !== null) {
-	    	this.olMap.removeInteraction(this.currentInteraction);	
+    removeAllInteractions: function() { 
+    	if (this.currentInteractions.length > 0) {
+	    	while(this.currentInteractions.length > 0) {
+	    		this.olMap.removeInteraction(this.currentInteractions.pop());
+	    	}
     	}	
     },
        
-    initTranslateInteraction : function (save) { //FONCTIONNE
+    initTranslateInteraction : function () { 
         var self = this;
         var translate = new ol.interaction.Translate({ 
                 layers: function(layer) {	                
@@ -320,57 +334,34 @@ var Carte = {
             	},
                 hitTolerance: 5
         });
-        
-        if(save) {
-            translate.on('translateend', function (e) { 
-                // l'event translateend est appelé avant que la feature d'origine soit mise à jour avec les nouvelles coordonnées
-                // on affecte donc les nouvelles coordonnées nnnous-mêmes à une géométrie qui ne sert que pour la sauvegarde
-                var newGeom = e.features.getArray()[0].getGeometry().clone();
-                newGeom.setCoordinates(e.coordinate);
-                Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
-                var convert = new ol.format.GeoJSON;
-                var geojson = convert.writeGeometry(newGeom);
-                
-				var bddId = e.features.getArray()[0].bddId;
-				var categ = e.features.getArray()[0].categ;
-                
-                $.ajax({
-                    type: "POST",
-                    dataType: 'json',
-                   // url: "worldmap/labelterritoire/"+e.features.getArray()[0].territoireId+"/update",
-                   url: "worldmap/features/update",
-                    data: {geom: geojson, id: bddId, categ: categ},
-                    success: function(data) {
-                    	console.log(data);
-                        // alert("la geographie a été enregistrée");
-                        // a priori rien de spécial à faire pour l'instant!
-                    }
-                }).error(function() {
-                    alert("désolé, une erreur est survenue");
-                });
-            }, this);
-        }
         self.olMap.addInteraction(translate);
-        self.currentInteraction = translate;
-    },
+        self.currentInteractions.push(translate);
         
-    initModifyInteraction: function(save) { //NE FONNCTIONNE PAS
-        var self = this;
-                        
-        var modify = new ol.interaction.Modify({
-            features: self.olMap.getLayers().getArray()[1].getSource().getFeaturesCollection(),
-            // the SHIFT key must be pressed to delete vertices, so
-            // that new vertices can be drawn at the same position
-            // of existing vertices
-            deleteCondition: function(event) {
-            return ol.events.condition.shiftKeyOnly(event) &&
-                ol.events.condition.singleClick(event);
-            }
-        });
-        self.olMap.addInteraction(modify);
+        translate.on('translateend', function (e) { 
+            var newGeom = e.features.getArray()[0].getGeometry().clone();
+            Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
+            var convert = new ol.format.GeoJSON;
+            var geojson = convert.writeGeometry(newGeom);
+            
+			var bddId = e.features.getArray()[0].bddId;
+			var categ = e.features.getArray()[0].categ;
+            
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: "worldmap/features/update",
+                data: {geom: geojson, id: bddId, categ: categ},
+                success: function(data) {
+                	console.log(data);
+                    //alert("la geographie a été enregistrée");
+                }
+            }).error(function() {
+                alert("désolé, une erreur est survenue");
+            });
+        });       
     },
-    
-    initModifyLabelInteraction: function(save) {
+            
+    initModifyLabelInteraction: function() {
     	var self = this;
     	
     	var select = new ol.interaction.Select({
@@ -379,25 +370,25 @@ var Carte = {
         			return layer.get('geomModify');  
         		} else return false;
         	}
+        	// A FAIRE : empêcher la sélection multiple
     	});
     	self.olMap.addInteraction(select);
+    	self.currentInteractions.push(select);
     	
     	select.on('select', function(e) { // l'event est appelé au moment de la sélection et de la déselection 
     		// au moment de la sélection on affiche un dialogue pour saisir le nouveau label
     		if (e.selected.length > 0) { 
-				var reponse = prompt("Un # provoque un retour à la ligne", e.selected[0].texte);
+				var reponse = prompt("Utilisez # pour un retour à la ligne", e.selected[0].texte);
 				if (reponse != null && reponse != '') { 
 					$.ajax({
 		                type: "POST",
 		                dataType: 'json',
-		               // url: "worldmap/labelterritoire/"+e.features.getArray()[0].territoireId+"/update",
-		               url: "worldmap/features/update",
+ 		                url: "worldmap/features/update",
 		                data: {texte: reponse, id: e.selected[0].bddId, categ: e.selected[0].categ},
 		                success: function(data) {
 		                	e.selected[0].texte = reponse;
 		                	console.log(data);
-		                    // alert("la geographie a été enregistrée");
-		                    // a priori rien de spécial à faire pour l'instant!
+		                    //alert("la geographie a été enregistrée");
 		                }
 		            }).error(function() {
 		                alert("désolé, une erreur est survenue");
@@ -410,8 +401,91 @@ var Carte = {
 				e.deselected[0].changed();
 			}
 
-    	}, this);
+    	});
     },
+    
+    initModifyInteraction: function() {
+        var self = this;
+        var featureId, featureRevision;
+        
+		// Avant de pouvoir modify une feature il faut la sélectionner 
+		var select = new ol.interaction.Select({
+    		layers: function(layer) { 
+        		if (layer.get('geomModify')!== undefined && (layer.get('geomType')=='Polygon' || layer.get('geomType')=='Line')) { 
+        			return layer.get('geomModify');  
+        		} else return false;
+        	},
+        	toggleCondition : ol.events.condition.never(event) // ne fonctionne pas?
+	        // il faudrait améliorer avec un addCondition et removeCondtion personnalisés
+	        // pour empêcher qu'on puisse sélectionner une autre feature tant que la courante n'est pas déselectionnée
+	        // pour pouvoir pister facilement s'il y a eu des modifs, et n'envoyer la géométrie au serveur qe dans ce cas
+    	});
+    	self.olMap.addInteraction(select);
+    	self.currentInteractions.push(select);
+    	
+        var modify = new ol.interaction.Modify({
+            features: select.getFeatures(),
+            deleteCondition: function(event) {
+            return ol.events.condition.shiftKeyOnly(event) &&
+                ol.events.condition.singleClick(event);
+            }
+        });
+        self.olMap.addInteraction(modify);
+    	self.currentInteractions.push(modify);
+
+        select.on('select', function (e) {  	
+        	if (e.deselected.length > 0) {
+        		var newGeom = e.deselected[0].getGeometry().clone();
+		        Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
+		        var convert = new ol.format.GeoJSON;
+		        var geojson = convert.writeGeometry(newGeom);
+		        
+		        if (e.deselected[0].categ ==='fief') { // les territoires sont formatés un peu différemment pour l'instant (tant que la page /world est utilisée)
+		        	geojson = '{"type":"Feature","properties":{},"geometry":' + geojson + '}';
+		        	console.log(geojson);
+	        	}
+
+        		$.ajax({
+	                type: "POST",
+	                dataType: 'json',
+	                url: "worldmap/features/update",
+	                data: {id: e.deselected[0].bddId, categ: e.deselected[0].categ, geom: geojson},
+	                success: function(data) {
+	                	console.log(data);
+	                    //alert("la geographie a été enregistrée");
+	                }
+	            }).error(function() {
+	                alert("désolé, une erreur est survenue");
+	            });
+        	}
+        });
+    },
+    
+    initDrawInteraction : function(geomType, categ) {
+    	this.drawLayer.setStyle(this.createStyleFunc(geomType, defaultStyleProperties.zooms, defaultStyleProperties));
+    	var geomClass = geomType;
+    	if (geomType === 'Line') { geomClass = 'LineString'; }
+    	
+        var drawInt = new ol.interaction.Draw({ 
+                source: this.drawLayer.getSource(),
+                type: geomClass,
+                style: this.createStyleFunc(geomType, defaultStyleProperties.zooms, defaultStyleProperties)
+        });  
+        this.olMap.addInteraction(drawInt);
+        this.currentInteractions.push(drawInt);
+        drawInt.on('drawend', function(e) {
+            console.log(e.feature.getGeometry()); /*
+            var newLine = e.feature.getGeometry().clone();
+            Util.transform(newLine, 'LMPROJ', 'EPSG:4326');
+            var convert = new ol.format.GeoJSON;
+            var geojson = convert.writeGeometry(newLine);
+
+            var str = "INSERT INTO geo_surf (`type`, geojson) VALUES ('caravane', '" + geojson +"');" ; 
+            console.log(str);*/
+        });
+
+    },      
+    
     /*
     showCountriesColors : function (show) { // affichage des pays en couleur transparente comme sur la prod, pour voir le rendu uniquement ---- juste pour mon dev ----
         
@@ -451,7 +525,7 @@ var Carte = {
         }
     },
 */
-    initDrawLine : function() {
+    /*initDrawLine : function() {
         var feats = new ol.Collection();
         var drawLine = new ol.interaction.Draw({ 
                 features: feats,
@@ -469,39 +543,17 @@ var Carte = {
             console.log(str);
         });
 
-    }      
+    }   */   
 };
-
-    
-var actionSelect = document.getElementById('action_select');
-actionSelect.onchange = function() {
-	
-	Carte.removeAllInteractions();
-	
-	switch(actionSelect.value) {
-		case "translate" :
-			Carte.initTranslateInteraction(true);
-			break;
-		case "modifyLabel" :
-			Carte.initModifyLabelInteraction(false);
-			break;	
-	}
-};
-
 
 Carte.createMap("baseMap");
 //Carte.showCountriesColors(true); // pour afficher la surcouche des pays en couleur
+//console.log(Carte.olMap.getInteractions());
 
-
-
-
-
-//Carte.initModifyFiefsInteraction(false);
-//Carte.initTranslateLabelsTerritoiresInteractions(true);
 //Carte.initDrawLine();
 
 // Cette fonctione me sers uniquement pour le dev, pour créer des objets sans avoir à créer les routes, etc...
-Carte.olMap.on('click', function(e) { 
+Carte.olMap.on('click', function(e) { //console.log(e.coordinate);
     var newPoint = new ol.geom.Point(e.coordinate);
     Util.transform(newPoint, 'LMPROJ', 'EPSG:4326');
     var convert = new ol.format.GeoJSON;
@@ -513,6 +565,25 @@ Carte.olMap.on('click', function(e) {
     //console.log(str);
 });
 
+
+var actionSelect = document.getElementById('action_select');
+
+actionSelect.onchange = function() {	
+	Carte.removeAllInteractions();
+	
+	switch(actionSelect.value) {
+		case "translate" :
+			Carte.initTranslateInteraction(); break;
+		case "modifyLabel" :
+			Carte.initModifyLabelInteraction(); break;	
+		case "modifyPolygonLine" : 
+			Carte.initModifyInteraction(); break;
+		case "addVille" :
+			Carte.initDrawInteraction('Point','ville'); break;
+		case "addCaravane" :
+			Carte.initDrawInteraction('Line','caravane'); break;
+	}
+};
 
 </script>
 
