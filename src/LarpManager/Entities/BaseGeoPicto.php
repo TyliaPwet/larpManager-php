@@ -34,16 +34,6 @@ class BaseGeoPicto
      */
     protected $geojson;
     
-    /**
-     * @Column(type="string",length=255, nullable=false)
-     */
-    protected $src;
-
-    /**
-     * @Column(type="integer")
-     */
-    protected $rotation;
-    
 
     public function __construct()
     {
@@ -117,56 +107,9 @@ class BaseGeoPicto
     {
         return $this->geojson;
     }
-
-    /**
-     * Set the value of src.
-     *
-     * @param string $src
-     * @return \LarpManager\Entities\GeoPicto
-     */
-    public function setSrc($src)
-    {
-        $this->src = $src;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of src.
-     *
-     * @return string
-     */
-    public function getSrc()
-    {
-        return $this->src;
-    }
-    
-    /**
-     * Set the value of rotation.
-     *
-     * @param integer $angle
-     * @return \LarpManager\Entities\GeoPicto
-     */
-    public function setRotation($angle)
-    {
-        $this->rotation = $angle;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of rotation.
-     *
-     * @return integer
-     */
-    public function getRotation()
-    {
-        return $this->rotation;
-    }
-
     
     public function __sleep()
     {
-        return array('id', 'categ', 'geojson', 'src', 'rotation');
+        return array('id', 'categ', 'geojson');
     }
 }

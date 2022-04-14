@@ -33,6 +33,8 @@
        		<option value="modifyLabel">Modifier labels</option>
        		<option value="modifyPolygonLine">Modifier tracés (lignes, polygones)</option>
        		<option value="addVille">Ajouter pictos ville</option>
+       		<option value="addExplo">Ajouter pictos exploration</option>
+       		<option value="addCapitale">Ajouter pictos capitale</option>
        		<option value="addCaravane">Ajouter route commerciale</option>
        		{% endif %}
       	</select>     	
@@ -54,7 +56,6 @@ var Carte = {
     olMap: null,
     maxResolution: null,
     currentInteractions: [],
-    drawLayer: null,
 
     createMap: function(mapName){
         var self = this;
@@ -128,7 +129,7 @@ var Carte = {
                     
                     // On crée le style par défaut pour les éléments de cette couche, tel que défini dans la config
                     // Le style dépend du type d'élément (toujours le même type pour une même couche)
-                    var styleFunc = self.createStyleFunc(confLayer.geomType, confLayer.style.zooms, bddStyles[confLayer.style.styles]);
+                    var styleFunc = self.createStyleFunc(confLayer.geomType, confLayer.style.zooms, bddStyles[confLayer.style.styleName]);
                     lay.setStyle(styleFunc);
                     
                     // Enfin, on crée les features
@@ -162,7 +163,7 @@ var Carte = {
                                             });
                                             //newFeature.src = obj.src; => géré au niveau du style
                                             break;
-                                        case "Line" :
+                                        case "LineString" :
                                             var newFeature = new ol.Feature({
                                                 geometry: new ol.geom.LineString(parsedGeom.coordinates)
                                             });
@@ -292,20 +293,21 @@ var Carte = {
                     else return null;
                 };
                 break;
-            case "Line":
+            case "LineString":
                 styleFunc = function(feat, reso){
                     var zoomLevel = Math.log2(self.maxResolution / reso);
                     if (zooms.indexOf(zoomLevel) == -1) { return null; }
                     var found = props.zooms.indexOf(zoomLevel);
                     if(found != -1) {
-                        return new ol.style.Style ({
+                        var lineStyle = new ol.style.Style ({
                             stroke: new ol.style.Stroke ({ 
                                 color: Util.hexToRgba(props.strokeColor, props.strokeOpacity),
-                                width: props.strokeWidth[found], 
-                                lineDash: props.strokeDashArray[found],
-                                lineCap : props.strokeCap 
+                                width: props.strokeWidth[found]
                             })
                         });
+                        if (props.strokeDashArray !== undefined) { lineStyle.getStroke().setLineDash(props.strokeDashArray[found]);}
+                        if (props.strokeCap !== undefined) {lineStyle.getStroke().setLineCap(props.strokeCap);}
+                        return lineStyle;
                     } 
                     else return null;
                 }; 
@@ -411,14 +413,10 @@ var Carte = {
 		// Avant de pouvoir modify une feature il faut la sélectionner 
 		var select = new ol.interaction.Select({
     		layers: function(layer) { 
-        		if (layer.get('geomModify')!== undefined && (layer.get('geomType')=='Polygon' || layer.get('geomType')=='Line')) { 
+        		if (layer.get('geomModify')!== undefined && (layer.get('geomType')=='Polygon' || layer.get('geomType')=='LineString')) { 
         			return layer.get('geomModify');  
         		} else return false;
-        	},
-        	toggleCondition : ol.events.condition.never(event) // ne fonctionne pas?
-	        // il faudrait améliorer avec un addCondition et removeCondtion personnalisés
-	        // pour empêcher qu'on puisse sélectionner une autre feature tant que la courante n'est pas déselectionnée
-	        // pour pouvoir pister facilement s'il y a eu des modifs, et n'envoyer la géométrie au serveur qe dans ce cas
+        	}
     	});
     	self.olMap.addInteraction(select);
     	self.currentInteractions.push(select);
@@ -432,7 +430,7 @@ var Carte = {
         });
         self.olMap.addInteraction(modify);
     	self.currentInteractions.push(modify);
-
+    	
         select.on('select', function (e) {  	
         	if (e.deselected.length > 0) {
         		var newGeom = e.deselected[0].getGeometry().clone();
@@ -442,7 +440,6 @@ var Carte = {
 		        
 		        if (e.deselected[0].categ ==='fief') { // les territoires sont formatés un peu différemment pour l'instant (tant que la page /world est utilisée)
 		        	geojson = '{"type":"Feature","properties":{},"geometry":' + geojson + '}';
-		        	console.log(geojson);
 	        	}
 
         		$.ajax({
@@ -454,35 +451,56 @@ var Carte = {
 	                	console.log(data);
 	                    //alert("la geographie a été enregistrée");
 	                }
-	            }).error(function() {
-	                alert("désolé, une erreur est survenue");
+	            }).error(function(err) {
+	                console.log(err); //alert("désolé, une erreur est survenue");
 	            });
         	}
         });
     },
     
     initDrawInteraction : function(geomType, categ) {
-    	this.drawLayer.setStyle(this.createStyleFunc(geomType, defaultStyleProperties.zooms, defaultStyleProperties));
-    	var geomClass = geomType;
-    	if (geomType === 'Line') { geomClass = 'LineString'; }
-    	
+    	var destinationLayer = null;
+		this.olMap.getLayers().forEach( function(elem, index, tab) {
+			if(elem.getProperties()['name']===categ) {
+			destinationLayer = elem; } });
+  	
         var drawInt = new ol.interaction.Draw({ 
-                source: this.drawLayer.getSource(),
-                type: geomClass,
+                source: destinationLayer.getSource(), // où seront placées les features créées
+                type: geomType,
                 style: this.createStyleFunc(geomType, defaultStyleProperties.zooms, defaultStyleProperties)
         });  
         this.olMap.addInteraction(drawInt);
         this.currentInteractions.push(drawInt);
+        
+        drawInt.setProperties({'categ' : categ});
+        
         drawInt.on('drawend', function(e) {
-            console.log(e.feature.getGeometry()); /*
-            var newLine = e.feature.getGeometry().clone();
-            Util.transform(newLine, 'LMPROJ', 'EPSG:4326');
+            var newGeom = e.feature.getGeometry().clone();
+            Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
             var convert = new ol.format.GeoJSON;
-            var geojson = convert.writeGeometry(newLine);
+            var geojson = convert.writeGeometry(newGeom);
 
-            var str = "INSERT INTO geo_surf (`type`, geojson) VALUES ('caravane', '" + geojson +"');" ; 
-            console.log(str);*/
-        });
+/*
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: "worldmap/features/add",
+                data: {categ: this.getProperties()['categ'], geom: geojson, imgSrc:'cercle'},
+                success: function(data) {
+                	console.log(data);
+                	// affecter la categ et l'id à la feature
+                    //alert("la geographie a été enregistrée");
+                }
+            }).error(function(err) {
+                console.log(err); //alert("désolé, une erreur est survenue");
+            });*/
+            
+            let table = {'ville':'geo_picto', 'caravane':'geo_ligne', 'exploration':'geo_picto'};
+            let str = 'INSERT INTO ' + table[categ] + '(categ, geojson) VALUES (' + categ + ',' + geojson + ');';
+			console.log(str);
+        }, drawInt);
+
+		
 
     },      
     
@@ -525,35 +543,14 @@ var Carte = {
         }
     },
 */
-    /*initDrawLine : function() {
-        var feats = new ol.Collection();
-        var drawLine = new ol.interaction.Draw({ 
-                features: feats,
-                type: "LineString" 
-        });  
-        this.olMap.addInteraction(drawLine);
-        drawLine.on('drawend', function(e) {
-            //console.log(e.feature.getGeometry());
-            var newLine = e.feature.getGeometry().clone();
-            Util.transform(newLine, 'LMPROJ', 'EPSG:4326');
-            var convert = new ol.format.GeoJSON;
-            var geojson = convert.writeGeometry(newLine);
-
-            var str = "INSERT INTO geo_surf (`type`, geojson) VALUES ('caravane', '" + geojson +"');" ; 
-            console.log(str);
-        });
-
-    }   */   
+    
 };
 
 Carte.createMap("baseMap");
 //Carte.showCountriesColors(true); // pour afficher la surcouche des pays en couleur
-//console.log(Carte.olMap.getInteractions());
-
-//Carte.initDrawLine();
 
 // Cette fonctione me sers uniquement pour le dev, pour créer des objets sans avoir à créer les routes, etc...
-Carte.olMap.on('click', function(e) { //console.log(e.coordinate);
+/*Carte.olMap.on('click', function(e) { //console.log(e.coordinate);
     var newPoint = new ol.geom.Point(e.coordinate);
     Util.transform(newPoint, 'LMPROJ', 'EPSG:4326');
     var convert = new ol.format.GeoJSON;
@@ -564,7 +561,7 @@ Carte.olMap.on('click', function(e) { //console.log(e.coordinate);
 
     //console.log(str);
 });
-
+*/
 
 var actionSelect = document.getElementById('action_select');
 
@@ -580,8 +577,12 @@ actionSelect.onchange = function() {
 			Carte.initModifyInteraction(); break;
 		case "addVille" :
 			Carte.initDrawInteraction('Point','ville'); break;
+		case "addCapitale" :
+			Carte.initDrawInteraction('Point','capitale'); break;
+		case "addExplo" :
+			Carte.initDrawInteraction('Point','exploration'); break;
 		case "addCaravane" :
-			Carte.initDrawInteraction('Line','caravane'); break;
+			Carte.initDrawInteraction('LineString','caravane'); break;
 	}
 };
 

@@ -17,13 +17,14 @@ var Mapconfig = {
                 // les layers sont rangées de la plus au fond à la plus en surface
                 // -----------------
                 // ******* A faire : stocker ce paramétrage en base et faire les écrans de gestion associés
+                // la layerName = la categorie d'objet (comme dans la bdd)
                 {
-                    layerName : "labels pays",
+                    layerName : "label_pays",
                     source : "worldmap/features/get/label_pays",
                     geomType : "Label", // Point
                     style : {
                     	zooms: [2,3,4,5,6],
-                    	styles: "titre1"
+                    	styleName: "titre1"
                 	},
 		            geomInteractions : {
 		            	translate : true,	// déplacer le point d'ancrage
@@ -31,12 +32,12 @@ var Mapconfig = {
 	            	}
                 },
                 {
-                    layerName : "frontieres fiefs",
+                    layerName : "fief",
                     source : "worldmap/features/get/fief",
                     geomType : "Polygon", 
                     style : {
                     	zooms: [3,4,5,6],
-                    	styles: "ligne2"
+                    	styleName: "ligne2"
                 	},
                 	geomInteractions : {
 		            	translate : false,	// déplacer l'ensemble du polygone
@@ -44,12 +45,12 @@ var Mapconfig = {
 	            	}
                 },
                 {
-                    layerName : "frontieres pays",
+                    layerName : "pays",
                     source : "worldmap/features/get/pays",
                     geomType : "Polygon", 
                     style : {
                         zooms : [2,3,4,5,6],
-                        styles: "ligne1"
+                        styleName: "ligne1"
                     },
                     geomInteractions : {
 		                translate : false,
@@ -57,12 +58,12 @@ var Mapconfig = {
 	                }
                 },
                 {
-                    layerName : "labels fiefs",
+                    layerName : "label_fief",
                     source : "worldmap/features/get/label_fief",
                     geomType : "Label", // Point
                     style: {
                         zooms : [4,5,6],
-                        styles: "texte1"
+                        styleName: "texte1"
                     },
                     geomInteractions : {
                     	translate : true,
@@ -70,12 +71,12 @@ var Mapconfig = {
                 	}
                 },
                 {
-                    layerName : "villes",
+                    layerName : "ville",
 					source : "worldmap/features/get/ville", 
                     geomType : "Point", 
                     style : {
                         zooms : [4,5,6],
-                        styles: "cercle1"
+                        styleName: "cercle1"
                     },
                     geomInteractions : {
                     	translate : true,	// déplacer le point d'ancrage
@@ -85,15 +86,28 @@ var Mapconfig = {
                 {
                     layerName : "caravane",
 					source : "worldmap/features/get/caravane",
-                    geomType : "Line", 
+                    geomType : "LineString", 
                     style : {
                         zooms : [4,5,6],
-                        styles: "ligne3"
+                        styleName: "ligne3"
                     },
                     geomInteractions : {
                     	translate : false,	// déplacer l'ensemble du tracé...
                     	modify : true		// modifier les points du tracé
                     }
+                },
+                {
+                    layerName : "exploration",
+					source : "worldmap/features/get/exploration", 
+                    geomType : "Point", 
+                    style : {
+                        zooms : [2,3,4,5,6],
+                        styleName: "exploration"
+                    },
+                    geomInteractions : {
+                    	translate : true,	// déplacer le point d'ancrage
+                    	modify : false		// n'a pas de sens pour le moment, identique à translate
+                	}
                 }
             ]
         },
@@ -121,12 +135,12 @@ var defaultStyleProperties = {
 		strokeColor: "#FF6C00", // orange pour bien distinguer les nouveautés || erreurs de config
 		strokeOpacity: 1,
 		strokeWidth: [2,4,8,16,32,64],
-		strokeDashstyle: "solid",
+		//strokeDashStyle: "solid",
 		strokeCap: "butt",
 
 		// Couleur de fond par défaut
 		fillColor: "#FF6C00",
-		fillOpacity: 0.5,
+		fillOpacity: 1,
 
 		// Labels
 		texte: "Text",
@@ -156,7 +170,7 @@ var bddStyles = {
         zooms : [2,3,4,5,6],
         fontWeight: "normal", 
         fontSize: ["12","24","46","96","192"], 
-        fontFamily: "Pays",
+        fontFamily: "Trebuchet",
         interligne : 300,
         textTransformation : "toUpper",
         strokeColor : "#FFFFFF", 
@@ -166,9 +180,9 @@ var bddStyles = {
         fillOpacity : 1		
 	},
 	"texte1" : {
-		 zooms : [4,5,6],
+		zooms : [2,3,4,5,6],
     	fontWeight: "normal", 
-        fontSize: ["18","36","72"], 
+        fontSize: ["4","9","18","36","72"], 
         fontFamily: "Fiefs",
         interligne : 74,
         textTransformation : "none",
@@ -191,11 +205,11 @@ var bddStyles = {
         strokeWidth : [1,1,1, 1, 1]
     },
     "ligne3" : {
-        zooms : [4,5,6],
+        zooms : [2,3,4,5,6],
         strokeColor: "#6600A1", 
         strokeOpacity: 1, 
-        strokeWidth: [8,16,32], 
-        strokeDashArray: [[3,3,6,6], [6,6,12,12], [12,12,24,24]],
+        strokeWidth: [2,4,8,16,32], 
+        strokeDashArray: [[1,1,3,3],[1,1,3,3],[3,3,6,6], [6,6,12,12], [12,12,24,24]],
         strokeCap : "butt"
     },
     "cercle1" : {
@@ -204,37 +218,20 @@ var bddStyles = {
         fillColor : "#8B0004", 
         fillOpacity : 1,
         imgSrc: 'cercle'
+    },
+    "exploration": {
+        zooms : [2,3,4,5,6],
+        pointRadius : [3,6,10,14,24],
+        fillColor : "#FF0000", 
+        fillOpacity : 1,
+        imgSrc: 'cercle'
+    },
+    "capitale": {
+        zooms : [2,3,4,5,6],
+        pointRadius : [1,2,5,10,20],
+        fillColor : "#00FF00", 
+        fillOpacity : 1,
+        imgSrc: 'cercle'
     }
-    
-	
-	
 }
-
-// On définit quelles propriétés sont attendues selon le type d'objets à afficher
-// pas utilisé pour l'instant
-var allowedStyleProperties = {
-    "Label": [ 
-    	"zooms", "texte",
-        "fontColor", "fontFamily", "fontWeight", "fontSize",
-         "strokeColor", "strokeOpacity", "strokeWidth",
-         "fillColor", "fillOpacity",
-         "interligne"
-    ],
-    "Point": [
-    	"zooms",
-        "fillColor", "fillOpacity", 
-        "imgSrc", "imgHeight", "imgWidth", 
-        "pointRadius", "rotation"
-    ],
-    "Line": [
-    	"zooms",
-		"strokeColor", "strokeOpacity", "strokeWidth",
-		"strokeDashstyle", "strokeCap"
-    ],
-    "Polygon": [
-    	"zooms",
-        "strokeColor", "strokeOpacity", "strokeWidth",
-        "fillColor", "fillOpacity"            
-    ]
-};
 

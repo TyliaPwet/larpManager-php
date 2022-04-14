@@ -38,5 +38,6 @@ class GeoPicto extends BaseGeoPicto
 {
 	public function __construct()
 	{
+		parent::__construct();
 	}
 }

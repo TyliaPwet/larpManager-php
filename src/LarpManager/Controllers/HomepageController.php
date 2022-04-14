@@ -30,6 +30,7 @@ use LarpManager\Form\EtatCivilForm;
 use LarpManager\Form\UserRestrictionForm;
 
 use LarpManager\Entities\EtatCivil;
+use LarpManager\Entities\GeoPicto;
 
 /**
  * LarpManager\Controllers\HomepageController
@@ -530,6 +531,7 @@ class HomepageController
 			'fief' => ['repo' => 'Territoire', 'func' => 'findFiefs', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
 			'label_fief' => ['repo' => 'Territoire', 'func' => 'findFiefs', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojsonLabel', 'texte'=>'getTexteLabel']],
 			'ville' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'ville', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'src'=>'getSrc']],
+			'exploration' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'exploration', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'src'=>'getSrc']],
 			'caravane' => ['repo' => 'GeoLigne', 'func' => 'findByCateg', 'params'=>'caravane', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']]
 		];
 		
@@ -567,6 +569,7 @@ class HomepageController
 			'label_pays' => ['repo' => 'Territoire', 'fields' =>  ['geom'=>'setGeojsonLabel', 'texte'=>'setTexteLabel']],
 			'label_fief' => ['repo' => 'Territoire', 'fields' =>  ['geom'=>'setGeojsonLabel', 'texte'=>'setTexteLabel']],
 			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']],
+			'exploration' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']],
 			'fief' => ['repo' => 'Territoire', 'fields' => ['geom'=>'setGeojson']],
 			'caravane' => ['repo' => 'GeoLigne', 'fields' => ['geom'=>'setGeojson']]
 		];
@@ -576,6 +579,42 @@ class HomepageController
 	
 		$repoStr = 'LarpManager\Entities\\'.$params[$categ]['repo'];
 		$row = $app['orm.em']->find($repoStr, $id);
+		
+		$res = ["id" => $id, "categ" => $categ];
+					
+		foreach ($params[$categ]['fields'] as $nom => $fonction) {
+			if ($request->get($nom) !== null) {
+				$row->$fonction($request->get($nom));
+				$res[$nom] = $request->get($nom);
+			}
+		}
+
+		$app['orm.em']->persist($row);
+		$app['orm.em']->flush();
+		
+		return $app->json($res); 
+	}
+	
+	/**
+	 * Crée une nouvelle feature
+	 *
+	 * @param Request $request
+	 * @param Application $app
+	 */			
+	public function addFeatures(Request $request, Application $app)
+	{
+		// A modifier a priori pour une création on a toujours les mêmes champs à remplir pour une création, selon le repo
+		// Donc inutile de répéter à chaque fois
+		$params = [
+			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['categ' => 'setCateg', 'imgSrc' => 'setSrc', 'geom'=>'setGeojson']],
+			'exploration' => ['repo' => 'GeoPicto', 'fields' =>  ['categ' => 'setCateg', 'imgSrc' => 'setSrc', 'geom'=>'setGeojson']],
+			'caravane' => ['repo' => 'GeoLigne', 'fields' => ['categ' => 'setCateg', 'geom'=>'setGeojson']]
+		];
+		
+		$categ = $request->get('categ');
+		$classe = $params[$categ]['repo'];
+
+		$row = new $classe();
 					
 		foreach ($params[$categ]['fields'] as $nom => $fonction) {
 			if ($request->get($nom) !== null) {
@@ -583,11 +622,13 @@ class HomepageController
 			}
 		}
 		$res = $row;
+		
 		$app['orm.em']->persist($row);
 		$app['orm.em']->flush();
 		
 		return $app->json($res); 
 	}
-	
+
+
 
 }
