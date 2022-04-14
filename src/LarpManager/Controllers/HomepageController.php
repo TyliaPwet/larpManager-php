@@ -530,8 +530,8 @@ class HomepageController
 			'label_pays' => ['repo' => 'Territoire', 'func' => 'findRoot', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojsonLabel', 'texte'=>'getTexteLabel']],
 			'fief' => ['repo' => 'Territoire', 'func' => 'findFiefs', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
 			'label_fief' => ['repo' => 'Territoire', 'func' => 'findFiefs', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojsonLabel', 'texte'=>'getTexteLabel']],
-			'ville' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'ville', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'src'=>'getSrc']],
-			'exploration' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'exploration', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'src'=>'getSrc']],
+			'ville' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'ville', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
+			'exploration' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'exploration', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
 			'caravane' => ['repo' => 'GeoLigne', 'func' => 'findByCateg', 'params'=>'caravane', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']]
 		];
 		
@@ -606,8 +606,8 @@ class HomepageController
 		// A modifier a priori pour une création on a toujours les mêmes champs à remplir pour une création, selon le repo
 		// Donc inutile de répéter à chaque fois
 		$params = [
-			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['categ' => 'setCateg', 'imgSrc' => 'setSrc', 'geom'=>'setGeojson']],
-			'exploration' => ['repo' => 'GeoPicto', 'fields' =>  ['categ' => 'setCateg', 'imgSrc' => 'setSrc', 'geom'=>'setGeojson']],
+			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['categ' => 'setCateg', 'geom'=>'setGeojson']],
+			'exploration' => ['repo' => 'GeoPicto', 'fields' =>  ['categ' => 'setCateg', 'geom'=>'setGeojson']],
 			'caravane' => ['repo' => 'GeoLigne', 'fields' => ['categ' => 'setCateg', 'geom'=>'setGeojson']]
 		];
 		
