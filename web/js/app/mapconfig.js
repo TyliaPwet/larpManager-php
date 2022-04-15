@@ -231,7 +231,8 @@ var bddStyles = {
         pointRadius : [3,6,10,14,24],
         fillColor : "#00FF00", 
         fillOpacity : 1,
-        imgSrc: 'cercle'
+        imgSrc: 'img/pictos/exploration.svg',
+        scale: [0.5,1,2,4,8]
     },
     "capitale": {
         zooms : [2,3,4,5,6],

@@ -281,8 +281,9 @@ var Carte = {
                             break;
                             default :
                                 imgStyle = new ol.style.Icon({
-                                    size: [props.imgHeight[found], props.imgWidth[found]],
-                                    src: '{{ app.request.basepath }}/' + props.imgSrc
+                                    //size: [props.imgHeight[found], props.imgWidth[found]],
+                                    src: '{{ app.request.basepath }}/' + props.imgSrc,
+                                    scale: props.scale[found]
                                 });
                         }
                         return new ol.style.Style ({
