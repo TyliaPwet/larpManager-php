@@ -11,7 +11,7 @@ var Mapconfig = {
             name : "baseMap",
             minZoom : 2,
             maxZoom : 6,
-            printZoom : 2,
+            printZoom : 6,
             useBackground : true,
             layers : [
                 // les layers sont rangées de la plus au fond à la plus en surface
@@ -80,7 +80,7 @@ var Mapconfig = {
                     },
                     geomInteractions : {
                     	translate : true,	// déplacer le point d'ancrage
-                    	modify : false		// n'a pas de sens pour le moment, identique à translate
+                    	modify : false		// n'a pas de sens pour un point, identique à translate
                 	}
                 },
                 {
@@ -106,7 +106,7 @@ var Mapconfig = {
                     },
                     geomInteractions : {
                     	translate : true,	// déplacer le point d'ancrage
-                    	modify : false		// n'a pas de sens pour le moment, identique à translate
+                    	modify : false		// n'a pas de sens pour un point, identique à translate
                 	}
                 }
             ]
@@ -117,7 +117,87 @@ var Mapconfig = {
             maxZoom : 6,
             printZoom : 6,
             useBackground : true,
-            layers : []
+            layers : [
+            	{
+                    layerName : "label_pays",
+                    source : "worldmap/features/get/label_pays",
+                    geomType : "Label", // Point
+                    style : {
+                    	zooms: [2,3,4,5,6],
+                    	styleName: "titre1"
+                	},
+		            geomInteractions : {
+		            	translate : true,	// déplacer le point d'ancrage
+		            	modify : true		// modifier le texte
+	            	}
+                },
+                {
+                    layerName : "fief",
+                    source : "worldmap/features/get/fief",
+                    geomType : "Polygon", 
+                    style : {
+                    	zooms: [3,4,5,6],
+                    	styleName: "ligne2"
+                	},
+                	geomInteractions : {
+		            	translate : false,	// déplacer l'ensemble du polygone
+	            		modify : true		// modifier les points du polygone
+	            	}
+                },
+                {
+                    layerName : "pays",
+                    source : "worldmap/features/get/pays",
+                    geomType : "Polygon", 
+                    style : {
+                        zooms : [2,3,4,5,6],
+                        styleName: "ligne1"
+                    },
+                    geomInteractions : {
+		                translate : false,
+		                modify : false
+	                }
+                },
+                {
+                    layerName : "label_fief",
+                    source : "worldmap/features/get/label_fief",
+                    geomType : "Label", // Point
+                    style: {
+                        zooms : [4,5,6],
+                        styleName: "texte2"
+                    },
+                    geomInteractions : {
+                    	translate : true,
+                    	modify : true
+                	}
+                },
+                {
+                    layerName : "caravane",
+					source : "worldmap/features/get/caravane",
+                    geomType : "LineString", 
+                    style : {
+                        zooms : [4,5,6],
+                        styleName: "ligne3"
+                    },
+                    geomInteractions : {
+                    	translate : false,	// déplacer l'ensemble du tracé...
+                    	modify : true		// modifier les points du tracé
+                    }
+                },
+                {
+                    layerName : "exploration",
+					source : "worldmap/features/get/exploration", 
+                    geomType : "Point", 
+                    style : {
+                        zooms : [2,3,4,5,6],
+                        styleName: "exploration"
+                    },
+                    geomInteractions : {
+                    	translate : true,	// déplacer le point d'ancrage
+                    	modify : false		// n'a pas de sens pour un point, identique à translate
+                	}
+                }
+            
+            ]
         }
     ]
 
@@ -192,17 +272,32 @@ var bddStyles = {
         fillColor : "#000000", 
         fillOpacity : 1
 	},
+	"texte2" : {
+		zooms : [2,3,4,5,6],
+    	fontWeight: "normal", 
+        fontSize: ["2","4","8","16","32"], 
+        fontFamily: "Fiefs",
+        interligne : 30,
+        textTransformation : "none",
+        strokeColor : "#000000", 
+        strokeOpacity : 1, 
+        strokeWidth : 1,
+        fillColor : "#000000", 
+        fillOpacity : 1
+	},
 	"ligne1" : {
         zooms : [2,3,4,5,6],
         strokeColor : "#8B0004", 
         strokeOpacity : 1, 
-        strokeWidth : [2,3,4,4,4]
+        strokeWidth : [2,2,2,3,3]
 	},
 	"ligne2" : {
         zooms : [2,3,4,5,6],
         strokeColor : "#9A785F", 
         strokeOpacity : 1, 
-        strokeWidth : [1,1,1, 1, 1]
+        strokeWidth : [1,1,1,1,1],
+        strokeDashArray: [[3,3],[3,3],[3,3],[3,3],[3,3]],
+        strokeCap: "butt"
     },
     "ligne3" : {
         zooms : [2,3,4,5,6],

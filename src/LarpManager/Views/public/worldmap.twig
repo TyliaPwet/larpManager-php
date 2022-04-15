@@ -185,12 +185,6 @@ var Carte = {
                 break;
             }
         }
-        // on crée une layer pour le dessin de nouvelles features
-    	this.drawLayer = new ol.layer.Vector({
-    		name : "dessin",
-    		source : new ol.source.Vector({features : new ol.Collection([])})
-    	});
-    	this.olMap.addLayer(this.drawLayer);
     },
     
 	createStyleFunc : function(geomType, zooms, props) { 
@@ -259,6 +253,8 @@ var Carte = {
                                 color: Util.hexToRgba(props.strokeColor, props.strokeOpacity),
                                 width: props.strokeWidth[found] }));
                     	}
+                    	 if (props.strokeDashArray !== undefined) { leStyle.getStroke().setLineDash(props.strokeDashArray[found]);}
+                        if (props.strokeCap !== undefined) {leStyle.getStroke().setLineCap(props.strokeCap);}
                     	return leStyle;
                     } 
                     else return null;
@@ -546,7 +542,8 @@ var Carte = {
     
 };
 
-Carte.createMap("baseMap");
+//Carte.createMap("baseMap");
+Carte.createMap("magnaCarta");
 //Carte.showCountriesColors(true); // pour afficher la surcouche des pays en couleur
 
 // Cette fonctione me sers uniquement pour le dev, pour créer des objets sans avoir à créer les routes, etc...
