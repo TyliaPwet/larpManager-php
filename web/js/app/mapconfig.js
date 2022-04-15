@@ -184,7 +184,7 @@ var bddStyles = {
     	fontWeight: "normal", 
         fontSize: ["4","9","18","36","72"], 
         fontFamily: "Fiefs",
-        interligne : 74,
+        interligne : 60,
         textTransformation : "none",
         strokeColor : "#000000", 
         strokeOpacity : 1, 
@@ -219,17 +219,24 @@ var bddStyles = {
         fillOpacity : 1,
         imgSrc: 'cercle'
     },
+    "cercle2" : {
+        zooms : [2,3,4,5,6],
+        pointRadius : [1,2,4,8,16],
+        fillColor : "#8B0004", 
+        fillOpacity : 1,
+        imgSrc: 'cercle'
+    },
     "exploration": {
         zooms : [2,3,4,5,6],
         pointRadius : [3,6,10,14,24],
-        fillColor : "#FF0000", 
+        fillColor : "#00FF00", 
         fillOpacity : 1,
         imgSrc: 'cercle'
     },
     "capitale": {
         zooms : [2,3,4,5,6],
-        pointRadius : [1,2,5,10,20],
-        fillColor : "#00FF00", 
+        pointRadius : [3,6,10,14,24],
+        fillColor : "#0000FF", 
         fillOpacity : 1,
         imgSrc: 'cercle'
     }

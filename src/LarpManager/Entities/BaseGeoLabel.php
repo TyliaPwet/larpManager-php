@@ -40,7 +40,6 @@ class BaseGeoLabel
     protected $texte;
     
 	/**
-     * @Id
      * @Column(type="integer")
      */
     protected $rotation;

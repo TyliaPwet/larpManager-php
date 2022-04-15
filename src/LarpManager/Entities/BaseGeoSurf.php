@@ -110,6 +110,6 @@ class BaseGeoSurf
     
     public function __sleep()
     {
-        return array('id', 'categ', 'geojson';
+        return array('id', 'categ', 'geojson');
     }
 }

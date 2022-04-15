@@ -526,10 +526,10 @@ class HomepageController
 	public function getFeatures(Request $request, Application $app)
 	{
 		$params = [
-			'pays' => ['repo' => 'Territoire', 'func' => 'findRoot', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
-			'label_pays' => ['repo' => 'Territoire', 'func' => 'findRoot', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojsonLabel', 'texte'=>'getTexteLabel']],
-			'fief' => ['repo' => 'Territoire', 'func' => 'findFiefs', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
-			'label_fief' => ['repo' => 'Territoire', 'func' => 'findFiefs', 'params'=>'', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojsonLabel', 'texte'=>'getTexteLabel']],
+			'pays' => ['repo' => 'GeoSurf', 'func' => 'findByCateg', 'params'=>'pays', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
+			'label_pays' => ['repo' => 'GeoLabel', 'func' => 'findByCateg', 'params'=>'label_pays', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte']],
+			'fief' => ['repo' => 'GeoSurf', 'func' => 'findByCateg', 'params'=>'fief', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
+			'label_fief' => ['repo' => 'GeoLabel', 'func' => 'findByCateg', 'params'=>'label_fief', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte']],
 			'ville' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'ville', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
 			'exploration' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'exploration', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
 			'caravane' => ['repo' => 'GeoLigne', 'func' => 'findByCateg', 'params'=>'caravane', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']]
@@ -566,11 +566,11 @@ class HomepageController
 	public function updateFeatures(Request $request, Application $app)
 	{
 		$params = [
-			'label_pays' => ['repo' => 'Territoire', 'fields' =>  ['geom'=>'setGeojsonLabel', 'texte'=>'setTexteLabel']],
-			'label_fief' => ['repo' => 'Territoire', 'fields' =>  ['geom'=>'setGeojsonLabel', 'texte'=>'setTexteLabel']],
+			'label_pays' => ['repo' => 'GeoLabel', 'fields' =>  ['geom'=>'setGeojson', 'texte'=>'setTexte']],
+			'label_fief' => ['repo' => 'GeoLabel', 'fields' =>  ['geom'=>'setGeojson', 'texte'=>'setTexte']],
 			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']],
 			'exploration' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']],
-			'fief' => ['repo' => 'Territoire', 'fields' => ['geom'=>'setGeojson']],
+			'fief' => ['repo' => 'GeoSurf', 'fields' => ['geom'=>'setGeojson']],
 			'caravane' => ['repo' => 'GeoLigne', 'fields' => ['geom'=>'setGeojson']]
 		];
 		
@@ -603,8 +603,6 @@ class HomepageController
 	 */			
 	public function addFeatures(Request $request, Application $app)
 	{
-		// A modifier a priori pour une création on a toujours les mêmes champs à remplir pour une création, selon le repo
-		// Donc inutile de répéter à chaque fois
 		$params = [
 			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['categ' => 'setCateg', 'geom'=>'setGeojson']],
 			'exploration' => ['repo' => 'GeoPicto', 'fields' =>  ['categ' => 'setCateg', 'geom'=>'setGeojson']],
