@@ -41,7 +41,7 @@ var Mapconfig = {
                 	},
                 	geomInteractions : {
 		            	translate : false,	// déplacer l'ensemble du polygone
-	            		modify : true		// modifier les points du polygone
+	            		modify : false		// modifier les points du polygone
 	            	}
                 },
                 {
@@ -54,7 +54,7 @@ var Mapconfig = {
                     },
                     geomInteractions : {
 		                translate : false,
-		                modify : false
+		                modify : true
 	                }
                 },
                 {
@@ -68,19 +68,6 @@ var Mapconfig = {
                     geomInteractions : {
                     	translate : true,
                     	modify : true
-                	}
-                },
-                {
-                    layerName : "ville",
-					source : "worldmap/features/get/ville", 
-                    geomType : "Point", 
-                    style : {
-                        zooms : [4,5,6],
-                        styleName: "cercle1"
-                    },
-                    geomInteractions : {
-                    	translate : true,	// déplacer le point d'ancrage
-                    	modify : false		// n'a pas de sens pour un point, identique à translate
                 	}
                 },
                 {
@@ -121,6 +108,58 @@ var Mapconfig = {
                     	translate : true,
                     	modify : true
                 	}
+                },
+                {
+                    layerName : "ville",
+					source : "worldmap/features/get/ville", 
+                    geomType : "Point", 
+                    style : {
+                        zooms : [4,5,6],
+                        styleName: "cercle1"
+                    },
+                    geomInteractions : {
+                    	translate : true,	// déplacer le point d'ancrage
+                    	modify : false		// n'a pas de sens pour un point, identique à translate
+                	}
+                },
+                {
+                    layerName : "capitale",
+					source : "worldmap/features/get/capitale", 
+                    geomType : "Point", 
+                    style : {
+                        zooms : [4,5,6],
+                        styleName: "cercle1"
+                    },
+                    geomInteractions : {
+                    	translate : true,	// déplacer le point d'ancrage
+                    	modify : false		// n'a pas de sens pour un point, identique à translate
+                	}
+                },
+                {
+                    layerName : "label_ville",
+                    source : "worldmap/features/get/label_ville",
+                    geomType : "Label", // Point
+                    style: {
+                        zooms : [4,5,6],
+                        styleName: "texte2"
+                    },
+                    geomInteractions : {
+                    	translate : true,
+                    	modify : true
+                	}
+                },
+                {
+                    layerName : "label_capitale",
+                    source : "worldmap/features/get/label_capitale",
+                    geomType : "Label", // Point
+                    style: {
+                        zooms : [4,5,6],
+                        styleName: "texte2rouge"
+                    },
+                    geomInteractions : {
+                    	translate : true,
+                    	modify : true
+                	}
                 }
             ]
         },
@@ -131,84 +170,7 @@ var Mapconfig = {
             printZoom : 6,
             useBackground : true,
             layers : [
-            	{
-                    layerName : "label_pays",
-                    source : "worldmap/features/get/label_pays",
-                    geomType : "Label", // Point
-                    style : {
-                    	zooms: [2,3,4,5,6],
-                    	styleName: "titre1"
-                	},
-		            geomInteractions : {
-		            	translate : true,	// déplacer le point d'ancrage
-		            	modify : true		// modifier le texte
-	            	}
-                },
-                {
-                    layerName : "fief",
-                    source : "worldmap/features/get/fief",
-                    geomType : "Polygon", 
-                    style : {
-                    	zooms: [3,4,5,6],
-                    	styleName: "ligne2"
-                	},
-                	geomInteractions : {
-		            	translate : false,	// déplacer l'ensemble du polygone
-	            		modify : true		// modifier les points du polygone
-	            	}
-                },
-                {
-                    layerName : "pays",
-                    source : "worldmap/features/get/pays",
-                    geomType : "Polygon", 
-                    style : {
-                        zooms : [2,3,4,5,6],
-                        styleName: "ligne1"
-                    },
-                    geomInteractions : {
-		                translate : false,
-		                modify : false
-	                }
-                },
-                {
-                    layerName : "label_fief",
-                    source : "worldmap/features/get/label_fief",
-                    geomType : "Label", // Point
-                    style: {
-                        zooms : [4,5,6],
-                        styleName: "texte3"
-                    },
-                    geomInteractions : {
-                    	translate : true,
-                    	modify : true
-                	}
-                },
-                {
-                    layerName : "caravane",
-					source : "worldmap/features/get/caravane",
-                    geomType : "LineString", 
-                    style : {
-                        zooms : [4,5,6],
-                        styleName: "ligne3"
-                    },
-                    geomInteractions : {
-                    	translate : false,	// déplacer l'ensemble du tracé...
-                    	modify : true		// modifier les points du tracé
-                    }
-                },
-                {
-                    layerName : "exploration",
-					source : "worldmap/features/get/exploration", 
-                    geomType : "Point", 
-                    style : {
-                        zooms : [2,3,4,5,6],
-                        styleName: "exploration"
-                    },
-                    geomInteractions : {
-                    	translate : true,	// déplacer le point d'ancrage
-                    	modify : false		// n'a pas de sens pour un point, identique à translate
-                	}
-                }
+            	
             
             ]
         }
@@ -275,9 +237,9 @@ var BddStyles = {
 	"texte1" : {
 		zooms : [2,3,4,5,6],
     	fontWeight: "normal", 
-        fontSize: ["4","9","18","36","72"], 
+        fontSize: ["6","12","24","48","96"], 
         fontFamily: "Fiefs",
-        interligne : 60,
+        interligne : 80,
         textTransformation : "none",
         strokeColor : "#000000", 
         strokeOpacity : 1, 
@@ -288,7 +250,7 @@ var BddStyles = {
 	"texte2" : {
 		zooms : [2,3,4,5,6],
     	fontWeight: "normal", 
-        fontSize: ["3","6","14","28","56"], 
+        fontSize: ["4","9","18","36","72"], 
         fontFamily: "Fiefs",
         interligne : 40,
         textTransformation : "none",
@@ -296,6 +258,19 @@ var BddStyles = {
         strokeOpacity : 1, 
         strokeWidth : 1,
         fillColor : "#000000", 
+        fillOpacity : 1
+	},
+	"texte2rouge" : {
+		zooms : [2,3,4,5,6],
+    	fontWeight: "normal", 
+        fontSize: ["4","9","18","36","72"], 
+        fontFamily: "Fiefs",
+        interligne : 40,
+        textTransformation : "none",
+        strokeColor : "#8B0004", 
+        strokeOpacity : 1, 
+        strokeWidth : 1,
+        fillColor : "#8B0004", 
         fillOpacity : 1
 	},
 	"texte3" : {
@@ -319,7 +294,7 @@ var BddStyles = {
 	},
 	"ligne2" : {
         zooms : [2,3,4,5,6],
-        strokeColor : "#9A785F", 
+        strokeColor : "#8E6F58",//"#9A785F", 
         strokeOpacity : 1, 
         strokeWidth : [1,1,1,1,1],
         strokeDashArray: [[3,3],[3,3],[3,3],[3,3],[3,3]],
@@ -335,7 +310,7 @@ var BddStyles = {
     },
     "cercle1" : {
         zooms : [2,3,4,5,6],
-        pointRadius : [1,2,5,10,20],
+        pointRadius : [2,4,6,12,24],
         fillColor : "#8B0004", 
         fillOpacity : 1,
         imgSrc: 'cercle'

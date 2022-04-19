@@ -31,6 +31,9 @@ use LarpManager\Form\UserRestrictionForm;
 
 use LarpManager\Entities\EtatCivil;
 use LarpManager\Entities\GeoPicto;
+use LarpManager\Entities\GeoLabel;
+use LarpManager\Entities\GeoSurf;
+use LarpManager\Entities\GeoLigne;
 
 /**
  * LarpManager\Controllers\HomepageController
@@ -527,11 +530,14 @@ class HomepageController
 	{
 		$params = [
 			'pays' => ['repo' => 'GeoSurf', 'func' => 'findByCateg', 'params'=>'pays', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
-			'label_pays' => ['repo' => 'GeoLabel', 'func' => 'findByCateg', 'params'=>'label_pays', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte']],
 			'fief' => ['repo' => 'GeoSurf', 'func' => 'findByCateg', 'params'=>'fief', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
+			'label_pays' => ['repo' => 'GeoLabel', 'func' => 'findByCateg', 'params'=>'label_pays', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte']],
 			'label_fief' => ['repo' => 'GeoLabel', 'func' => 'findByCateg', 'params'=>'label_fief', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte']],
+			'label_capitale' => ['repo' => 'GeoLabel', 'func' => 'findByCateg', 'params'=>'label_capitale', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte']],
+			'label_ville' => ['repo' => 'GeoLabel', 'func' => 'findByCateg', 'params'=>'label_ville', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte']],
 			'label_poi' => ['repo' => 'GeoLabel', 'func' => 'findByCateg', 'params'=>'label_poi', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte', 'rotation'=>'getRotation']],
 			'ville' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'ville', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
+			'capitale' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'capitale', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
 			'exploration' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'exploration', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
 			'caravane' => ['repo' => 'GeoLigne', 'func' => 'findByCateg', 'params'=>'caravane', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']]
 		];
@@ -570,9 +576,13 @@ class HomepageController
 			'label_pays' => ['repo' => 'GeoLabel', 'fields' =>  ['geom'=>'setGeojson', 'texte'=>'setTexte']],
 			'label_fief' => ['repo' => 'GeoLabel', 'fields' =>  ['geom'=>'setGeojson', 'texte'=>'setTexte']],
 			'label_poi' => ['repo' => 'GeoLabel', 'fields' =>  ['geom'=>'setGeojson', 'texte'=>'setTexte']],
+			'label_capitale' => ['repo' => 'GeoLabel', 'fields' =>  ['geom'=>'setGeojson', 'texte'=>'setTexte']],
+			'label_ville' => ['repo' => 'GeoLabel', 'fields' =>  ['geom'=>'setGeojson', 'texte'=>'setTexte']],
 			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']],
+			'capitale' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']],
 			'exploration' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']],
 			'fief' => ['repo' => 'GeoSurf', 'fields' => ['geom'=>'setGeojson']],
+			'pays' => ['repo' => 'GeoSurf', 'fields' => ['geom'=>'setGeojson']],
 			'caravane' => ['repo' => 'GeoLigne', 'fields' => ['geom'=>'setGeojson']]
 		];
 		
@@ -606,17 +616,39 @@ class HomepageController
 	public function addFeatures(Request $request, Application $app)
 	{
 		$params = [
-			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['categ' => 'setCateg', 'geom'=>'setGeojson']],
-			'exploration' => ['repo' => 'GeoPicto', 'fields' =>  ['categ' => 'setCateg', 'geom'=>'setGeojson']],
-			'caravane' => ['repo' => 'GeoLigne', 'fields' => ['categ' => 'setCateg', 'geom'=>'setGeojson']]
+			'ville' => ['constr' => 'GeoPicto', 'fields' =>  ['categ' => 'setCateg', 'geom'=>'setGeojson']],
+			'exploration' => ['constr' => 'GeoPicto', 'fields' =>  ['categ' => 'setCateg', 'geom'=>'setGeojson']],
+			'caravane' => ['constr' => 'GeoLigne', 'fields' => ['categ' => 'setCateg', 'geom'=>'setGeojson']],
+			'label_ville' =>['constr' => 'GeoLabel()', 'fields' => ['categ'=>'setCateg', 'geom'=>'setGeojson', 'texte'=>'setTexte']],
+			'label_capitale' =>['constr' => 'GeoLabel()', 'fields' => ['categ'=>'setCateg', 'geom'=>'setGeojson', 'texte'=>'setTexte']]
 		];
-		
-		$categ = $request->get('categ');
-		$classe = $params[$categ]['repo'];
 
-		$row = new $classe();
+		$categ = $request->get('categ');
+		switch($categ) {
+			case 'ville' :
+			case 'capitale' :
+			case 'exploration' :
+				$row = new GeoPicto();
+				$fields = ['categ' => 'setCateg', 'geom'=>'setGeojson'];
+				break;
+			case 'caravane' :
+				$row = new GeoLigne();
+				$fields = ['categ' => 'setCateg', 'geom'=>'setGeojson'];
+				break;
+			case 'label_ville' :
+			case 'label_capitale' :
+			case 'label_poi' :
+				$row = new GeoLabel();
+				$fields = ['categ'=>'setCateg', 'geom'=>'setGeojson', 'texte'=>'setTexte'];
+				break;
+			case 'ville' :
+			case 'capitale' :
+				$row = new GeoPicto();
+				$fields = ['categ' => 'setCateg', 'geom'=>'setGeojson'];
+				break;		
+		}
 					
-		foreach ($params[$categ]['fields'] as $nom => $fonction) {
+		foreach ($fields as $nom => $fonction) {
 			if ($request->get($nom) !== null) {
 				$row->$fonction($request->get($nom));
 			}
@@ -625,7 +657,7 @@ class HomepageController
 		
 		$app['orm.em']->persist($row);
 		$app['orm.em']->flush();
-		
+
 		return $app->json($res); 
 	}
 

@@ -37,6 +37,8 @@
        		<option value="addExplo">Ajouter pictos exploration</option>
        		<option value="addCapitale">Ajouter pictos capitale</option>
        		<option value="addCaravane">Ajouter route commerciale</option>
+       		<option value="addLabelVille">Ajouter un label ville</option>
+       		<option value="addLabelCapitale">Ajouter un label capitale</option>
        		{% endif %}
       	</select>     	
     </form>
@@ -478,23 +480,25 @@ var Carte = {
             Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
             var convert = new ol.format.GeoJSON;
             var geojson = convert.writeGeometry(newGeom);
-	
+            	
 			const words = categ.split('_');
 			if (words[0] === 'label') {
 				var reponse = prompt("Saisissez le texte à afficher : ");
 				e.feature.texte = reponse;	
+				var datas = {categ: this.getProperties()['categ'], geom:geojson, texte:reponse};//				datas.texte = reponse;
 	            var str = "INSERT INTO geo_label (categ, geojson, texte) VALUES ('" + categ + "','" + geojson + "','" + reponse + "');";				
 			} else {
-				var table = {'ville':'geo_picto', 'caravane':'geo_ligne', 'exploration':'geo_picto'};
-	            var str = 'INSERT INTO ' + table[categ] + '(categ, geojson) VALUES (' + categ + ',' + geojson + ');';
+				var datas = {categ: this.getProperties()['categ'], geom:geojson}
+				var table = {'ville':'geo_picto', 'capitale':'geo_picto','caravane':'geo_ligne', 'exploration':'geo_picto'};
+	            var str = "INSERT INTO " + table[categ] + "(categ, geojson) VALUES ('" + categ + "','" + geojson + "');";
 			}
 			
-/*
+
             $.ajax({
                 type: "POST",
                 dataType: 'json',
                 url: "worldmap/features/add",
-                data: {categ: this.getProperties()['categ'], geom: geojson, imgSrc:'cercle'},
+                data: datas,//{categ: this.getProperties()['categ'], geom:geojson, texte:reponse},
                 success: function(data) {
                 	console.log(data);
                 	// affecter la categ et l'id à la feature + le texte si label
@@ -502,9 +506,9 @@ var Carte = {
                 }
             }).error(function(err) {
                 console.log(err); //alert("désolé, une erreur est survenue");
-            });*/
+            });
             
-            
+          
 			console.log(str);
         }, drawInt);
 
@@ -594,10 +598,11 @@ actionSelect.onchange = function() {
 			Carte.initDrawInteraction('LineString','caravane'); break;
 		case "addLabelPoi" : 
 			Carte.initDrawInteraction('Point','label_poi'); break;
-		case "addLabelVille" :
 		case "addLabelCapitale" :
+			Carte.initDrawInteraction('Point','label_capitale'); break;
+		case "addLabelVille" :
+			Carte.initDrawInteraction('Point','label_ville'); break;
 		case "addLabelRiviere" :
-		case "addLabelPOI" :
 			break;
 	}
 };
