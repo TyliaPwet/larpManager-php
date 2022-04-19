@@ -108,6 +108,19 @@ var Mapconfig = {
                     	translate : true,	// déplacer le point d'ancrage
                     	modify : false		// n'a pas de sens pour un point, identique à translate
                 	}
+                },
+                {
+                    layerName : "label_poi",
+                    source : "worldmap/features/get/label_poi",
+                    geomType : "Label", // Point
+                    style: {
+                        zooms : [4,5,6],
+                        styleName: "texte2"
+                    },
+                    geomInteractions : {
+                    	translate : true,
+                    	modify : true
+                	}
                 }
             ]
         },
@@ -163,7 +176,7 @@ var Mapconfig = {
                     geomType : "Label", // Point
                     style: {
                         zooms : [4,5,6],
-                        styleName: "texte2"
+                        styleName: "texte3"
                     },
                     geomInteractions : {
                     	translate : true,
@@ -208,7 +221,7 @@ var Mapconfig = {
 // On ne tiendra pas compte d'éventuelles autres propriétés déclarées
 // Attention il faut définir des tableaux de taille pour les largeurs de lignes et hauteurs de polices
 
-var defaultStyleProperties = {
+var DefaultStyleProperties = {
 		zooms: [2,3,4,5,6],
 		
 		// Lignes (et contours polygones)
@@ -245,7 +258,7 @@ var defaultStyleProperties = {
 // Il n'est pas dit que tous les niveaux de zooms seront utilisés pour toutes les cartes
 // A faire : gestion d'erreur en cas d'appel à un niveau de zoom non défini ici
 // A faire : mettre tout ça en base de données
-var bddStyles = {
+var BddStyles = {
 	"titre1" : {
         zooms : [2,3,4,5,6],
         fontWeight: "normal", 
@@ -273,6 +286,19 @@ var bddStyles = {
         fillOpacity : 1
 	},
 	"texte2" : {
+		zooms : [2,3,4,5,6],
+    	fontWeight: "normal", 
+        fontSize: ["3","6","14","28","56"], 
+        fontFamily: "Fiefs",
+        interligne : 40,
+        textTransformation : "none",
+        strokeColor : "#000000", 
+        strokeOpacity : 1, 
+        strokeWidth : 1,
+        fillColor : "#000000", 
+        fillOpacity : 1
+	},
+	"texte3" : {
 		zooms : [2,3,4,5,6],
     	fontWeight: "normal", 
         fontSize: ["2","4","8","16","32"], 

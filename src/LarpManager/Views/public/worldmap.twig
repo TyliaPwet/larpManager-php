@@ -32,6 +32,7 @@
        		<option value="translate">Déplacer (labels, pictos)</option>
        		<option value="modifyLabel">Modifier labels</option>
        		<option value="modifyPolygonLine">Modifier tracés (lignes, polygones)</option>
+       		<option value="addLabelPoi">Ajouter un POI</option>
        		<option value="addVille">Ajouter pictos ville</option>
        		<option value="addExplo">Ajouter pictos exploration</option>
        		<option value="addCapitale">Ajouter pictos capitale</option>
@@ -129,7 +130,7 @@ var Carte = {
                     
                     // On crée le style par défaut pour les éléments de cette couche, tel que défini dans la config
                     // Le style dépend du type d'élément (toujours le même type pour une même couche)
-                    var styleFunc = self.createStyleFunc(confLayer.geomType, confLayer.style.zooms, bddStyles[confLayer.style.styleName]);
+                    var styleFunc = self.createStyleFunc(confLayer.geomType, confLayer.style.zooms, BddStyles[confLayer.style.styleName]);
                     lay.setStyle(styleFunc);
                     
                     // Enfin, on crée les features
@@ -144,11 +145,10 @@ var Carte = {
                                     var parsedGeom = JSON.parse(obj.geom);		
 
                                     switch (confLayer.geomType) {
-                                        case "Polygon": // gestion spécifique des territoires vs le reste du monde - temporaire
-                                        	var coords = (parsedGeom.geometry !== undefined)?parsedGeom.geometry.coordinates : parsedGeom.coordinates;
-											if (parsedGeom.geometry === undefined) {console.log(parsedGeom);}
+                                        case "Polygon": 
+                                        	var coords = parsedGeom.coordinates;
                                             var newFeature = new ol.Feature({
-                                                geometry: new ol.geom.Polygon(coords)//parsedGeom.geometry.coordinates)
+                                                geometry: new ol.geom.Polygon(coords)
                                             });
                                             break;
                                         case "Label":
@@ -156,6 +156,7 @@ var Carte = {
                                                 geometry: new ol.geom.Point(parsedGeom.coordinates)
                                             });
                                             newFeature.texte = obj.texte;
+                                            newFeature.angle = Util.toRadians(obj.rotation);
                                             break;
                                         case "Point":
                                             var newFeature = new ol.Feature({
@@ -211,7 +212,8 @@ var Carte = {
                                         font: props.fontWeight +' '+props.fontSize[found] +'px '+ props.fontFamily,
                                         text: value,
                                         stroke: new ol.style.Stroke ({ color: Util.hexToRgba(props.strokeColor, props.strokeOpacity), width: props.strokeWidth}),
-                                        fill: new ol.style.Fill({ color: Util.hexToRgba(props.fillColor, props.fillOpacity) })
+                                        fill: new ol.style.Fill({ color: Util.hexToRgba(props.fillColor, props.fillOpacity) }),
+                                        rotation: feat.angle
                                     })
                                 }));
                             } else {
@@ -220,7 +222,8 @@ var Carte = {
                                         font: props.fontWeight +' '+props.fontSize[found] +'px '+ props.fontFamily,
                                         text: value,
                                         stroke: new ol.style.Stroke ({ color: Util.hexToRgba(props.strokeColor, props.strokeOpacity), width: props.strokeWidth}),
-                                        fill: new ol.style.Fill({ color: Util.hexToRgba(props.fillColor, props.fillOpacity) })
+                                        fill: new ol.style.Fill({ color: Util.hexToRgba(props.fillColor, props.fillOpacity) }),
+                                        rotation: feat.angle
                                     }),
                                     geometry: function(feature) {
                                             // on crée un point d'ancrage décalé de x pixels (dans la config) pour les lignes suivantes
@@ -433,11 +436,11 @@ var Carte = {
 		        Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
 		        var convert = new ol.format.GeoJSON;
 		        var geojson = convert.writeGeometry(newGeom);
-		        
+		        /*
 		        if (e.deselected[0].categ ==='fief') { // les territoires sont formatés un peu différemment pour l'instant (tant que la page /world est utilisée)
 		        	geojson = '{"type":"Feature","properties":{},"geometry":' + geojson + '}';
 	        	}
-
+*/
         		$.ajax({
 	                type: "POST",
 	                dataType: 'json',
@@ -463,7 +466,7 @@ var Carte = {
         var drawInt = new ol.interaction.Draw({ 
                 source: destinationLayer.getSource(), // où seront placées les features créées
                 type: geomType,
-                style: this.createStyleFunc(geomType, defaultStyleProperties.zooms, defaultStyleProperties)
+                style: this.createStyleFunc(geomType, DefaultStyleProperties.zooms, DefaultStyleProperties) // style pour le dessin, disparait quand la feature est ajoutée à sa source de destination
         });  
         this.olMap.addInteraction(drawInt);
         this.currentInteractions.push(drawInt);
@@ -475,7 +478,17 @@ var Carte = {
             Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
             var convert = new ol.format.GeoJSON;
             var geojson = convert.writeGeometry(newGeom);
-
+	
+			const words = categ.split('_');
+			if (words[0] === 'label') {
+				var reponse = prompt("Saisissez le texte à afficher : ");
+				e.feature.texte = reponse;	
+	            var str = "INSERT INTO geo_label (categ, geojson, texte) VALUES ('" + categ + "','" + geojson + "','" + reponse + "');";				
+			} else {
+				var table = {'ville':'geo_picto', 'caravane':'geo_ligne', 'exploration':'geo_picto'};
+	            var str = 'INSERT INTO ' + table[categ] + '(categ, geojson) VALUES (' + categ + ',' + geojson + ');';
+			}
+			
 /*
             $.ajax({
                 type: "POST",
@@ -484,15 +497,14 @@ var Carte = {
                 data: {categ: this.getProperties()['categ'], geom: geojson, imgSrc:'cercle'},
                 success: function(data) {
                 	console.log(data);
-                	// affecter la categ et l'id à la feature
+                	// affecter la categ et l'id à la feature + le texte si label
                     //alert("la geographie a été enregistrée");
                 }
             }).error(function(err) {
                 console.log(err); //alert("désolé, une erreur est survenue");
             });*/
             
-            let table = {'ville':'geo_picto', 'caravane':'geo_ligne', 'exploration':'geo_picto'};
-            let str = 'INSERT INTO ' + table[categ] + '(categ, geojson) VALUES (' + categ + ',' + geojson + ');';
+            
 			console.log(str);
         }, drawInt);
 
@@ -542,8 +554,8 @@ var Carte = {
     
 };
 
-//Carte.createMap("baseMap");
-Carte.createMap("magnaCarta");
+Carte.createMap("baseMap");
+//Carte.createMap("magnaCarta");
 //Carte.showCountriesColors(true); // pour afficher la surcouche des pays en couleur
 
 // Cette fonctione me sers uniquement pour le dev, pour créer des objets sans avoir à créer les routes, etc...
@@ -580,6 +592,13 @@ actionSelect.onchange = function() {
 			Carte.initDrawInteraction('Point','exploration'); break;
 		case "addCaravane" :
 			Carte.initDrawInteraction('LineString','caravane'); break;
+		case "addLabelPoi" : 
+			Carte.initDrawInteraction('Point','label_poi'); break;
+		case "addLabelVille" :
+		case "addLabelCapitale" :
+		case "addLabelRiviere" :
+		case "addLabelPOI" :
+			break;
 	}
 };
 

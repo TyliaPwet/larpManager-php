@@ -530,6 +530,7 @@ class HomepageController
 			'label_pays' => ['repo' => 'GeoLabel', 'func' => 'findByCateg', 'params'=>'label_pays', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte']],
 			'fief' => ['repo' => 'GeoSurf', 'func' => 'findByCateg', 'params'=>'fief', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
 			'label_fief' => ['repo' => 'GeoLabel', 'func' => 'findByCateg', 'params'=>'label_fief', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte']],
+			'label_poi' => ['repo' => 'GeoLabel', 'func' => 'findByCateg', 'params'=>'label_poi', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte', 'rotation'=>'getRotation']],
 			'ville' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'ville', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
 			'exploration' => ['repo' => 'GeoPicto', 'func' => 'findByCateg', 'params'=>'exploration', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']],
 			'caravane' => ['repo' => 'GeoLigne', 'func' => 'findByCateg', 'params'=>'caravane', 'fields' =>  ['id'=>'getId', 'geom'=>'getGeojson']]
@@ -568,6 +569,7 @@ class HomepageController
 		$params = [
 			'label_pays' => ['repo' => 'GeoLabel', 'fields' =>  ['geom'=>'setGeojson', 'texte'=>'setTexte']],
 			'label_fief' => ['repo' => 'GeoLabel', 'fields' =>  ['geom'=>'setGeojson', 'texte'=>'setTexte']],
+			'label_poi' => ['repo' => 'GeoLabel', 'fields' =>  ['geom'=>'setGeojson', 'texte'=>'setTexte']],
 			'ville' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']],
 			'exploration' => ['repo' => 'GeoPicto', 'fields' =>  ['geom'=>'setGeojson']],
 			'fief' => ['repo' => 'GeoSurf', 'fields' => ['geom'=>'setGeojson']],

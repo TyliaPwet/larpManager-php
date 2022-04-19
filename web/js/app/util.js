@@ -88,5 +88,16 @@ var Util = {
         };        
         coordsToLM(coords);
         geom.setCoordinates(coords);  
-    }
+    },
+    
+    /**
+	 * Fonctions toDegrees(), toRadians()
+	 * ---------------------
+	 */
+	toDegrees : function(angleInRadians) {
+		return angleInRadians * 180 / Math.PI;
+	},
+	toRadians : function(angleInDegrees) {
+		return angleInDegrees * Math.PI / 180;
+	}
 };
