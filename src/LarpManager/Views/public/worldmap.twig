@@ -492,17 +492,15 @@ var Carte = {
 				var table = {'ville':'geo_picto', 'capitale':'geo_picto','caravane':'geo_ligne', 'exploration':'geo_picto'};
 	            var str = "INSERT INTO " + table[categ] + "(categ, geojson) VALUES ('" + categ + "','" + geojson + "');";
 			}
-			
+			e.feature.categ = categ;			
 
             $.ajax({
                 type: "POST",
                 dataType: 'json',
                 url: "worldmap/features/add",
-                data: datas,//{categ: this.getProperties()['categ'], geom:geojson, texte:reponse},
+                data: datas,
                 success: function(data) {
-                	console.log(data);
-                	// affecter la categ et l'id à la feature + le texte si label
-                    //alert("la geographie a été enregistrée");
+                	e.feature.bddId = data.id;
                 }
             }).error(function(err) {
                 console.log(err); //alert("désolé, une erreur est survenue");

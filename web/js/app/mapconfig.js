@@ -58,19 +58,6 @@ var Mapconfig = {
 	                }
                 },
                 {
-                    layerName : "label_fief",
-                    source : "worldmap/features/get/label_fief",
-                    geomType : "Label", // Point
-                    style: {
-                        zooms : [4,5,6],
-                        styleName: "texte1"
-                    },
-                    geomInteractions : {
-                    	translate : true,
-                    	modify : true
-                	}
-                },
-                {
                     layerName : "caravane",
 					source : "worldmap/features/get/caravane",
                     geomType : "LineString", 
@@ -97,19 +84,6 @@ var Mapconfig = {
                 	}
                 },
                 {
-                    layerName : "label_poi",
-                    source : "worldmap/features/get/label_poi",
-                    geomType : "Label", // Point
-                    style: {
-                        zooms : [4,5,6],
-                        styleName: "texte2"
-                    },
-                    geomInteractions : {
-                    	translate : true,
-                    	modify : true
-                	}
-                },
-                {
                     layerName : "ville",
 					source : "worldmap/features/get/ville", 
                     geomType : "Point", 
@@ -133,6 +107,32 @@ var Mapconfig = {
                     geomInteractions : {
                     	translate : true,	// déplacer le point d'ancrage
                     	modify : false		// n'a pas de sens pour un point, identique à translate
+                	}
+                },
+                {
+                    layerName : "label_poi",
+                    source : "worldmap/features/get/label_poi",
+                    geomType : "Label", // Point
+                    style: {
+                        zooms : [4,5,6],
+                        styleName: "texte2"
+                    },
+                    geomInteractions : {
+                    	translate : true,
+                    	modify : true
+                	}
+                },
+                {
+                    layerName : "label_fief",
+                    source : "worldmap/features/get/label_fief",
+                    geomType : "Label", // Point
+                    style: {
+                        zooms : [4,5,6],
+                        styleName: "texte1"
+                    },
+                    geomInteractions : {
+                    	translate : true,
+                    	modify : true
                 	}
                 },
                 {
@@ -207,7 +207,7 @@ var DefaultStyleProperties = {
 		textAlign: "center", 
 		
 		// Points
-		pointRadius: [2,4,8,16,32,64],
+		pointRadius: [2,4,6,12,24],
 		imgSrc: "cercle",
 		imgHeight: [10,20,40,80,160],
 		imgWidth: [10,20,40,80,160],
@@ -228,10 +228,10 @@ var BddStyles = {
         fontFamily: "Trebuchet",
         interligne : 300,
         textTransformation : "toUpper",
-        strokeColor : "#FFFFFF", 
+        strokeColor : "#CCCCCC", 
         strokeOpacity : 1, 
         strokeWidth : 1,
-        fillColor : "#FFFFFF", 
+        fillColor : "#CCCCCC", 
         fillOpacity : 1		
 	},
 	"texte1" : {
@@ -252,7 +252,7 @@ var BddStyles = {
     	fontWeight: "normal", 
         fontSize: ["4","9","18","36","72"], 
         fontFamily: "Fiefs",
-        interligne : 40,
+        interligne : 60,
         textTransformation : "none",
         strokeColor : "#000000", 
         strokeOpacity : 1, 
@@ -265,7 +265,7 @@ var BddStyles = {
     	fontWeight: "normal", 
         fontSize: ["4","9","18","36","72"], 
         fontFamily: "Fiefs",
-        interligne : 40,
+        interligne : 60,
         textTransformation : "none",
         strokeColor : "#8B0004", 
         strokeOpacity : 1, 
