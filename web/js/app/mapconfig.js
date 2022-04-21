@@ -41,7 +41,7 @@ var Mapconfig = {
                 	},
                 	geomInteractions : {
 		            	translate : false,	// déplacer l'ensemble du polygone
-	            		modify : false		// modifier les points du polygone
+	            		modify : true		// modifier les points du polygone
 	            	}
                 },
                 {
@@ -54,7 +54,7 @@ var Mapconfig = {
                     },
                     geomInteractions : {
 		                translate : false,
-		                modify : true
+		                modify : false
 	                }
                 },
                 {
@@ -228,7 +228,7 @@ var BddStyles = {
         fontFamily: "Trebuchet",
         interligne : 300,
         textTransformation : "toUpper",
-        strokeColor : "#CCCCCC", 
+        strokeColor : "#AAAAAA", 
         strokeOpacity : 1, 
         strokeWidth : 1,
         fillColor : "#CCCCCC", 
