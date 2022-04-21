@@ -10,11 +10,11 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_pays','{"type":"Point","coordinates":[66.140625,-77.828125]}','Ophir',0,21,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[95.28125,-70.546875]}','Corinthie',0,22,'extended');
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
-	 ('label_pays','{"type":"Point","coordinates":[99.890625,-18.71875]}','Hyperborée',0,28,'extended'),
+	 ('label_pays','{"type":"Point","coordinates":[99.640625,-19.09375]}','Hyperborée',0,28,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[10.1875,-99.828125]}','Pirates des#Barachanes',0,41,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[72.71875,-45.53125]}','Royaumes#Frontières',0,43,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[77.5625,-60.640625]}','Némédie',0,44,'extended'),
-	 ('label_pays','{"type": "Point", "coordinates": [59.81475251219904, -40.37176586135267]}','Cimmérie',0,50,'extended'),
+	 ('label_pays','{"type":"Point","coordinates":[58.9375,-40.75]}','Cimmérie',0,50,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[92.78125,-51.25]}','Brythunie',0,51,'extended'),
 	 ('label_pays','{"type": "Point", "coordinates": [204.59456896847624, -52.94643536929343]}','Khitaï',0,53,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[161.921875,-60.890625]}','Hyrkanie',0,54,'extended'),
@@ -23,9 +23,9 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
 	 ('label_pays','{"type":"Point","coordinates":[73.96875,-16.921875]}','Asgard',0,80,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[171.328125,-125.546875]}','Vendhya',0,81,'extended'),
-	 ('label_pays','{"type":"Point","coordinates":[119.734375,-128.078125]}','Iranistan',0,82,'extended'),
+	 ('label_pays','{"type":"Point","coordinates":[119.734375,-128.703125]}','Iranistan',0,82,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[158.25,-105.859375]}','Ghulistan',0,83,'extended'),
-	 ('label_pays','{"type":"Point","coordinates":[92.59375,-118.953125]}','Keshan',0,85,'extended'),
+	 ('label_pays','{"type":"Point","coordinates":[93.84375,-119.078125]}','Keshan',0,85,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[210.96875,-106.328125]}','Kambuja',0,87,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[104.546875,-125.109375]}','Punt',0,88,'extended'),
 	 ('label_pays','{"type": "Point", "coordinates": [101.5026519714183, -139.50728750528373]}','Zembabweï',0,89,'extended'),
@@ -37,7 +37,7 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_pays','{"type": "Point", "coordinates": [174.31284812838555, -80.86473013463063]}','Kusan',0,120,'extended'),
 	 ('label_pays','{"type": "Point", "coordinates": [140.388852496076, -114.35408177240276]}','Empire Venji',0,121,'extended'),
 	 ('label_pays','{"type": "Point", "coordinates": [236.75502602769703, -61.659188820020574]}','Lemurie',0,123,'extended'),
-	 ('label_pays','{"type": "Point", "coordinates": [237.18663949555193, -159.513110235623]}','Mû',0,124,'extended'),
+	 ('label_pays','{"type":"Point","coordinates":[242.0625,-159.765625]}','Mû',0,124,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[121.359375,-24.65625]}','Roskau',0,373,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[84.40625,-154.21875]}','Grand sud sauvage',0,431,'extended'),
 	 ('label_pays','{"type": "Point", "coordinates": [140.0574696969697, -76.404]}','Iles de la Vilayet',0,433,'extended'),
@@ -76,7 +76,7 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_fief','{"type":"Point","coordinates":[64.296875,-66.421875]}','Pellia',0,56,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[61.328125,-70.265625]}','Thune',0,57,'extended');
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
-	 ('label_fief','{"type":"Point","coordinates":[93.5,-23.59375]}','terres vertes de#Pohiola',0,58,'extended'),
+	 ('label_fief','{"type":"Point","coordinates":[93.5,-23.59375]}','terres vertes#de Pohiola',0,58,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[98.984375,-30.90625]}','vallées de #Sigtona',0,59,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[94.03125,-62.21875]}','Terres du#Coeur',0,60,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[100.59375,-44.90625]}','Sources du#Danibos',0,61,'extended'),
@@ -105,7 +105,7 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_fief','{"type": "Point", "coordinates": [175.48623834458897, -19.502319948969156]}','Pathénie',0,119,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[75.15625,-135.34375]}','Amazonie',0,122,'extended'),
 	 ('label_fief','{"type": "Point", "coordinates": [236.75502602769703, -61.659188820020574]}','Lemurie',0,123,'extended'),
-	 ('label_fief','{"type": "Point", "coordinates": [237.18663949555193, -159.513110235623]}','Mû',0,124,'extended'),
+	 ('label_fief','{"type":"Point","coordinates":[241.9375,-159.578125]}','Mû',0,124,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[28.25,-84.984375]}','Comté de#Valbroso',0,125,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[23.859375,-89.34375]}','Comté de#Korzetta',0,126,'extended');
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
@@ -222,7 +222,7 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_fief','{"type": "Point", "coordinates": [185.19736849344508, -105.69584307530175]}','Kara-Korum',0,228,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[100.859375,-131.296875]}','Capitale#du nord',0,229,'extended'),
 	 ('label_fief','{"type": "Point", "coordinates": [98.84171930997161, -138.2781280693897]}','Prairies du#Zembabwei',0,230,'extended'),
-	 ('label_fief','{"type": "Point", "coordinates": [103.19981259092184, -136.5376052736299]}','Monomotapa',0,231,'extended'),
+	 ('label_fief','{"type": "Point", "coordinates": [103.19981259092184, -136.5376052736299]}','Monomotapa',270,231,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[105.53125,-141.5625]}','Capitale#du sud',0,232,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[100.59375,-144.84375]}','Vieux#Zembabweï',0,233,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[108.84375,-129.234375]}','Sushan',0,234,'extended'),
@@ -305,13 +305,13 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_fief','{"type":"Point","coordinates":[168.265625,-137.859375]}','Jungles#du sud',0,309,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[83.765625,-92.703125]}','Khanyria',0,310,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[91.609375,-90.03125]}','Khoraja',0,311,'extended'),
-	 ('label_fief','{"type":"Point","coordinates":[49.71875,-4.96875]}','Llyowin# Sanctuaire du nord',0,312,'extended');
+	 ('label_fief','{"type":"Point","coordinates":[50.09375,-5.21875]}','Llyowin# Sanctuaire du nord',0,312,'extended');
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
 	 ('label_fief','{"type":"Point","coordinates":[31.234375,-9.0625]}','Lonnström# Sanctuaire de l''eau',0,313,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[48.90625,-15.921875]}','Idöwön# Sanctuaire du centre',0,314,'extended'),
-	 ('label_fief','{"type":"Point","coordinates":[57.265625,-11.109375]}','Fahlwön# Sanctuaire de la frontière',0,315,'extended'),
+	 ('label_fief','{"type":"Point","coordinates":[56.765625,-11.234375]}','Fahlwön# Sanctuaire de la frontière',0,315,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[41.75,-24.796875]}','Forêt#marécageuse',0,316,'extended'),
-	 ('label_fief','{"type":"Point","coordinates":[55.78125,-29.0625]}','Nokowonn# Sanctuaire Eiglophien',0,317,'extended'),
+	 ('label_fief','{"type":"Point","coordinates":[55.84375,-29.625]}','Nokowonn# Sanctuaire Eiglophien',0,317,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[70.578125,-6]}','Royaume de#Shiral',0,318,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[83.640625,-4.890625]}','Royaume de#Winntul',0,319,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[74.96875,-13.03125]}','Royaume de#Wonal',0,320,'extended'),
@@ -358,7 +358,7 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_poi','{"type":"Point","coordinates":[43.90625,-29]}','monts eiglophiens',0,NULL,'extended'),
 	 ('label_poi','{"type":"Point","coordinates":[60.46875,-23.5625]}','monts bleus',290,NULL,'extended'),
 	 ('label_poi','{"type":"Point","coordinates":[64.03125,-9.375]}','monts bleus',280,NULL,'extended'),
-	 ('label_poi','{"type":"Point","coordinates":[63.375,-1.09375]}','nordheim#royaume d''Ymir, seigneur des glaces',0,NULL,'extended'),
+	 ('label_poi','{"type":"Point","coordinates":[62.25,-1.28125]}','nordheim#royaume d''Ymir, seigneur des glaces',0,NULL,'extended'),
 	 ('label_poi','{"type":"Point","coordinates":[70.875,-29.84375]}','monts eiglophiens',0,NULL,'extended'),
 	 ('label_poi','{"type":"Point","coordinates":[84.9375,-23.28125]}','monts tains',0,NULL,'extended');
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
@@ -584,6 +584,26 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
 	 ('label_ville','{"type":"Point","coordinates":[64.875,-131.890625]}','matubis',NULL,NULL,'extended'),
 	 ('label_ville','{"type":"Point","coordinates":[60.46875,-121.359375]}','zabhela',NULL,NULL,'extended'),
-	 ('label_capitale','{"type":"Point","coordinates":[66.0625,-118.390625]}','shumballa',NULL,NULL,'extended'),
+	 ('label_capitale','{"type":"Point","coordinates":[65.78125,-118.796875]}','shumballa',NULL,NULL,'extended'),
 	 ('label_ville','{"type":"Point","coordinates":[83.40625,-160.265625]}','yanyoga',NULL,NULL,'extended'),
-	 ('label_poi','{"type":"Point","coordinates":[85.875,-163.578125]}','les feux du sud',NULL,NULL,'extended');
+	 ('label_poi','{"type":"Point","coordinates":[85.875,-163.578125]}','les feux du sud',NULL,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[16.5625,-84.453125]}','rivière noire',320,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[30.421875,-58.78125]}','rivière noire',320,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[35.171875,-57.03125]}','rivière du tonnerre',320,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[48.484375,-61.703125]}','rivière shirki',320,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[86.75,-16.390625]}','rivière de la mort gelée',270,NULL,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_riviere','{"type":"Point","coordinates":[65.328125,-117.46875]}','rivière#serpentine',340,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[72.015625,-116.0625]}','lac#zuad',NULL,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[94.8125,-113.8125]}','rivière jebula',10,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[39.65625,-97.453125]}','rivière du tonnerre',312,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[51.84375,-97.203125]}','rivière khorotas',300,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[75.53125,-105.34375]}','fleuve Styx',NULL,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[45.28125,-77.171875]}','rivière khorotas',315,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[49.5625,-80.796875]}','rivière tybor',315,NULL,'extended'),
+	 ('label_riviere','{"type":"Point","coordinates":[58.90625,-75.234375]}','rivière rouge',315,NULL,'extended'),
+	 ('label_passe','{"type":"Point","coordinates":[62.296875,-16.03125]}','passe bleu',330,NULL,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_passe','{"type":"Point","coordinates":[61.953125,-27.1875]}','sente des géants',330,NULL,'extended'),
+	 ('label_passe','{"type":"Point","coordinates":[76.171875,-31.65625]}','passe de givres',310,NULL,'extended'),
+	 ('label_passe','{"type":"Point","coordinates":[84.984375,-27.28125]}','gué des tains',NULL,NULL,'extended');

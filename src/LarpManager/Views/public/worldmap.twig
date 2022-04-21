@@ -31,14 +31,20 @@
        		{% if is_granted('ROLE_CARTOGRAPHE', app.user) %}
        		<option value="translate">Déplacer (labels, pictos)</option>
        		<option value="modifyLabel">Modifier labels</option>
-       		<option value="modifyPolygonLine">Modifier tracés (lignes, polygones)</option>
-       		<option value="addLabelPoi">Ajouter un POI</option>
+       		<option value="modifyLabelRotation">Modifier angle labels</option>
+       		<option value="modifyLine">Modifier tracés linéaires (caravane...)</option>
+       		<option value="modifyPays">Modifier tracés pays</option>
+       		<option value="modifyFiefs">Modifier tracés fiefs</option>>
        		<option value="addVille">Ajouter pictos ville</option>
-       		<option value="addExplo">Ajouter pictos exploration</option>
        		<option value="addCapitale">Ajouter pictos capitale</option>
-       		<option value="addCaravane">Ajouter route commerciale</option>
+       		<option value="addExplo">Ajouter pictos exploration</option>
        		<option value="addLabelVille">Ajouter un label ville</option>
        		<option value="addLabelCapitale">Ajouter un label capitale</option>
+       		<option value="addLabelPoi">Ajouter un label POI</option>
+       		<option value="addLabelRiviere">Ajouter un label rivière</option>
+       		<option value="addLabelPasse">Ajouter un label passe, sente, gué...</option>
+       		<option value="addCaravane">Ajouter route commerciale</option>
+       		<option value="addRiviere">Ajouter un tracé de rivière</option>
        		{% endif %}
       	</select>     	
     </form>
@@ -407,14 +413,63 @@ var Carte = {
     	});
     },
     
-    initModifyInteraction: function() {
+    initModifyLabelRotationInteraction: function() {
+    	var self = this;
+    	
+    	var select = new ol.interaction.Select({
+    		layers: function(layer) { 
+        		if (layer.get('geomModify')!== undefined && layer.get('geomType')=='Label') { 
+        			return layer.get('geomModify');  
+        		} else return false;
+        	}
+        	// A FAIRE : empêcher la sélection multiple
+    	});
+    	self.olMap.addInteraction(select);
+    	self.currentInteractions.push(select);
+    	
+    	select.on('select', function(e) { // l'event est appelé au moment de la sélection et de la déselection 
+    		// au moment de la sélection on affiche un dialogue pour saisir le nouveau label
+    		if (e.selected.length > 0) { 
+				var reponse = prompt("angle en degrés", Math.round(Util.toDegrees(e.selected[0].angle)));
+				if (reponse != null && reponse != '') { 
+				
+					$.ajax({
+		                type: "POST",
+		                dataType: 'json',
+ 		                url: "worldmap/features/update",
+		                data: {rotation: reponse, id: e.selected[0].bddId, categ: e.selected[0].categ},
+		                success: function(data) {
+		                	e.selected[0].angle = Util.toRadians(reponse);
+		                	console.log(data);
+		                    //alert("la geographie a été enregistrée");
+		                }
+		            }).error(function() {
+		                alert("désolé, une erreur est survenue");
+		            });
+				}
+			}
+			
+			// au moment de las déselection, on force le recalcul du style de la feature modifiée
+			if (e.deselected.length > 0) {
+				e.deselected[0].changed();
+			}
+
+    	});
+    },
+    
+    initModifyInteraction: function(geomType, categ) {
         var self = this;
         var featureId, featureRevision;
         
 		// Avant de pouvoir modify une feature il faut la sélectionner 
 		var select = new ol.interaction.Select({
     		layers: function(layer) { 
-        		if (layer.get('geomModify')!== undefined && (layer.get('geomType')=='Polygon' || layer.get('geomType')=='LineString')) { 
+        		if (layer.get('geomModify')!== undefined && (layer.get('geomType')===geomType)) { 
+        			if (geomType==='Polygon') { // pour les polygones on ne peutt modifier qu'une categ à la fois, puor éviter les pb de sélection de feature superposées
+        				if (layer.get('name') !== categ) {
+        					return false;
+    					}
+        			}
         			return layer.get('geomModify');  
         		} else return false;
         	}
@@ -485,6 +540,7 @@ var Carte = {
 			if (words[0] === 'label') {
 				var reponse = prompt("Saisissez le texte à afficher : ");
 				e.feature.texte = reponse;	
+				e.feature.angle = 0;
 				var datas = {categ: this.getProperties()['categ'], geom:geojson, texte:reponse};//				datas.texte = reponse;
 	            var str = "INSERT INTO geo_label (categ, geojson, texte) VALUES ('" + categ + "','" + geojson + "','" + reponse + "');";				
 			} else {
@@ -584,24 +640,34 @@ actionSelect.onchange = function() {
 			Carte.initTranslateInteraction(); break;
 		case "modifyLabel" :
 			Carte.initModifyLabelInteraction(); break;	
-		case "modifyPolygonLine" : 
-			Carte.initModifyInteraction(); break;
+		case "modifyLabelRotation" :
+			Carte.initModifyLabelRotationInteraction(); break;	
+		case "modifyLine" : 
+			Carte.initModifyInteraction('LineString','all'); break;
+		case "modifyPays" : 
+			Carte.initModifyInteraction('Polygon','pays'); break;
+		case "modifyFiefs" : 
+			Carte.initModifyInteraction('Polygon','fief'); break;
 		case "addVille" :
 			Carte.initDrawInteraction('Point','ville'); break;
 		case "addCapitale" :
 			Carte.initDrawInteraction('Point','capitale'); break;
 		case "addExplo" :
 			Carte.initDrawInteraction('Point','exploration'); break;
-		case "addCaravane" :
-			Carte.initDrawInteraction('LineString','caravane'); break;
 		case "addLabelPoi" : 
 			Carte.initDrawInteraction('Point','label_poi'); break;
-		case "addLabelCapitale" :
-			Carte.initDrawInteraction('Point','label_capitale'); break;
 		case "addLabelVille" :
 			Carte.initDrawInteraction('Point','label_ville'); break;
+		case "addLabelCapitale" :
+			Carte.initDrawInteraction('Point','label_capitale'); break;
 		case "addLabelRiviere" :
-			break;
+			Carte.initDrawInteraction('Point','label_riviere'); break;
+		case "addLabelPasse" :
+			Carte.initDrawInteraction('Point','label_passe'); break;
+		case "addCaravane" :
+			Carte.initDrawInteraction('LineString','caravane'); break;
+		case "addRiviere" :
+			Carte.initDrawInteraction('LineString','riviere'); break;
 	}
 };
 

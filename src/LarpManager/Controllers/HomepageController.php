@@ -536,6 +536,8 @@ class HomepageController
 			case 'label_poi' :
 			case 'label_capitale' :
 			case 'label_ville' :
+			case 'label_riviere' :
+			case 'label_passe' :
 				$repo = 'GeoLabel';
 				$fields = ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte', 'rotation'=>'getRotation'];
 				break;
@@ -551,6 +553,7 @@ class HomepageController
 				$fields = ['id'=>'getId', 'geom'=>'getGeojson'];
 				break;
 			case 'caravane':
+			case 'riviere':
 				$repo = 'GeoLigne';
 				$fields = ['id'=>'getId', 'geom'=>'getGeojson'];
 				break;
@@ -591,8 +594,10 @@ class HomepageController
 			case 'label_poi' :
 			case 'label_capitale' :
 			case 'label_ville' :
+			case 'label_riviere' :
+			case 'label_passe' :
 				$repo = 'GeoLabel';
-				$fields = ['geom'=>'setGeojson', 'texte'=>'setTexte'];
+				$fields = ['geom'=>'setGeojson', 'texte'=>'setTexte', 'rotation'=>'setRotation'];
 				break;
 			case 'ville':
 			case 'capitale':
@@ -606,6 +611,7 @@ class HomepageController
 				$fields = ['geom'=>'setGeojson'];
 				break;
 			case 'caravane':
+			case 'riviere':
 				$repo = 'GeoLigne';
 				$fields = ['geom'=>'setGeojson'];
 				break;
@@ -642,27 +648,30 @@ class HomepageController
 		$categ = $request->get('categ');
 		
 		switch($categ) {
+			case 'label_ville' :
+			case 'label_capitale' :
+			case 'label_poi' :
+			case 'label_riviere' :
+			case 'label_passe' :
+				$row = new GeoLabel();
+				$fields = ['categ'=>'setCateg', 'geom'=>'setGeojson', 'texte'=>'setTexte'];
+				break;
 			case 'ville' :
 			case 'capitale' :
 			case 'exploration' :
 				$row = new GeoPicto();
 				$fields = ['categ' => 'setCateg', 'geom'=>'setGeojson'];
 				break;
-			case 'caravane' :
-				$row = new GeoLigne();
-				$fields = ['categ' => 'setCateg', 'geom'=>'setGeojson'];
-				break;
-			case 'label_ville' :
-			case 'label_capitale' :
-			case 'label_poi' :
-				$row = new GeoLabel();
-				$fields = ['categ'=>'setCateg', 'geom'=>'setGeojson', 'texte'=>'setTexte'];
-				break;
 			case 'ville' :
 			case 'capitale' :
 				$row = new GeoPicto();
 				$fields = ['categ' => 'setCateg', 'geom'=>'setGeojson'];
 				break;		
+			case 'caravane' :
+			case 'riviere':
+				$row = new GeoLigne();
+				$fields = ['categ' => 'setCateg', 'geom'=>'setGeojson'];
+				break;
 		}
 					
 		foreach ($fields as $nom => $fonction) {

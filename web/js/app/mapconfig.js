@@ -54,8 +54,21 @@ var Mapconfig = {
                     },
                     geomInteractions : {
 		                translate : false,
-		                modify : false
+		                modify : true
 	                }
+                },
+                {
+                    layerName : "riviere",
+					source : "worldmap/features/get/riviere",
+                    geomType : "LineString", 
+                    style : {
+                        zooms : [2,3,4,5,6],
+                        styleName: "ligne4"
+                    },
+                    geomInteractions : {
+                    	translate : false,	
+                    	modify : true		// modifier les points du tracé
+                    }
                 },
                 {
                     layerName : "caravane",
@@ -116,6 +129,32 @@ var Mapconfig = {
                     style: {
                         zooms : [4,5,6],
                         styleName: "texte2"
+                    },
+                    geomInteractions : {
+                    	translate : true,
+                    	modify : true
+                	}
+                },
+                {
+                    layerName : "label_riviere",
+                    source : "worldmap/features/get/label_riviere",
+                    geomType : "Label", // Point
+                    style: {
+                        zooms : [4,5,6],
+                        styleName: "texte3bleu"
+                    },
+                    geomInteractions : {
+                    	translate : true,
+                    	modify : true
+                	}
+                },
+                {
+                    layerName : "label_passe",
+                    source : "worldmap/features/get/label_passe",
+                    geomType : "Label", // Point
+                    style: {
+                        zooms : [4,5,6],
+                        styleName: "texte2rouge"
                     },
                     geomInteractions : {
                     	translate : true,
@@ -251,7 +290,7 @@ var BddStyles = {
 	"texte2" : {
 		zooms : [2,3,4,5,6],
     	fontWeight: "normal", 
-        fontSize: ["4","9","18","36","72"], 
+        fontSize: ["3","6","12","24","48"], 
         fontFamily: "Fiefs",
         interligne : 60,
         textTransformation : "none",
@@ -264,7 +303,7 @@ var BddStyles = {
 	"texte2rouge" : {
 		zooms : [2,3,4,5,6],
     	fontWeight: "normal", 
-        fontSize: ["4","9","18","36","72"], 
+        fontSize: ["3","6","12","24","48"], 
         fontFamily: "Fiefs",
         interligne : 60,
         textTransformation : "none",
@@ -287,6 +326,32 @@ var BddStyles = {
         fillColor : "#000000", 
         fillOpacity : 1
 	},
+	"texte3bleu" : {
+		zooms : [2,3,4,5,6],
+    	fontWeight: "normal", 
+        fontSize: ["2","4","8","16","32"], 
+        fontFamily: "Fiefs",
+        interligne : 30,
+        textTransformation : "none",
+        strokeColor : "#245579", 
+        strokeOpacity : 1, 
+        strokeWidth : 1,
+        fillColor : "#245579", 
+        fillOpacity : 1
+	},
+	"texte3rouge" : {
+		zooms : [2,3,4,5,6],
+    	fontWeight: "normal", 
+        fontSize: ["2","4","8","16","32"], 
+        fontFamily: "Fiefs",
+        interligne : 30,
+        textTransformation : "none",
+        strokeColor : "#8B0004", 
+        strokeOpacity : 1, 
+        strokeWidth : 1,
+        fillColor : "#8B0004", 
+        fillOpacity : 1
+	},
 	"ligne1" : {
         zooms : [2,3,4,5,6],
         strokeColor : "#8B0004", 
@@ -307,6 +372,13 @@ var BddStyles = {
         strokeOpacity: 1, 
         strokeWidth: [2,4,8,16,32], 
         strokeDashArray: [[1,1,3,3],[1,1,3,3],[3,3,6,6], [6,6,12,12], [12,12,24,24]],
+        strokeCap : "butt"
+    },
+    "ligne4" : {
+        zooms : [2,3,4,5,6],
+        strokeColor: "#4CB2FC", 
+        strokeOpacity: 1, 
+        strokeWidth: [2,4,8,16,32], 
         strokeCap : "butt"
     },
     "cercle1" : {
