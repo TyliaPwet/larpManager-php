@@ -1,9 +1,12 @@
 @font-face {
     font-family: "Pays";
-    src: url('../fonts/RingbearerMedium.ttf'); /* TheWildBreathOfZelda RingbearerMedium KeltCapsFreehand Twoforjuan */
+    src: url('../fonts/TrajanPro-Regular.otf'); /* TheWildBreathOfZelda RingbearerMedium KeltCapsFreehand Twoforjuan */
 }
 
 @font-face {
     font-family: "Fiefs";
-    src: url('../fonts/Dumbledor1.ttf'); /* Dumbledor1 Libra UncialAntiqua DevinneSwash */
+    /*src: url('../fonts/Livingst.ttf'); */
+/*    src: url('../fonts/Dumbledor1.ttf');  */
+    src: url('../fonts/Libra.ttf'); 
+
 }
