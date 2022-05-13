@@ -538,6 +538,7 @@ class HomepageController
 			case 'label_ville' :
 			case 'label_riviere' :
 			case 'label_passe' :
+			case 'label_magna' :
 				$repo = 'GeoLabel';
 				$fields = ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte', 'rotation'=>'getRotation'];
 				break;
@@ -549,11 +550,15 @@ class HomepageController
 				break;
 			case 'fief':
 			case 'pays':
+			case 'zonedeau':
 				$repo = 'GeoSurf';
 				$fields = ['id'=>'getId', 'geom'=>'getGeojson'];
 				break;
 			case 'caravane':
 			case 'riviere':
+			case 'lim_pays':
+			case 'lim_fief':
+			case 'coursdeau':
 				$repo = 'GeoLigne';
 				$fields = ['id'=>'getId', 'geom'=>'getGeojson'];
 				break;
@@ -596,22 +601,27 @@ class HomepageController
 			case 'label_ville' :
 			case 'label_riviere' :
 			case 'label_passe' :
+			case 'label_magna' :
 				$repo = 'GeoLabel';
 				$fields = ['geom'=>'setGeojson', 'texte'=>'setTexte', 'rotation'=>'setRotation'];
 				break;
 			case 'ville':
 			case 'capitale':
 			case 'exploration':
+			case 'coursdeau':
 				$repo = 'GeoPicto';
 				$fields = ['geom'=>'setGeojson'];
 				break;
 			case 'fief':
 			case 'pays':
+			case 'zonedeau':
 				$repo = 'GeoSurf';
 				$fields = ['geom'=>'setGeojson'];
 				break;
 			case 'caravane':
 			case 'riviere':
+			case 'lim_pays':
+			case 'lim_fief':
 				$repo = 'GeoLigne';
 				$fields = ['geom'=>'setGeojson'];
 				break;
@@ -662,13 +672,15 @@ class HomepageController
 				$row = new GeoPicto();
 				$fields = ['categ' => 'setCateg', 'geom'=>'setGeojson'];
 				break;
-			case 'ville' :
-			case 'capitale' :
-				$row = new GeoPicto();
+			case 'zonedeau' :
+				$row = new GeoSurf();
 				$fields = ['categ' => 'setCateg', 'geom'=>'setGeojson'];
 				break;		
 			case 'caravane' :
 			case 'riviere':
+			case 'lim_pays':
+			case 'lim_fief':
+			case 'coursdeau':
 				$row = new GeoLigne();
 				$fields = ['categ' => 'setCateg', 'geom'=>'setGeojson'];
 				break;

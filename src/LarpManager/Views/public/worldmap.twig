@@ -34,7 +34,8 @@
        		<option value="modifyLabelRotation">Modifier angle labels</option>
        		<option value="modifyLine">Modifier tracés linéaires (caravane...)</option>
        		<option value="modifyPays">Modifier tracés pays</option>
-       		<option value="modifyFiefs">Modifier tracés fiefs</option>>
+       		<option value="modifyFiefs">Modifier tracés fiefs</option>
+       		<option value="modifySea">Modifier zone maritime</option>
        		<option value="addVille">Ajouter pictos ville</option>
        		<option value="addCapitale">Ajouter pictos capitale</option>
        		<option value="addExplo">Ajouter pictos exploration</option>
@@ -45,6 +46,10 @@
        		<option value="addLabelPasse">Ajouter un label passe, sente, gué...</option>
        		<option value="addCaravane">Ajouter route commerciale</option>
        		<option value="addRiviere">Ajouter un tracé de rivière</option>
+       		<option value="addLimPays">Ajouter une frontière pays</option>
+       		<option value="addLimFief">Ajouter une frontière fief</option>
+       		<option value="addSea">Ajouter une zone maritime</option>
+       		<option value="addRiver">Ajouter un cours d'eau</option>
        		{% endif %}
       	</select>     	
     </form>
@@ -545,7 +550,8 @@ var Carte = {
 	            var str = "INSERT INTO geo_label (categ, geojson, texte) VALUES ('" + categ + "','" + geojson + "','" + reponse + "');";				
 			} else {
 				var datas = {categ: this.getProperties()['categ'], geom:geojson}
-				var table = {'ville':'geo_picto', 'capitale':'geo_picto','caravane':'geo_ligne', 'exploration':'geo_picto'};
+				var table = {'ville':'geo_picto', 'capitale':'geo_picto','caravane':'geo_ligne', 'exploration':'geo_picto', 'lim_pays':'geo_ligne', 'lim_fief':'geo_ligne'
+							,'zonedeau':'geo_surf', 'coursdeau':'geo_ligne'};
 	            var str = "INSERT INTO " + table[categ] + "(categ, geojson) VALUES ('" + categ + "','" + geojson + "');";
 			}
 			e.feature.categ = categ;			
@@ -612,8 +618,8 @@ var Carte = {
     
 };
 
-Carte.createMap("baseMap");
-//Carte.createMap("magnaCarta");
+//Carte.createMap("baseMap");
+Carte.createMap("magnaCarta");
 //Carte.showCountriesColors(true); // pour afficher la surcouche des pays en couleur
 
 // Cette fonctione me sers uniquement pour le dev, pour créer des objets sans avoir à créer les routes, etc...
@@ -648,6 +654,8 @@ actionSelect.onchange = function() {
 			Carte.initModifyInteraction('Polygon','pays'); break;
 		case "modifyFiefs" : 
 			Carte.initModifyInteraction('Polygon','fief'); break;
+		case "modifySea" :
+			Carte.initModifyInteraction('Polygon','zonedeau'); break;
 		case "addVille" :
 			Carte.initDrawInteraction('Point','ville'); break;
 		case "addCapitale" :
@@ -668,6 +676,14 @@ actionSelect.onchange = function() {
 			Carte.initDrawInteraction('LineString','caravane'); break;
 		case "addRiviere" :
 			Carte.initDrawInteraction('LineString','riviere'); break;
+		case "addLimPays" :
+			Carte.initDrawInteraction('LineString','lim_pays'); break;
+		case "addLimFief" :
+			Carte.initDrawInteraction('LineString','lim_fief'); break;
+		case "addSea" :
+			Carte.initDrawInteraction('Polygon','zonedeau'); break;
+		case "addRiver" :
+			Carte.initDrawInteraction('LineString','coursdeau'); break;
 	}
 };
 

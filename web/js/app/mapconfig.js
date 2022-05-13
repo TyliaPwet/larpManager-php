@@ -31,19 +31,20 @@ var Mapconfig = {
 		            	modify : true		// modifier le texte
 	            	}
                 },
+                /*
                 {
                     layerName : "fief",
                     source : "worldmap/features/get/fief",
                     geomType : "Polygon", 
                     style : {
                     	zooms: [3,4,5,6],
-                    	styleName: "ligne2"
+                    	styleName: "ligne1"
                 	},
                 	geomInteractions : {
 		            	translate : false,	// déplacer l'ensemble du polygone
 	            		modify : true		// modifier les points du polygone
 	            	}
-                },
+                },*//*
                 {
                     layerName : "pays",
                     source : "worldmap/features/get/pays",
@@ -51,6 +52,32 @@ var Mapconfig = {
                     style : {
                         zooms : [2,3,4,5,6],
                         styleName: "ligne1"
+                    },
+                    geomInteractions : {
+		                translate : false,
+		                modify : true
+	                }
+                },*/
+                {
+                    layerName : "lim_fief",
+                    source : "worldmap/features/get/lim_fief",
+                    geomType : "LineString", 
+                    style : {
+                    	zooms: [4,5,6],
+                    	styleName: "ligne5"
+                	},
+                	geomInteractions : {
+		            	translate : false,	
+	            		modify : true		
+	            	}
+                },
+                {
+                    layerName : "lim_pays",
+                    source : "worldmap/features/get/lim_pays",
+                    geomType : "LineString", 
+                    style : {
+                        zooms : [2,3,4,5,6],
+                        styleName: "ligne6"
                     },
                     geomInteractions : {
 		                translate : false,
@@ -209,8 +236,97 @@ var Mapconfig = {
             printZoom : 6,
             useBackground : true,
             layers : [
-            	
-            
+            	{
+            		layerName: "zonedeau",
+            		source: "worldmap/features/get/zonedeau",
+            		geomType: "Polygon",
+            		style: {
+            			zooms: [2,3,4,5,6],
+            			styleName: "surf1bleu"
+        			},
+        			geomInteractions : {
+        				translate : false,
+        				modify : true
+    				}
+				},
+            	{
+                    layerName : "label_pays",
+                    source : "worldmap/features/get/label_pays",
+                    geomType : "Label", // Point
+                    style : {
+                    	zooms: [2,3,4,5,6],
+                    	styleName: "titre1"
+                	},
+		            geomInteractions : {
+		            	translate : true,	// déplacer le point d'ancrage
+		            	modify : true		// modifier le texte
+	            	}
+                },
+                {
+                    layerName : "lim_fief",
+                    source : "worldmap/features/get/lim_fief",
+                    geomType : "LineString", 
+                    style : {
+                    	zooms: [4,5,6],
+                    	styleName: "ligne5"
+                	},
+                	geomInteractions : {
+		            	translate : false,	
+	            		modify : true		
+	            	}
+                },
+                {
+                    layerName : "lim_pays",
+                    source : "worldmap/features/get/lim_pays",
+                    geomType : "LineString", 
+                    style : {
+                        zooms : [2,3,4,5,6],
+                        styleName: "ligne6"
+                    },
+                    geomInteractions : {
+		                translate : false,
+		                modify : true
+	                }
+                },
+                {
+                    layerName : "caravane",
+					source : "worldmap/features/get/caravane",
+                    geomType : "LineString", 
+                    style : {
+                        zooms : [4,5,6],
+                        styleName: "ligne3"
+                    },
+                    geomInteractions : {
+                    	translate : false,	// déplacer l'ensemble du tracé...
+                    	modify : true		// modifier les points du tracé
+                    }
+                },
+                {
+                    layerName : "exploration",
+					source : "worldmap/features/get/exploration", 
+                    geomType : "Point", 
+                    style : {
+                        zooms : [2,3,4,5,6],
+                        styleName: "exploration"
+                    },
+                    geomInteractions : {
+                    	translate : true,	// déplacer le point d'ancrage
+                    	modify : false		// n'a pas de sens pour un point, identique à translate
+                	}
+                },
+            	{
+                    layerName : "label_magna",
+                    source : "worldmap/features/get/label_magna",
+                    geomType : "Label", // Point
+                    style: {
+                        zooms : [4,5,6],
+                        styleName: "texte3"
+                    },
+                    geomInteractions : {
+                    	translate : true,
+                    	modify : true
+                	}
+                }
             ]
         }
     ]
@@ -228,7 +344,7 @@ var DefaultStyleProperties = {
 		// Lignes (et contours polygones)
 		strokeColor: "#FF6C00", // orange pour bien distinguer les nouveautés || erreurs de config
 		strokeOpacity: 1,
-		strokeWidth: [2,4,8,16,32,64],
+		strokeWidth: [1,1,1,1,1], //[2,4,4,4,4],
 		//strokeDashStyle: "solid",
 		strokeCap: "butt",
 
@@ -260,7 +376,7 @@ var DefaultStyleProperties = {
 // A faire : gestion d'erreur en cas d'appel à un niveau de zoom non défini ici
 // A faire : mettre tout ça en base de données
 var BddStyles = {
-	"titre1" : {
+	"titre1" : { // noms de pays fond clair
         zooms : [2,3,4,5,6],
         fontWeight: "normal", 
         fontSize: ["12","24","46","96","192"], 
@@ -273,7 +389,20 @@ var BddStyles = {
         fillColor : "#CCCCCC", 
         fillOpacity : 1		
 	},
-	"texte1" : {
+	"titre2" : { // noms de pays fond foncé
+        zooms : [2,3,4,5,6],
+        fontWeight: "normal", 
+        fontSize: ["12","24","46","96","192"], 
+        fontFamily: "Pays",//"Trebuchet",
+        interligne : 300,
+        textTransformation : "toUpper",
+        strokeColor : "#AAAAAA", 
+        strokeOpacity : 1, 
+        strokeWidth : 1,
+        fillColor : "#555555", 
+        fillOpacity : 1		
+	},
+	"texte1" : { // noms fiefs
 		zooms : [2,3,4,5,6],
     	fontWeight: "normal", 
         //fontSize: ["6","12","24","48","96"],
@@ -287,7 +416,7 @@ var BddStyles = {
         fillColor : "#000000", 
         fillOpacity : 1
 	},
-	"texte2" : {
+	"texte2" : { // nom villes
 		zooms : [2,3,4,5,6],
     	fontWeight: "normal", 
         fontSize: ["3","6","12","24","48"], 
@@ -300,7 +429,7 @@ var BddStyles = {
         fillColor : "#000000", 
         fillOpacity : 1
 	},
-	"texte2rouge" : {
+	"texte2rouge" : { // noms capitales
 		zooms : [2,3,4,5,6],
     	fontWeight: "normal", 
         fontSize: ["3","6","12","24","48"], 
@@ -326,7 +455,7 @@ var BddStyles = {
         fillColor : "#000000", 
         fillOpacity : 1
 	},
-	"texte3bleu" : {
+	"texte3bleu" : { // nom cours d'eau
 		zooms : [2,3,4,5,6],
     	fontWeight: "normal", 
         fontSize: ["2","4","8","16","32"], 
@@ -339,7 +468,7 @@ var BddStyles = {
         fillColor : "#245579", 
         fillOpacity : 1
 	},
-	"texte3rouge" : {
+	"texte3rouge" : { 
 		zooms : [2,3,4,5,6],
     	fontWeight: "normal", 
         fontSize: ["2","4","8","16","32"], 
@@ -352,21 +481,21 @@ var BddStyles = {
         fillColor : "#8B0004", 
         fillOpacity : 1
 	},
-	"ligne1" : {
+	"ligne1" : { // contour polygone pays : ligne continue rouge
         zooms : [2,3,4,5,6],
         strokeColor : "#8B0004", 
         strokeOpacity : 1, 
         strokeWidth : [2,2,2,3,3]
 	},
-	"ligne2" : {
+	"ligne2" : { // controur polygone fief : ligne pointillée sable
         zooms : [2,3,4,5,6],
-        strokeColor : "#8E6F58",//"#9A785F", 
+        strokeColor : "#8E6F58",
         strokeOpacity : 1, 
         strokeWidth : [1,1,1,1,1],
         strokeDashArray: [[3,3],[3,3],[3,3],[3,3],[3,3]],
         strokeCap: "butt"
     },
-    "ligne3" : {
+    "ligne3" : { // caravane
         zooms : [2,3,4,5,6],
         strokeColor: "#6600A1", 
         strokeOpacity: 1, 
@@ -374,12 +503,28 @@ var BddStyles = {
         strokeDashArray: [[1,1,3,3],[1,1,3,3],[3,3,6,6], [6,6,12,12], [12,12,24,24]],
         strokeCap : "butt"
     },
-    "ligne4" : {
+    "ligne4" : { // riviere
         zooms : [2,3,4,5,6],
         strokeColor: "#4CB2FC", 
         strokeOpacity: 1, 
         strokeWidth: [2,4,8,16,32], 
         strokeCap : "butt"
+    },
+    "ligne6" : { // frontiere pays : ligne pointillée rouge
+        zooms : [2,3,4,5,6],
+        strokeColor : "#8B0004",//"#8B0004",
+        strokeOpacity : 1, 
+        strokeWidth : [2,3,4,8,16],
+        strokeDashArray: [[6,4],[8,6],[12,8],[24,16],[48,32]],
+        strokeCap: "butt"
+    },
+    "ligne5" : { // frontière fief : ligne pointillée sable
+        zooms : [2,3,4,5,6],
+        strokeColor : "#8E6F58", 
+        strokeOpacity : 1, 
+        strokeWidth : [1,2,2,4,4],
+        strokeDashArray: [[1,1,3,3],[2,2,6,6],[2,2,6,6], [4,4,12,12], [4,4,12,12]],
+        strokeCap: "butt"
     },
     "cercle1" : {
         zooms : [2,3,4,5,6],
@@ -403,12 +548,29 @@ var BddStyles = {
         imgSrc: 'img/pictos/exploration.svg',
         scale: [0.5,1,2,4,8]
     },
+    
     "capitale": {
         zooms : [2,3,4,5,6],
         pointRadius : [3,6,10,14,24],
         fillColor : "#0000FF", 
         fillOpacity : 1,
         imgSrc: 'cercle'
+    },
+    "surf1bleu" : { // mer
+        zooms : [2,3,4,5,6],
+        fillColor : "#0080FF",//"#8B0004",
+        fillOpacity : 0.3, 
+        /*strokeWidth : [2,3,4,8,16],
+        strokeDashArray: [[6,4],[8,6],[12,8],[24,16],[48,32]],
+        strokeCap: "butt"*/
+    },
+    "ressource": {
+        zooms : [2,3,4,5,6],
+        pointRadius : [3,6,10,14,24],
+        fillColor : "#00FF00", 
+        fillOpacity : 1,
+        imgSrc: 'img/pictos/bois.ai',
+        scale: [0.5,1,2,4,8]
     }
 }
 
