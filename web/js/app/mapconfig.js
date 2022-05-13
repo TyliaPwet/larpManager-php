@@ -248,7 +248,7 @@ var Mapconfig = {
         				translate : false,
         				modify : true
     				}
-				},
+				}/*,
             	{
                     layerName : "label_pays",
                     source : "worldmap/features/get/label_pays",
@@ -326,7 +326,7 @@ var Mapconfig = {
                     	translate : true,
                     	modify : true
                 	}
-                }
+                }*/
             ]
         }
     ]

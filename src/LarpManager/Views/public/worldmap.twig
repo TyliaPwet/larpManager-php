@@ -623,18 +623,18 @@ Carte.createMap("magnaCarta");
 //Carte.showCountriesColors(true); // pour afficher la surcouche des pays en couleur
 
 // Cette fonctione me sers uniquement pour le dev, pour créer des objets sans avoir à créer les routes, etc...
-/*Carte.olMap.on('click', function(e) { //console.log(e.coordinate);
+Carte.olMap.on('click', function(e) { //console.log(e.coordinate);
     var newPoint = new ol.geom.Point(e.coordinate);
     Util.transform(newPoint, 'LMPROJ', 'EPSG:4326');
     var convert = new ol.format.GeoJSON;
     var geojson = convert.writeGeometry(newPoint);
     
 //    var str = "INSERT INTO geo_picto (`type`, geojson, url, rotation) VALUES ('exploration', '" + geojson +"', 'img/pictos/exploration.svg', 0);";
-  var str = "INSERT INTO geo_picto (`type`, geojson, url, rotation) VALUES ('ville', '" + geojson +"', 'cercle', 0);" ;
-
+//  var str = "INSERT INTO geo_picto (`type`, geojson, url, rotation) VALUES ('ville', '" + geojson +"', 'cercle', 0);" ;
+console.log(geojson);
     //console.log(str);
 });
-*/
+
 
 var actionSelect = document.getElementById('action_select');
 
