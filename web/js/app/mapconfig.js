@@ -248,7 +248,33 @@ var Mapconfig = {
         				translate : false,
         				modify : true
     				}
-				}/*,
+				},
+				{
+                    layerName : "label_sea",
+                    source : "worldmap/features/get/label_sea",
+                    geomType : "Label", // Point
+                    style : {
+                    	zooms: [2,3,4,5,6],
+                    	styleName: "texte2blanc"
+                	},
+		            geomInteractions : {
+		            	translate : true,	
+		            	modify : true
+	            	}
+                },
+                {
+                    layerName : "lim_sea",
+                    source : "worldmap/features/get/lim_sea",
+                    geomType : "LineString", 
+                    style : {
+                    	zooms: [2,3,4,5,6],
+                    	styleName: "ligne7"
+                	},
+                	geomInteractions : {
+		            	translate : false,	
+	            		modify : true		
+	            	}
+                },
             	{
                     layerName : "label_pays",
                     source : "worldmap/features/get/label_pays",
@@ -287,7 +313,7 @@ var Mapconfig = {
 		                translate : false,
 		                modify : true
 	                }
-                },
+                }/*,
                 {
                     layerName : "caravane",
 					source : "worldmap/features/get/caravane",
@@ -313,7 +339,7 @@ var Mapconfig = {
                     	translate : true,	// déplacer le point d'ancrage
                     	modify : false		// n'a pas de sens pour un point, identique à translate
                 	}
-                },
+                }*/,
             	{
                     layerName : "label_magna",
                     source : "worldmap/features/get/label_magna",
@@ -326,7 +352,7 @@ var Mapconfig = {
                     	translate : true,
                     	modify : true
                 	}
-                }*/
+                }
             ]
         }
     ]
@@ -442,6 +468,19 @@ var BddStyles = {
         fillColor : "#8B0004", 
         fillOpacity : 1
 	},
+	"texte2blanc" : { // nom zones maritimes
+		zooms : [2,3,4,5,6],
+    	fontWeight: "normal", 
+        fontSize: ["3","6","12","24","48"], 
+        fontFamily: "Fiefs",
+        interligne : 60,
+        textTransformation : "none",
+        strokeColor : "#FFFFFF", 
+        strokeOpacity : 1, 
+        strokeWidth : 1,
+        fillColor : "#FFFFFF", 
+        fillOpacity : 1
+	},
 	"texte3" : {
 		zooms : [2,3,4,5,6],
     	fontWeight: "normal", 
@@ -524,6 +563,14 @@ var BddStyles = {
         strokeOpacity : 1, 
         strokeWidth : [1,2,2,4,4],
         strokeDashArray: [[1,1,3,3],[2,2,6,6],[2,2,6,6], [4,4,12,12], [4,4,12,12]],
+        strokeCap: "butt"
+    },
+    "ligne7" : { // limite zone maritime
+        zooms : [2,3,4,5,6],
+        strokeColor : "#FFFFFF",
+        strokeOpacity : 1, 
+        strokeWidth : [1,2,2,4,4],
+        strokeDashArray: [[3,3],[6,6],[6,6],[12,12],[12,12]],
         strokeCap: "butt"
     },
     "cercle1" : {

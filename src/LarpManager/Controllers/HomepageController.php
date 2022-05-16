@@ -539,6 +539,7 @@ class HomepageController
 			case 'label_riviere' :
 			case 'label_passe' :
 			case 'label_magna' :
+			case 'label_sea':
 				$repo = 'GeoLabel';
 				$fields = ['id'=>'getId', 'geom'=>'getGeojson', 'texte'=>'getTexte', 'rotation'=>'getRotation'];
 				break;
@@ -559,6 +560,7 @@ class HomepageController
 			case 'lim_pays':
 			case 'lim_fief':
 			case 'coursdeau':
+			case 'lim_sea':
 				$repo = 'GeoLigne';
 				$fields = ['id'=>'getId', 'geom'=>'getGeojson'];
 				break;
@@ -602,6 +604,7 @@ class HomepageController
 			case 'label_riviere' :
 			case 'label_passe' :
 			case 'label_magna' :
+			case 'label_sea':
 				$repo = 'GeoLabel';
 				$fields = ['geom'=>'setGeojson', 'texte'=>'setTexte', 'rotation'=>'setRotation'];
 				break;
@@ -622,6 +625,7 @@ class HomepageController
 			case 'riviere':
 			case 'lim_pays':
 			case 'lim_fief':
+			case 'lim_sea':
 				$repo = 'GeoLigne';
 				$fields = ['geom'=>'setGeojson'];
 				break;
@@ -663,6 +667,7 @@ class HomepageController
 			case 'label_poi' :
 			case 'label_riviere' :
 			case 'label_passe' :
+			case 'label_sea':
 				$row = new GeoLabel();
 				$fields = ['categ'=>'setCateg', 'geom'=>'setGeojson', 'texte'=>'setTexte'];
 				break;
@@ -681,6 +686,7 @@ class HomepageController
 			case 'lim_pays':
 			case 'lim_fief':
 			case 'coursdeau':
+			case 'lim_sea':
 				$row = new GeoLigne();
 				$fields = ['categ' => 'setCateg', 'geom'=>'setGeojson'];
 				break;

@@ -261,7 +261,7 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_fief','{"type":"Point","coordinates":[84.40625,-102]}','Tribus#Akbitani',0,265,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[89.640625,-100.609375]}','Tribus#Shumiri',0,266,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[96.28125,-99.5]}','Tribus#Sabati',0,267,'extended'),
-	 ('label_fief','{"type":"Point","coordinates":[73.78125,-107.15625]}','Terres Royales#de Luxur',0,268,'extended');
+	 ('label_fief','{"type":"Point","coordinates":[73.40625,-107.375]}','Terres Royales#de Luxur',0,268,'extended');
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
 	 ('label_fief','{"type":"Point","coordinates":[82.078125,-108.046875]}','Province de#Nebthu',0,269,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[91.296875,-108.015625]}','Province de#Ptéion',0,270,'extended'),
@@ -270,9 +270,9 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_fief','{"type":"Point","coordinates":[93.09375,-49.671875]}','Monts du#Masque de#Mort',0,273,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[69.828125,-111.3125]}','Province de#Khajar',0,274,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[88.109375,-54.984375]}','Marches#némédiennes',0,275,'extended'),
-	 ('label_fief','{"type":"Point","coordinates":[76.625,-110.96875]}','Province#de Sukhmet',0,276,'extended'),
+	 ('label_fief','{"type":"Point","coordinates":[76.375,-111.1875]}','Province#de Sukhmet',0,276,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[92.375,-45.5]}','Hautes plaines',0,277,'extended'),
-	 ('label_fief','{"type":"Point","coordinates":[83.46875,-113.515625]}','Marais du#Lotus Pourpre',0,278,'extended');
+	 ('label_fief','{"type":"Point","coordinates":[83.4375,-113.828125]}','Marais du#Lotus Pourpre',0,278,'extended');
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
 	 ('label_fief','{"type":"Point","coordinates":[64.21875,-123.125]}','Tribus Kushites',0,279,'extended'),
 	 ('label_fief','{"type":"Point","coordinates":[70.34375,-117.09375]}','Tribus#Zuadi',0,280,'extended'),
@@ -606,4 +606,338 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
 	 ('label_passe','{"type":"Point","coordinates":[61.953125,-27.1875]}','sente des géants',330,NULL,'extended'),
 	 ('label_passe','{"type":"Point","coordinates":[76.171875,-31.65625]}','passe de givres',310,NULL,'extended'),
-	 ('label_passe','{"type":"Point","coordinates":[84.984375,-27.28125]}','gué des tains',NULL,NULL,'extended');
+	 ('label_passe','{"type":"Point","coordinates":[84.984375,-27.28125]}','gué des tains',NULL,NULL,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [175.2981379147025, -106.28571242776776]}','Meru',0,118,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [175.48623834458897, -19.502319948969156]}','Pathénie',0,119,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [236.75502602769703, -61.659188820020574]}','Lemurie',0,123,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [237.18663949555193, -159.513110235623]}','Mû',0,124,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [84.59928393148077, -150.8491844485835]}','Grand sud sauvage',0,431,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [45.63580521965944, -60.369744808969784]}','Bossonie du nord',0,3,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [36.870985169147936, -67.4429821716238]}','Bossonie#du sud',0,4,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [139.1221338468249, -105.07714183920221]}','Khawarism',0,9,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [126.40978031014653, -75.08267867225949]}','Khorosun',0,10,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [131.65596812687713, -64.24845874734909]}','Sultanapur',0,11,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [127.35215341814846, -55.35251755377405]}','Akif',0,12,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [70.05983844352177, -101.68609238412039]}','Anakia',0,15,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [62.379531768465036, -100.59880930345423]}','Pelishtia',0,16,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [61.62097470939366, -107.2195690206399]}','Province de#Khémi',0,18,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [62.94895103065816, -113.184075054436]}','Province de#Kheshatta',0,19,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [78.60526662281869, -76.14906689095648]}','Nywent-La',0,23,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [100.02519225203412, -67.98751300520397]}','Khumar',0,24,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [89.4922890278034, -72.76060249617318]}','Poloponni',0,26,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [94.62104806975879, -73.43723037161219]}','Mornstadinos',0,27,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [41.30633533275523, -77.90676779112717]}','Escarpement#Imérien',0,31,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [28.811499765698056, -76.73529064257487]}','Marches#rabiriennes',0,32,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [53.78298835315987, -78.34495793600402]}','Barronie#d''Attalus',0,33,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [36.97267128529955, -59.84483867775139]}','Conawaga',0,35,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [30.856071577197557, -68.42490149172944]}','Thandara',0,36,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [33.49393102169356, -63.52072719289446]}','Schohira',0,37,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [41.44353918625748, -56.43115883602118]}','Oriskonie',0,38,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [46.96007570242927, -54.89769633837042]}','Tauran',0,39,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [49.33912508599062, -76.14608050812029]}','Karaban',0,40,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [35.211049603008966, -76.76133494031221]}','Poitain#(centre)',0,42,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [74.66345762039504, -55.995291333942156]}','Comté#d''Hanumar',0,45,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [80.56453665258866, -50.110683965962586]}','Marais de#Varakiel',0,46,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [88.66164055904248, -65.23175215339275]}','Terres Royales#de Numalia',0,47,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [81.48473473629308, -56.88008183239964]}','Forêt#sombre',0,48,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [81.27119156488392, -64.89396871839735]}','Terres du#Culte',0,49,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [64.92644488616108, -65.6126124300752]}','Pellia',0,56,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [62.75911485247729, -70.98795679891636]}','Thune',0,57,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [91.93484372246279, -25.531594420045167]}','terres vertes#de Pohiola',0,58,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [95.61714257982776, -32.4020551860847]}','vallées de #Sigtona',0,59,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [93.69404578381476, -61.566989315779146]}','Terres du#Coeur',0,60,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [100.59286217231306, -46.00391307185813]}','Sources du#Danibos',0,61,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [40.93138498122682, -49.94950630172338]}','Corbeaux',0,62,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [23.885609453340575, -50.67663735393578]}','Faucons#de mer',0,63,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [37.660881317428554, -33.21821519033909]}','Ours',0,64,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [81.90745020982791, -39.60847678412341]}','Virunia',0,65,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [67.67936904561839, -51.64289224066326]}','Terre des#Coupe-Jarrets',0,66,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [75.66216995621444, -48.855610201921024]}','Les Marais#salants',0,67,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [129.9058250699642, -84.18670105518561]}','Shahpur',0,68,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [135.6890590451089, -95.29467708334845]}','Aghrapur',0,69,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [136.17006448568404, -51.52417413358152]}','Yaralet',0,70,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [127.77362216098477, -91.39887445036435]}','Erlikistan#(Ex-Zamboula)',0,71,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [114.37215617082882, -63.450927459800425]}','Marches#zamoranes',0,72,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [113.06405646503875, -82.13400150521555]}','Steppes Kozakis',0,73,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [113.19830397229065, -109.18825341641843]}','Désert Zuagir',0,74,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [129.03927595586717, -99.98548631104713]}','Akhlat',0,75,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [116.00913420978823, -122.99914163533424]}','Drujistan',0,76,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [135.61440413824258, -27.522791893973643]}','mont gris de#Tormanna',0,79,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [183.8868076520035, -113.3421150070365]}','Uttara#Kuru',0,86,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [122.67363903509813, -26.907299588669062]}','plateau de#Brodoloneygorod',0,116,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [112.14611828964763, -43.001934615340154]}','monts sauvages de#Bolotogorod',0,117,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [73.43499773713468, -136.77679896982974]}','Amazonie',0,122,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [28.94052826998693, -84.82985672611561]}','Comté de#Valbroso',0,125,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [23.050325845680387, -91.5598467352077]}','Comté de#Korzetta',0,126,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [16.735962467452463, -88.1059238792613]}','Terres de#Kordava',0,127,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [23.986701147911987, -82.32083657923758]}','Marches#Pictes',0,128,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [34.24148061529281, -89.4696496889688]}','Marches de#l''Est Argosiennes',0,129,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [30.057709757768254, -93.63850888371583]}','Forêt des#Goules',0,130,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [40.24384935157607, -85.12576081049501]}','Terres#des Cranes',0,131,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [77.80738068697879, -54.53712983958216]}','Marches#du nord',0,132,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [70.66609054978075, -56.704428221594604]}','Baronnie#de Tor',0,133,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [72.34176946681217, -66.18748181682115]}','Terres de#Belvérus',0,134,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [73.40290315195598, -73.18508963873761]}','Passe d''Oteron',0,135,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [81.641303997365, -69.32436921663663]}','Berges du#fleuve rouge',0,136,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [77.74243260464961, -61.64153423752213]}','Coeur du#Royaume',0,137,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [85.73666805709162, -48.38553379226112]}','Plaines#marécageuses',0,138,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [84.24742020259593, -60.82360112917055]}','Berges du#fleuve jaune',0,139,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [100.36243331253633, -58.000004894692324]}','Plaines#sèches',0,140,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [103.39033747104088, -53.12339846252402]}','Plaines#sauvages',0,141,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [99.23150053563866, -51.387757828006016]}','Marais des#âmes',0,142,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [106.64021473333987, -118.26108273763516]}','Kassali',0,143,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [105.68040030535305, -123.11262295510831]}','Montagnes#dorées',0,144,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [102.33572205836644, -127.5379284406668]}','Sud de#Punt',0,145,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [54.18933616017102, -53.617816010473824]}','Gunderland Raman',0,146,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [60.357877452463725, -56.62665737369873]}','Gunderland Frontière',0,147,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [44.142954315339445, -68.62369323232294]}','Castria',0,149,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [51.38491401212275, -63.96696069873584]}','Cantrium',0,150,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [58.57830599266355, -60.97160502391512]}','Couthan',0,151,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [56.97164174298743, -68.02209260686054]}','Tarantia',0,152,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [66.28596857809993, -59.97530839853123]}','Albiona',0,153,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [53.572866524931435, -83.74752015541138]}','Theringo',0,154,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [59.24934114403132, -78.06231481494665]}','Terson',0,155,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [66.80381669024129, -75.16537930480263]}','Frosol',0,156,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [62.566613678178804, -85.06351820678944]}','Terres royales de Koth',0,157,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [62.25580259505819, -80.9735031131995]}','Mecanta',0,158,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [70.088736790006, -79.75943486112646]}','Plaines de#Shamu',0,159,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [80.13395513423565, -79.61089809082571]}','Lodier',0,160,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [77.00514726573492, -116.7315141051496]}','Ghanata',0,161,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [75.88914481077444, -120.11112467018954]}','Tibu',0,162,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [82.21669138842844, -119.91819690605416]}','Prairies#darfari',0,163,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [88.63335496251909, -120.21426279678435]}','Alkmeenon',0,164,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [97.39573388323504, -124.78933149772807]}','Jungle#keshianne',0,165,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [97.9687233232325, -119.96265548713033]}','Keshian',0,166,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [94.08748361318426, -115.92746775446051]}','Bordure stygienne',0,167,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [67.07809575718882, -89.21802232566002]}','Collines kothiennes',0,168,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [73.36511674974304, -83.66791303902117]}','Désert kothien',0,169,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [76.029470202729, -89.10503260096101]}','Collines de#Dagoth',0,170,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [83.59073993290238, -82.03785620686757]}','Berges du#lac salé',0,171,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [83.6298394134045, -86.53632781946175]}','Baronnie de#Korveka',0,172,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [91.61852283045896, -83.90614275241637]}','Pointe#orientale',0,173,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [88.61378880359553, -77.55979797202183]}','Anuphar',0,174,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [100.77879006106417, -80.94398519870597]}','Monts#d''Ishtar',0,175,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [96.6523435007211, -84.49714528312498]}','Khauran',0,176,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [111.37357533573312, -95.4740533521424]}','Désert de l''est',0,177,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [102.48490769012533, -108.32104060818041]}','Désolation#stygienne',0,178,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [117.93754516855519, -116.27723801933082]}','Vezek',0,179,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [128.90726451766085, -108.84493576991035]}','Shangara',0,180,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [118.54746642355343, -60.58836808066553]}','Désert#turanien',0,181,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [108.07301646070005, -57.68634178651437]}','Arenjun',0,182,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [106.47979206641571, -64.4586281755657]}','La Passe#du sorcier',0,183,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [110.06705481642466, -67.70311437004501]}','Royaumes#de l''est',0,184,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [106.37314578768053, -70.89480964760655]}','Larsha',0,185,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [101.36553157852, -72.76486158774624]}','Yezud',0,186,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [102.84699510793325, -76.28163187380294]}','Khesron',0,187,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [96.22646851698717, -77.9388014131248]}','Shadizar',0,188,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [101.28068908953703, -61.73627355346372]}','Ezar Bar#Qum',0,189,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [95.15934543234653, -66.91932698044289]}','Ménalos',0,190,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [86.61608586598932, -71.00287364374793]}','Vesci',0,191,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [207.21477021194403, -104.16798152391054]}','Collines#kambujanes',0,192,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [214.5995364965277, -102.90818482200221]}','Jungle#kambujane',0,193,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [211.4050946577595, -107.87394774034534]}','Angkhor',0,194,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [206.65944966038424, -113.29180213732457]}','Royaume#du sud',0,195,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [206.4544165233098, -16.125841251209078]}','Désert des Sables noirs',0,196,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [184.9759887468497, -47.21533806477036]}','Piliers nords',0,197,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [198.79112186209613, -44.86511317380721]}','Province#Hunain',0,198,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [209.15664261550037, -38.85744784083213]}','Terres vertes#khitanes',0,199,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [220.18238522954093, -32.84654341667082]}','Province#Chitain',0,200,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [232.90261216699005, -39.9778415599705]}','Marais des morts',0,201,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [219.58514594289022, -50.79417681429285]}','province#Chosain',0,202,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [206.91099393631006, -61.29688045944113]}','province#Tsenain',0,203,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [216.8918871852325, -67.96399380495603]}','Terres impériales',0,204,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [198.8336195968161, -67.67897413920754]}','province#Yutsiai',0,205,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [187.67161757298027, -68.97955150986785]}','province#Guangain',0,206,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [210.7178099753155, -83.61396343179752]}','Province#Zhejiain',0,207,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [200.06873414562767, -81.99848379399482]}','Forêt#Zang Xin',0,208,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [189.83241993041318, -84.94670637857337]}','Escarpements#khitans',0,209,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [205.65688588524117, -96.19793390632641]}','Marches#kambujanes',0,210,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [195.29236477681033, -99.08437176253669]}','Jungle#ancestrale',0,211,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [46.010704056025965, -87.01697469510911]}','Marches#intérieures',0,212,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [42.8597251869181, -90.85276500853104]}','Rives de#l''Astar',0,213,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [38.298369726499665, -95.48816537854411]}','Terres Impériales#de Messantia',0,214,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [28.60658980607201, -98.52297552989614]}','Collines Didymian',0,215,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [48.3507645325079, -96.33492425841263]}','Rives du#Khorotas',0,216,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [57.37559291759761, -97.31807675297544]}','Hypsonia',0,217,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [55.9576971361748, -89.74069371545413]}','Plaines de Maru',0,218,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [148.34336715078567, -26.03212930924623]}','Toundra#du nord',0,219,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [152.03562135974457, -36.92890481961157]}','Steppes#de Zarfhanaa',0,220,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [164.43600516069864, -34.432795285706426]}','Taïga#de l''est',0,221,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [167.3434534583992, -64.15754425609678]}','Steppes#blanches',0,222,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [151.23529354220224, -57.24671096431075]}','Ports Francs',0,223,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [155.50810043584872, -70.61353272054355]}','Sogaria',0,224,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [154.7116326122325, -81.26709983575039]}','Ashral',0,225,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [157.412965857313, -93.77723662051638]}','Bolkhan',0,226,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [181.41947649621375, -84.67780689426168]}','Désert#Wuhuan',0,227,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [185.19736849344508, -105.69584307530175]}','Kara-Korum',0,228,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [101.10467550319413, -131.63617339240116]}','Capitale#du nord',0,229,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [98.84171930997161, -138.2781280693897]}','Prairies du#Zembabwei',0,230,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [103.19981259092184, -136.5376052736299]}','Monomotapa',0,231,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [105.24876766482252, -141.90457397582693]}','Capitale#du sud',0,232,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [100.40790305745394, -146.52483910911968]}','Vieux#Zembabweï',0,233,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [109.93807537027124, -127.95863501516773]}','Sushan',0,234,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [107.0984670907131, -135.76149149584006]}','Marches du#Zembabweï',0,235,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [114.17820671096949, -131.06777742474634]}','Désert#de la soif',0,236,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [113.91446120400214, -138.26424098204038]}','Sabeaa',0,237,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [120.45782381811667, -131.9881478007774]}','Zariba',0,238,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [126.8528486225713, -125.48039425495301]}','Irijan',0,239,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [123.64841459056254, -119.56467766930582]}','Kushaf',0,240,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [133.74218854186532, -122.7016280927236]}','Larajan',0,241,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [131.69055430828274, -117.32440603223743]}','Anshanir',0,242,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [144.69630999371674, -117.31344881679259]}','Tiazitia',0,243,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [151.02762969673697, -117.3889010450983]}','Terres#ancestrales',0,244,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [147.91432223476943, -123.38229871107806]}','Yotarah',0,245,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [150.51361515593388, -102.22965472634361]}','Vallée Gurashah',0,246,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [151.62326792944444, -107.3853946814679]}','Tribus des collines',0,247,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [151.95099214466168, -112.06226124173436]}','Afghulistan',0,248,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [161.33727960771915, -103.78874647452729]}','tribu des#Wazulis',0,249,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [162.83792323865885, -110.3041390621861]}','Yimsha',0,250,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [168.31638803492623, -105.28877692464243]}','Pays#Khirgiz',0,251,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [45.360138732466474, -41.19006433227535]}','Taïga#Cimmérienne',0,253,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [55.378422341261114, -38.473431676269236]}','Hauts Eiglophiens',0,254,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [53.455480460716664, -47.19129718181355]}','Hautes Terres#Cimmeriennes',0,255,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [65.81749635310064, -41.84350009609504]}','Coeur de la#Cimmérie',0,256,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [77.65774428837734, -37.00687605409282]}','Grand Glacier#de Tains',0,257,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [69.19622512077105, -94.93422378742639]}','Tribus#Kyrosi',0,258,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [78.08485342273022, -95.84429441207232]}','Tribus#Eruki',0,259,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [88.4610143433478, -96.46250204012415]}','Tribus Sushani',0,260,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [97.75678340044708, -95.84400452564633]}','Tribus#Nippri',0,261,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [173.9604096783398, -83.61068741358832]}','Royaume#d''occident',0,262,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [174.8301629450243, -76.99433907019052]}','Terres#de sel',0,263,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [77.03085001872262, -101.23960340304507]}','Tribus#Akkhari',0,264,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [84.21497638393447, -101.84843081455949]}','Tribus#Akbitani',0,265,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [89.45467609895, -101.23496936410119]}','Tribus#Shumiri',0,266,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [96.25353885753948, -100.94057528633692]}','Tribus#Sabati',0,267,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [71.84588666002823, -107.02732110592264]}','Terres Royales#de Luxur',0,268,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [82.13562435166163, -109.10286739292854]}','Province de#Nebthu',0,269,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [90.66795541839514, -109.39595407154509]}','Province de#Ptéion',0,270,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [95.50700150975574, -55.59293099927689]}','Plaines de#Lema',0,271,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [97.40235970074622, -108.58886513838489]}','Province#de Taïa',0,272,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [92.05902066728301, -51.64367280566407]}','Monts du#Masque de#Mort',0,273,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [69.58115719176443, -112.06078682085912]}','Province de#Khajar',0,274,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [88.16525165612116, -56.576542564910596]}','Marches#némédiennes',0,275,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [76.30729723762452, -113.09753092059589]}','Province#de Sukhmet',0,276,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [92.77350459701059, -45.191763444384776]}','Hautes plaines',0,277,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [83.60154171649623, -114.33210828238543]}','Marais du#Lotus Pourpre',0,278,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [64.52703213124202, -123.25067601741534]}','Tribus Kushites',0,279,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [69.99295199456678, -117.97537814150257]}','Tribus#Zuadi',0,280,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [66.40635533155664, -119.17846802534528]}','Plaine de#Méroë',0,281,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [60.65185164848574, -118.93868480457047]}','Côtes de#Zabhela',0,282,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [37.70708809823525, -40.69700351588898]}','Lions des#montagnes',0,283,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [30.30511809600031, -40.52196802293191]}','Pies-Grièches',0,284,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [31.745550996566596, -50.110898754551556]}','Tigres à#dents de sabre',0,285,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [31.75667727596208, -59.75547654730809]}','Loups',0,286,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [22.334165232941928, -62.35202764752068]}','Cormorans',0,287,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [24.913962796153427, -72.63374893986649]}','Panthères',0,288,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [18.872201193487523, -76.64602053287977]}','Loutres',0,289,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [62.79360207955272, -51.81990551201748]}','Atzel',0,294,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [69.50231433636479, -47.594371893019165]}','Basses#terres',0,295,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [75.75962204905441, -44.235146721255795]}','Grand duché de#Nassaria',0,296,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [159.1588210705464, -115.88682020845646]}','Shirakma',0,297,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [166.25450159403005, -114.95783484261553]}','Frontière#Hymérienne',0,298,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [171.7441544723545, -113.20058389979123]}','Jhumdaï',0,299,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [177.19623474271938, -114.53353807412041]}','Biharaï',0,300,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [181.076834351995, -121.19279151680769]}','Tripuraï',0,301,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [165.96757446219138, -121.72948160169118]}','Terres de#la Devi',0,302,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [161.340898072275, -123.26568087883196]}','Hauts plateaux#vendhyens',0,303,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [173.9042195404589, -121.3730124745425]}','Forêt de#Ghendaï',0,304,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [174.1097711384218, -128.4101990372337]}','Telangaï',0,305,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [164.3445971080985, -130.93462658142445]}','Jhelaï',0,306,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [172.02645356230371, -134.59474017022634]}','Andhra#Pradesh',0,307,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [177.28875792579913, -135.98574420000855]}','Odishaï',0,308,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [170.03482476549786, -140.57241515537547]}','Jungles#du sud',0,309,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [84.16644131415457, -92.30454988304457]}','Khanyria',0,310,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [91.54560733638613, -91.0630359792961]}','Khoraja',0,311,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [51.1457237073348, -6.200684214113399]}','Llyowin# Sanctuaire du nord',0,312,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [38.88496189840421, -11.778475550662728]}','Lonnström# Sanctuaire de l''eau',0,313,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [48.51015236946666, -16.783311507680338]}','Idöwön# Sanctuaire du centre',0,314,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [57.75337090891485, -13.305577827366688]}','Fahlwön# Sanctuaire de la frontière',0,315,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [42.497505003819846, -25.272204990683733]}','Forêt#marécageuse',0,316,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [55.84303892066047, -27.346512985919674]}','Nokowonn# Sanctuaire Eiglophien',0,317,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [70.195289236778, -6.766195263084516]}','Royaume de#Shiral',0,318,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [83.32902850428978, -8.0209990358079]}','Royaume de#Winntul',0,319,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [74.59035715829971, -14.403890716458056]}','Royaume de#Wonal',0,320,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [66.58965695404522, -19.56515796487093]}','Royaume de#Bodvinagi',0,321,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [81.61116968275833, -19.979151992362926]}','Royaume de#Loonisal',0,322,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [75.10804921285653, -28.80227709713392]}','Royaume de#Moïrul',0,323,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [92.14143710387681, -39.34134008335071]}','Monts Graaskal',0,324,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [92.87906403775774, -10.758427425350698]}','rives de la mort galcée#de Haloga',0,325,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [104.80370922546973, -11.934567987428325]}','désolation de glace de#Pokhoronen',0,326,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [116.90951313634876, -9.90862700673911]}','longue nuit de#Thula',0,327,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [132.38023200031014, -9.88960966556118]}','solitudes de#Sythia',0,328,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [102.5044839001302, -21.961038210226338]}','rives après#Dukhimost',0,329,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [108.06874371563282, -34.09502373492907]}','étendues de#Serryytundra',0,330,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [127.46137033703725, -42.0413399761861]}','steppes de#Pustynya et Nestvaya',0,331,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [58.987620360538635, -129.66995662194122]}','Côte#Noire',0,332,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [63.0279873522805, -125.98813360679753]}','Bakalah',0,333,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [73.41276945431973, -123.20106617854522]}','Tombalku',0,335,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [80.62165963431787, -124.68216110283777]}','Bagirmi',0,336,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [75.31790544462503, -126.50117541211979]}','Jihiji',0,343,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [66.444573034035, -128.50020653186596]}','Bamula',0,344,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [100.27483603966654, -151.41422084271662]}','Jungles#éparses',0,359,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [64.43656929609314, -156.1684468822171]}','Iles du Sud',0,361,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [49.8674440681445, -128.01508620689654]}','Ile d''Argent',0,362,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [84.87930048433024, -136.17541678194908]}','Grandes#Savanes',0,363,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [10.310164342136465, -113.87974191952418]}','Tortage',0,371,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [11.302110812782411, -99.19098853579209]}','Ile du#nord',0,372,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [134.68997767100313, -114.38125176410945]}','La#Plantation',0,374,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [139.49016957683568, -112.0152351183736]}','Terres#ancestrales#Venji',0,375,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [88.51296994392631, -125.36514352537843]}','Confédération#Tombalku',0,384,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [71.35497151622498, -130.02787782078153]}','Les six tribus',0,412,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_magna','{"type": "Point", "coordinates": [91.80436866474697, -130.79428252050494]}','La terre des petits#Hommes',0,413,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [62.78878818267012, -141.34115711862924]}','Royaume#de#Juma',0,414,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [74.02555425282456, -142.82362883332826]}','royaumes#magiques',0,429,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [140.0574696969697, -76.404]}','Archipel de la Vilayet',0,434,'extended'),
+	 ('label_magna','{"type": "Point", "coordinates": [65.19475974747085, -33.722075108804496]}','Monts Eiglophiens',0,439,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[241.09375,-10.8125]}','mer sans fonds',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[244.21875,-30]}','Mer des Alizés',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[227.59375,-81.125]}','côte impériale',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[244.34375,-101.375]}','océan du levant',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[217.5,-112.515625]}','mer de Kambuja',NULL,NULL,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_sea','{"type":"Point","coordinates":[211.9375,-137.015625]}','mer des typhons',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[243.375,-136.140625]}','côte maudite',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[201.6875,-164.015625]}','côte glacée',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[190.0625,-124.015625]}','baie des#naufrageurs',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[160.3125,-145.515625]}','cap vendhy',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[145.375,-131.390625]}','péninsule#de yotarah',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[124.125,-144.703125]}','côte de perle',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[147.125,-161.640625]}','mer australe',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[93.625,-166.390625]}','cap sans retour',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[53.5,-150.390625]}','iles du sud',NULL,NULL,'extended');
+INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
+	 ('label_sea','{"type":"Point","coordinates":[21.25,-136.640625]}','mer des pirates',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[53.875,-123.640625]}','côte noire',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[44.5,-108.265625]}','baie d''Argos',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[10.875,-83.015625]}','détroit de#kordava',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[19.1875,-40.015625]}','côte picte',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[6.25,-30.703125]}','océan occidental',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[24.25,-7.765625]}','mer de glace',NULL,NULL,'extended');

@@ -44,12 +44,14 @@
        		<option value="addLabelPoi">Ajouter un label POI</option>
        		<option value="addLabelRiviere">Ajouter un label rivière</option>
        		<option value="addLabelPasse">Ajouter un label passe, sente, gué...</option>
+       		<option value="addLabelSea">Ajouter un label maritime</option>
        		<option value="addCaravane">Ajouter route commerciale</option>
        		<option value="addRiviere">Ajouter un tracé de rivière</option>
        		<option value="addLimPays">Ajouter une frontière pays</option>
        		<option value="addLimFief">Ajouter une frontière fief</option>
        		<option value="addSea">Ajouter une zone maritime</option>
        		<option value="addRiver">Ajouter un cours d'eau</option>
+       		<option value="addLimSea">Ajouter une limite maritime</option>
        		{% endif %}
       	</select>     	
     </form>
@@ -551,7 +553,7 @@ var Carte = {
 			} else {
 				var datas = {categ: this.getProperties()['categ'], geom:geojson}
 				var table = {'ville':'geo_picto', 'capitale':'geo_picto','caravane':'geo_ligne', 'exploration':'geo_picto', 'lim_pays':'geo_ligne', 'lim_fief':'geo_ligne'
-							,'zonedeau':'geo_surf', 'coursdeau':'geo_ligne'};
+							,'zonedeau':'geo_surf', 'coursdeau':'geo_ligne', 'lim_sea':'geo_ligne'};
 	            var str = "INSERT INTO " + table[categ] + "(categ, geojson) VALUES ('" + categ + "','" + geojson + "');";
 			}
 			e.feature.categ = categ;			
@@ -672,6 +674,8 @@ actionSelect.onchange = function() {
 			Carte.initDrawInteraction('Point','label_riviere'); break;
 		case "addLabelPasse" :
 			Carte.initDrawInteraction('Point','label_passe'); break;
+		case "addLabelSea":
+			Carte.initDrawInteraction('Point','label_sea'); break;
 		case "addCaravane" :
 			Carte.initDrawInteraction('LineString','caravane'); break;
 		case "addRiviere" :
@@ -684,6 +688,8 @@ actionSelect.onchange = function() {
 			Carte.initDrawInteraction('Polygon','zonedeau'); break;
 		case "addRiver" :
 			Carte.initDrawInteraction('LineString','coursdeau'); break;
+		case "addLimSea" :
+			Carte.initDrawInteraction('LineString','lim_sea'); break;
 	}
 };
 
