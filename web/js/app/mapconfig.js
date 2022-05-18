@@ -31,33 +31,6 @@ var Mapconfig = {
 		            	modify : true		// modifier le texte
 	            	}
                 },
-                /*
-                {
-                    layerName : "fief",
-                    source : "worldmap/features/get/fief",
-                    geomType : "Polygon", 
-                    style : {
-                    	zooms: [3,4,5,6],
-                    	styleName: "ligne1"
-                	},
-                	geomInteractions : {
-		            	translate : false,	// déplacer l'ensemble du polygone
-	            		modify : true		// modifier les points du polygone
-	            	}
-                },*//*
-                {
-                    layerName : "pays",
-                    source : "worldmap/features/get/pays",
-                    geomType : "Polygon", 
-                    style : {
-                        zooms : [2,3,4,5,6],
-                        styleName: "ligne1"
-                    },
-                    geomInteractions : {
-		                translate : false,
-		                modify : true
-	                }
-                },*/
                 {
                     layerName : "lim_fief",
                     source : "worldmap/features/get/lim_fief",
@@ -83,19 +56,6 @@ var Mapconfig = {
 		                translate : false,
 		                modify : true
 	                }
-                },
-                {
-                    layerName : "riviere",
-					source : "worldmap/features/get/riviere",
-                    geomType : "LineString", 
-                    style : {
-                        zooms : [2,3,4,5,6],
-                        styleName: "ligne4"
-                    },
-                    geomInteractions : {
-                    	translate : false,	
-                    	modify : true		// modifier les points du tracé
-                    }
                 },
                 {
                     layerName : "caravane",
@@ -248,14 +208,27 @@ var Mapconfig = {
         				translate : false,
         				modify : true
     				}
-				},
+				},/*
+				{
+                    layerName : "riviere",
+					source : "worldmap/features/get/riviere",
+                    geomType : "LineString", 
+                    style : {
+                        zooms : [2,3,4,5,6],
+                        styleName: "ligne4"
+                    },
+                    geomInteractions : {
+                    	translate : false,	
+                    	modify : true		// modifier les points du tracé
+                    }
+                },
 				{
                     layerName : "label_sea",
                     source : "worldmap/features/get/label_sea",
                     geomType : "Label", // Point
                     style : {
                     	zooms: [2,3,4,5,6],
-                    	styleName: "texte2blanc"
+                    	styleName: "titre2"
                 	},
 		            geomInteractions : {
 		            	translate : true,	
@@ -313,7 +286,7 @@ var Mapconfig = {
 		                translate : false,
 		                modify : true
 	                }
-                }/*,
+                }*//*,
                 {
                     layerName : "caravane",
 					source : "worldmap/features/get/caravane",
@@ -339,7 +312,7 @@ var Mapconfig = {
                     	translate : true,	// déplacer le point d'ancrage
                     	modify : false		// n'a pas de sens pour un point, identique à translate
                 	}
-                }*/,
+                }*//*,
             	{
                     layerName : "label_magna",
                     source : "worldmap/features/get/label_magna",
@@ -352,7 +325,7 @@ var Mapconfig = {
                     	translate : true,
                     	modify : true
                 	}
-                }
+                }*/
             ]
         }
     ]
@@ -415,7 +388,7 @@ var BddStyles = {
         fillColor : "#CCCCCC", 
         fillOpacity : 1		
 	},
-	"titre2" : { // noms de pays fond foncé
+	"titre1gris" : { // noms de pays fond foncé
         zooms : [2,3,4,5,6],
         fontWeight: "normal", 
         fontSize: ["12","24","46","96","192"], 
@@ -426,6 +399,19 @@ var BddStyles = {
         strokeOpacity : 1, 
         strokeWidth : 1,
         fillColor : "#555555", 
+        fillOpacity : 1		
+	},
+	"titre2" : { // noms de pays fond foncé
+        zooms : [2,3,4,5,6],
+        fontWeight: "normal", 
+        fontSize: ["7","14","28","56","112"], 
+        fontFamily: "Fiefs",//"Trebuchet",
+        interligne : 150,
+        textTransformation : "toUpper",
+        strokeColor : "#FFFFFF", 
+        strokeOpacity : 1, 
+        strokeWidth : 1,
+        fillColor : "#FFFFFF", 
         fillOpacity : 1		
 	},
 	"texte1" : { // noms fiefs
@@ -466,19 +452,6 @@ var BddStyles = {
         strokeOpacity : 1, 
         strokeWidth : 1,
         fillColor : "#8B0004", 
-        fillOpacity : 1
-	},
-	"texte2blanc" : { // nom zones maritimes
-		zooms : [2,3,4,5,6],
-    	fontWeight: "normal", 
-        fontSize: ["3","6","12","24","48"], 
-        fontFamily: "Fiefs",
-        interligne : 60,
-        textTransformation : "none",
-        strokeColor : "#FFFFFF", 
-        strokeOpacity : 1, 
-        strokeWidth : 1,
-        fillColor : "#FFFFFF", 
         fillOpacity : 1
 	},
 	"texte3" : {
@@ -544,9 +517,9 @@ var BddStyles = {
     },
     "ligne4" : { // riviere
         zooms : [2,3,4,5,6],
-        strokeColor: "#4CB2FC", 
-        strokeOpacity: 1, 
-        strokeWidth: [2,4,8,16,32], 
+        strokeColor: "#0080FF", 
+        strokeOpacity: 0.5, 
+        strokeWidth: [4,8,16,32,64], 
         strokeCap : "butt"
     },
     "ligne6" : { // frontiere pays : ligne pointillée rouge

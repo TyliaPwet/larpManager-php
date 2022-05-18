@@ -11,7 +11,7 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_pays','{"type":"Point","coordinates":[95.28125,-70.546875]}','Corinthie',0,22,'extended');
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
 	 ('label_pays','{"type":"Point","coordinates":[99.640625,-19.09375]}','Hyperborée',0,28,'extended'),
-	 ('label_pays','{"type":"Point","coordinates":[10.1875,-99.828125]}','Pirates des#Barachanes',0,41,'extended'),
+	 ('label_pays','{"type":"Point","coordinates":[11.125,-100.203125]}','Pirates des#Barachanes',0,41,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[72.71875,-45.53125]}','Royaumes#Frontières',0,43,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[77.5625,-60.640625]}','Némédie',0,44,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[58.9375,-40.75]}','Cimmérie',0,50,'extended'),
@@ -30,7 +30,7 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_pays','{"type":"Point","coordinates":[104.546875,-125.109375]}','Punt',0,88,'extended'),
 	 ('label_pays','{"type": "Point", "coordinates": [101.5026519714183, -139.50728750528373]}','Zembabweï',0,89,'extended'),
 	 ('label_pays','{"type":"Point","coordinates":[107.828125,-66.21875]}','Zamora',0,91,'extended'),
-	 ('label_pays','{"type": "Point", "coordinates": [38.64677336494518, -91.90673152195455]}','Argos / Zingara et ses colonies',0,109,'extended');
+	 ('label_pays','{"type":"Point","coordinates":[39.703125,-90.28125]}','Argos / Zingara#et ses colonies',0,109,'extended');
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
 	 ('label_pays','{"type": "Point", "coordinates": [175.2981379147025, -106.28571242776776]}','Meru',0,118,'extended'),
 	 ('label_pays','{"type": "Point", "coordinates": [175.48623834458897, -19.502319948969156]}','Pathénie',0,119,'extended'),
@@ -905,8 +905,8 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_magna','{"type": "Point", "coordinates": [64.43656929609314, -156.1684468822171]}','Iles du Sud',0,361,'extended'),
 	 ('label_magna','{"type": "Point", "coordinates": [49.8674440681445, -128.01508620689654]}','Ile d''Argent',0,362,'extended'),
 	 ('label_magna','{"type": "Point", "coordinates": [84.87930048433024, -136.17541678194908]}','Grandes#Savanes',0,363,'extended'),
-	 ('label_magna','{"type": "Point", "coordinates": [10.310164342136465, -113.87974191952418]}','Tortage',0,371,'extended'),
-	 ('label_magna','{"type": "Point", "coordinates": [11.302110812782411, -99.19098853579209]}','Ile du#nord',0,372,'extended'),
+	 ('label_magna','{"type":"Point","coordinates":[10.75,-107.09375]}','Tortage',0,371,'extended'),
+	 ('label_magna','{"type":"Point","coordinates":[14.140625,-95.5625]}','Ile du#nord',0,372,'extended'),
 	 ('label_magna','{"type": "Point", "coordinates": [134.68997767100313, -114.38125176410945]}','La#Plantation',0,374,'extended'),
 	 ('label_magna','{"type": "Point", "coordinates": [139.49016957683568, -112.0152351183736]}','Terres#ancestrales#Venji',0,375,'extended'),
 	 ('label_magna','{"type": "Point", "coordinates": [88.51296994392631, -125.36514352537843]}','Confédération#Tombalku',0,384,'extended'),
@@ -920,24 +920,26 @@ INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,di
 	 ('label_sea','{"type":"Point","coordinates":[241.09375,-10.8125]}','mer sans fonds',NULL,NULL,'extended'),
 	 ('label_sea','{"type":"Point","coordinates":[244.21875,-30]}','Mer des Alizés',NULL,NULL,'extended'),
 	 ('label_sea','{"type":"Point","coordinates":[227.59375,-81.125]}','côte impériale',NULL,NULL,'extended'),
-	 ('label_sea','{"type":"Point","coordinates":[244.34375,-101.375]}','océan du levant',NULL,NULL,'extended'),
-	 ('label_sea','{"type":"Point","coordinates":[217.5,-112.515625]}','mer de Kambuja',NULL,NULL,'extended');
+	 ('label_sea','{"type":"Point","coordinates":[242.96875,-102.875]}','océan du levant',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[218.625,-112.015625]}','mer de Kambuja',NULL,NULL,'extended');
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
 	 ('label_sea','{"type":"Point","coordinates":[211.9375,-137.015625]}','mer des typhons',NULL,NULL,'extended'),
-	 ('label_sea','{"type":"Point","coordinates":[243.375,-136.140625]}','côte maudite',NULL,NULL,'extended'),
-	 ('label_sea','{"type":"Point","coordinates":[201.6875,-164.015625]}','côte glacée',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[242.375,-136.515625]}','côte maudite',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[205.1875,-161.390625]}','côte glacée',NULL,NULL,'extended'),
 	 ('label_sea','{"type":"Point","coordinates":[190.0625,-124.015625]}','baie des#naufrageurs',NULL,NULL,'extended'),
-	 ('label_sea','{"type":"Point","coordinates":[160.3125,-145.515625]}','cap vendhy',NULL,NULL,'extended'),
-	 ('label_sea','{"type":"Point","coordinates":[145.375,-131.390625]}','péninsule#de yotarah',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[160.6875,-145.515625]}','cap vendhy',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[146.125,-131.015625]}','péninsule#de yotarah',NULL,NULL,'extended'),
 	 ('label_sea','{"type":"Point","coordinates":[124.125,-144.703125]}','côte de perle',NULL,NULL,'extended'),
 	 ('label_sea','{"type":"Point","coordinates":[147.125,-161.640625]}','mer australe',NULL,NULL,'extended'),
 	 ('label_sea','{"type":"Point","coordinates":[93.625,-166.390625]}','cap sans retour',NULL,NULL,'extended'),
-	 ('label_sea','{"type":"Point","coordinates":[53.5,-150.390625]}','iles du sud',NULL,NULL,'extended');
+	 ('label_sea','{"type":"Point","coordinates":[54.375,-150.265625]}','iles du sud',NULL,NULL,'extended');
 INSERT INTO larpmanager.geo_label (categ,geojson,texte,rotation,territoire_id,discr) VALUES
 	 ('label_sea','{"type":"Point","coordinates":[21.25,-136.640625]}','mer des pirates',NULL,NULL,'extended'),
-	 ('label_sea','{"type":"Point","coordinates":[53.875,-123.640625]}','côte noire',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[54.375,-124.390625]}','côte noire',NULL,NULL,'extended'),
 	 ('label_sea','{"type":"Point","coordinates":[44.5,-108.265625]}','baie d''Argos',NULL,NULL,'extended'),
-	 ('label_sea','{"type":"Point","coordinates":[10.875,-83.015625]}','détroit de#kordava',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[10.53125,-81.234375]}','détroit#de kordava',NULL,NULL,'extended'),
 	 ('label_sea','{"type":"Point","coordinates":[19.1875,-40.015625]}','côte picte',NULL,NULL,'extended'),
-	 ('label_sea','{"type":"Point","coordinates":[6.25,-30.703125]}','océan occidental',NULL,NULL,'extended'),
-	 ('label_sea','{"type":"Point","coordinates":[24.25,-7.765625]}','mer de glace',NULL,NULL,'extended');
+	 ('label_sea','{"type":"Point","coordinates":[7,-30.265625]}','océan#occidental',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[24.375,-10.953125]}','mer de glace',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[141.234375,-65.953125]}','Nord de la#Vilayet',NULL,NULL,'extended'),
+	 ('label_sea','{"type":"Point","coordinates":[140.734375,-86.328125]}','sud de la#Vilayet',NULL,NULL,'extended');

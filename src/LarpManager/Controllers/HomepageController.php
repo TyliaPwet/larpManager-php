@@ -559,7 +559,6 @@ class HomepageController
 			case 'riviere':
 			case 'lim_pays':
 			case 'lim_fief':
-			case 'coursdeau':
 			case 'lim_sea':
 				$repo = 'GeoLigne';
 				$fields = ['id'=>'getId', 'geom'=>'getGeojson'];
@@ -685,7 +684,6 @@ class HomepageController
 			case 'riviere':
 			case 'lim_pays':
 			case 'lim_fief':
-			case 'coursdeau':
 			case 'lim_sea':
 				$row = new GeoLigne();
 				$fields = ['categ' => 'setCateg', 'geom'=>'setGeojson'];

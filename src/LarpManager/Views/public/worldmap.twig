@@ -33,8 +33,8 @@
        		<option value="modifyLabel">Modifier labels</option>
        		<option value="modifyLabelRotation">Modifier angle labels</option>
        		<option value="modifyLine">Modifier tracés linéaires (caravane...)</option>
-       		<option value="modifyPays">Modifier tracés pays</option>
-       		<option value="modifyFiefs">Modifier tracés fiefs</option>
+       		<option value="modifyPays">Modifier surface pays</option>
+       		<option value="modifyFiefs">Modifier surface fiefs</option>
        		<option value="modifySea">Modifier zone maritime</option>
        		<option value="addVille">Ajouter pictos ville</option>
        		<option value="addCapitale">Ajouter pictos capitale</option>
@@ -50,7 +50,6 @@
        		<option value="addLimPays">Ajouter une frontière pays</option>
        		<option value="addLimFief">Ajouter une frontière fief</option>
        		<option value="addSea">Ajouter une zone maritime</option>
-       		<option value="addRiver">Ajouter un cours d'eau</option>
        		<option value="addLimSea">Ajouter une limite maritime</option>
        		{% endif %}
       	</select>     	
@@ -553,7 +552,7 @@ var Carte = {
 			} else {
 				var datas = {categ: this.getProperties()['categ'], geom:geojson}
 				var table = {'ville':'geo_picto', 'capitale':'geo_picto','caravane':'geo_ligne', 'exploration':'geo_picto', 'lim_pays':'geo_ligne', 'lim_fief':'geo_ligne'
-							,'zonedeau':'geo_surf', 'coursdeau':'geo_ligne', 'lim_sea':'geo_ligne'};
+							,'zonedeau':'geo_surf', 'riviere':'geo_ligne', 'lim_sea':'geo_ligne'};
 	            var str = "INSERT INTO " + table[categ] + "(categ, geojson) VALUES ('" + categ + "','" + geojson + "');";
 			}
 			e.feature.categ = categ;			
@@ -686,8 +685,6 @@ actionSelect.onchange = function() {
 			Carte.initDrawInteraction('LineString','lim_fief'); break;
 		case "addSea" :
 			Carte.initDrawInteraction('Polygon','zonedeau'); break;
-		case "addRiver" :
-			Carte.initDrawInteraction('LineString','coursdeau'); break;
 		case "addLimSea" :
 			Carte.initDrawInteraction('LineString','lim_sea'); break;
 	}
