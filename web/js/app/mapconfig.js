@@ -208,7 +208,7 @@ var Mapconfig = {
         				translate : false,
         				modify : true
     				}
-				},/*
+				},
 				{
                     layerName : "riviere",
 					source : "worldmap/features/get/riviere",
@@ -286,7 +286,7 @@ var Mapconfig = {
 		                translate : false,
 		                modify : true
 	                }
-                }*//*,
+                },
                 {
                     layerName : "caravane",
 					source : "worldmap/features/get/caravane",
@@ -312,20 +312,33 @@ var Mapconfig = {
                     	translate : true,	// déplacer le point d'ancrage
                     	modify : false		// n'a pas de sens pour un point, identique à translate
                 	}
-                }*//*,
+                },
             	{
                     layerName : "label_magna",
                     source : "worldmap/features/get/label_magna",
                     geomType : "Label", // Point
                     style: {
                         zooms : [4,5,6],
-                        styleName: "texte3"
+                        styleName: "texte2"//"texte3"
                     },
                     geomInteractions : {
                     	translate : true,
                     	modify : true
                 	}
-                }*/
+                },
+                {
+                	layerName : "ressource",
+                	source : "worldmap/features/get/ressource",
+                	geomType : "Point",
+                	style : {
+                		zooms : [4,5,6],
+                		styleName: "etoile"
+                	},
+                	geomInteractions : {
+                		translate : true,
+                		modify : false
+            		}
+                }
             ]
         }
     ]
