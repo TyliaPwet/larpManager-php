@@ -1,4 +1,7 @@
 <?php
+//*********************************************************************************
+//*** FONCTIONS UTILES
+//*********************************************************************************
 function LonToPix($x) {
     $res = $x*64;
     return $res;
@@ -8,6 +11,26 @@ function LatToPix($y) {
 	$res = -$y*64;
 	return $res;
 }
+
+//*********************************************************************************
+//*** PARAMETRAGE / PREPARATION
+//*********************************************************************************
+// dimensions l'image z6 finale
+$totalWidth = 16384;
+$totalHeight = 11384;
+
+// l'image z6 finale est trop grande pour être correctement gérée par Imagick
+// de plus le tuilage est ensuite plus rapide si on travaille sur des images plus petites
+// on définit donc un découpage de l'image totale, avec une marge tampon pour le recollage
+// l'idéal serait d'avoir une bdd géographique pour pouvoir sélectionner uniquement les features qui sont dans la zones que nous tarvaillons.? à faire plus tard?
+$tileWidth = 256;
+$nbCols = 2;		
+$nbLines = 2;
+$nbTilesTampon = 3;
+
+// $delimitations[0] => colonne 0 ; $delimitation[0][0] => colone 0, ligne 0 : $delimitation[0][0]["minx"] etc...
+$delimitations = array( array( array("minx"=>0, "miny"=>0, "maxx"=>8960, "maxy"=>6400), array("minx"=>0, "miny"=>6400, "maxx"=>8960, "maxy"=>11384) ),
+						array( array("minx"=>7424, "miny"=>0, "maxx"=>16384, "maxy"=>6400), array("minx"=>7424, "miny"=>6400, "maxx"=>16384, "maxy"=>11384) ));
 
 
 //**********************************************************************************

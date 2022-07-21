@@ -13,7 +13,9 @@ $nbCols = $imageWidth / $tileWidth;
 
 // sur disque, il y a un rep par colonne, contenant une image par ligne, numérotés à partir de 0
 // origine en haut à gauche, comme l'image.. ca tombe bien
-
+$image = new \Imagick();
+$image->readImage("layer.png");	
+		
 for ($col=0 ; $col < $nbCols ; $col++) {
 	// si le rep n'existe pas on le crée
 	if (!file_exists($nomPyr."/".$col)) {
@@ -22,10 +24,11 @@ for ($col=0 ; $col < $nbCols ; $col++) {
 	
 	for ($line=0; $line < $nbLines ; $line++) {
 		echo ("traitement de l'image ".$col.":".$line."\r");
-		$image = new \Imagick();
-		$image->readImage("layer.png");	
-		$image->cropImage($tileWidth, $tileHeight, $tileWidth*$col, $tileHeight*$line);
-		$image->writeImage($nomPyr."/".$col."/".$line.".png");
+//		$image = new \Imagick();
+//		$image->readImage("layer.png");	
+		$copie = clone($image);
+		$copie->cropImage($tileWidth, $tileHeight, $tileWidth*$col, $tileHeight*$line);
+		$copie->writeImage($nomPyr."/".$col."/".$line.".png");
 	}
 		
 	/*
