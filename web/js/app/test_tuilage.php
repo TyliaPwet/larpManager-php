@@ -14,7 +14,7 @@ $nbCols = $imageWidth / $tileWidth;
 // sur disque, il y a un rep par colonne, contenant une image par ligne, numérotés à partir de 0
 // origine en haut à gauche, comme l'image.. ca tombe bien
 $image = new \Imagick();
-$image->readImage("layer.png");	
+$image->readImage("0_0.png");	
 		
 for ($col=0 ; $col < $nbCols ; $col++) {
 	// si le rep n'existe pas on le crée
