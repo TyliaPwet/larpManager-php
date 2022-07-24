@@ -446,12 +446,12 @@ var BddStyles = {
     	fontWeight: "normal", 
         fontSize: ["3","6","12","24","48"], 
         fontFamily: "Fiefs",
-        interligne : 60,
+        interligne : 40,
         textTransformation : "none",
         strokeColor : "#000000", 
         strokeOpacity : 1, 
         strokeWidth : 1,
-        fillColor : "#000000", 
+        fillColor : "#555555", 
         fillOpacity : 1
 	},
 	"texte2rouge" : { // noms capitales
@@ -459,7 +459,7 @@ var BddStyles = {
     	fontWeight: "normal", 
         fontSize: ["3","6","12","24","48"], 
         fontFamily: "Fiefs",
-        interligne : 60,
+        interligne : 40,
         textTransformation : "none",
         strokeColor : "#8B0004", 
         strokeOpacity : 1, 
@@ -575,7 +575,7 @@ var BddStyles = {
     },
     "exploration": {
         zooms : [2,3,4,5,6],
-        pointRadius : [3,6,10,14,24],
+        //pointRadius : [3,6,10,14,24],
         fillColor : "#00FF00", 
         fillOpacity : 1,
         imgSrc: 'img/pictos/exploration.svg',
