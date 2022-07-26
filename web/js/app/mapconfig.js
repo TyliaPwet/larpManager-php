@@ -23,7 +23,20 @@ var Mapconfig = {
                     source : "worldmap/features/get/label_pays",
                     geomType : "Label", // Point
                     style : {
-                    	zooms: [2,3,4,5,6],
+                    	zooms: [2,3],
+                    	styleName: "titre1marron"
+                	},
+		            geomInteractions : {
+		            	translate : true,	// déplacer le point d'ancrage
+		            	modify : true		// modifier le texte
+	            	}
+                },
+                {
+                    layerName : "label_pays",
+                    source : "worldmap/features/get/label_pays",
+                    geomType : "Label", // Point
+                    style : {
+                    	zooms: [4,5,6],
                     	styleName: "titre1"
                 	},
 		            geomInteractions : {
@@ -393,25 +406,25 @@ var BddStyles = {
         fontWeight: "normal", 
         fontSize: ["12","24","46","96","192"], 
         fontFamily: "Pays",//"Trebuchet",
-        interligne : 300,
+        interligne : 250,
         textTransformation : "toUpper",
-        strokeColor : "#AAAAAA", 
+        strokeColor : "#FFFFFF", 
         strokeOpacity : 1, 
         strokeWidth : 1,
-        fillColor : "#CCCCCC", 
+        fillColor : "#FFFFFF", 
         fillOpacity : 1		
 	},
-	"titre1gris" : { // noms de pays fond foncé
+	"titre1marron" : { // noms de pays fond foncé
         zooms : [2,3,4,5,6],
         fontWeight: "normal", 
         fontSize: ["12","24","46","96","192"], 
         fontFamily: "Pays",//"Trebuchet",
-        interligne : 300,
+        interligne : 250,
         textTransformation : "toUpper",
-        strokeColor : "#AAAAAA", 
+        strokeColor : "#705948", 
         strokeOpacity : 1, 
         strokeWidth : 1,
-        fillColor : "#555555", 
+        fillColor : "#705948", 
         fillOpacity : 1		
 	},
 	"titre2" : { // noms de pays fond foncé
@@ -448,7 +461,7 @@ var BddStyles = {
         fontFamily: "Fiefs",
         interligne : 40,
         textTransformation : "none",
-        strokeColor : "#000000", 
+        strokeColor : "#555555", 
         strokeOpacity : 1, 
         strokeWidth : 1,
         fillColor : "#555555", 
