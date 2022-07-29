@@ -547,13 +547,9 @@ var Carte = {
 				var reponse = prompt("Saisissez le texte à afficher : ");
 				e.feature.texte = reponse;	
 				e.feature.angle = 0;
-				var datas = {categ: this.getProperties()['categ'], geom:geojson, texte:reponse};//				datas.texte = reponse;
-	            var str = "INSERT INTO geo_label (categ, geojson, texte) VALUES ('" + categ + "','" + geojson + "','" + reponse + "');";				
+				var datas = {categ: this.getProperties()['categ'], geom:geojson, texte:reponse};
 			} else {
 				var datas = {categ: this.getProperties()['categ'], geom:geojson}
-				var table = {'ville':'geo_picto', 'capitale':'geo_picto','caravane':'geo_ligne', 'exploration':'geo_picto', 'lim_pays':'geo_ligne', 'lim_fief':'geo_ligne'
-							,'zonedeau':'geo_surf', 'riviere':'geo_ligne', 'lim_sea':'geo_ligne'};
-	            var str = "INSERT INTO " + table[categ] + "(categ, geojson) VALUES ('" + categ + "','" + geojson + "');";
 			}
 			e.feature.categ = categ;			
 
@@ -577,7 +573,7 @@ var Carte = {
 
     },      
     
-    /*
+    
     showCountriesColors : function (show) { // affichage des pays en couleur transparente comme sur la prod, pour voir le rendu uniquement ---- juste pour mon dev ----
         
         if (show) {
@@ -585,7 +581,8 @@ var Carte = {
                 name: "surcouche",
                 source: new ol.source.Vector({ features: new ol.Collection([]) })
             });
-            this.olMap.addLayer(lay);
+            //this.olMap.addLayer(lay);
+            this.olMap.getLayers().insertAt(2,lay);
             
             $.ajax({
                 dataType: "json",
@@ -615,13 +612,45 @@ var Carte = {
             
         }
     },
-*/
+    
+    showNewPyramide : function(show) {
+	    if (show) {
+		    var lmproj = new ol.proj.Projection({
+                    code: 'LMPROJ',
+                    units: 'pixels',
+                    extent: [0, 0, 16384, 11264]
+                });
+				var resolutions = [];
+                for (var z = 0; z <= 6; z++) {
+                    resolutions[z] = 64 / Math.pow(2, z); 					// 64, 32, 16, 8, 4, 2, 1 (7 niveaux)
+                }
+			    var newLayer = new ol.layer.Tile({
+                    source: new ol.source.TileImage({
+                        tileUrlFunction: function(tileCoord, pixelRatio, projection) { 
+                            var z = tileCoord[0];
+                            var x = tileCoord[1];
+                            var y = -tileCoord[2] - 1;
+                            return '{{ app.request.basepath }}/img/map_custom/' + z + '/' + x + '/' + y + '.png';
+                        },
+                        projection: lmproj,
+                        tileGrid: new ol.tilegrid.TileGrid({
+                            origin: ol.extent.getTopLeft(lmproj.getExtent()),
+                            resolutions: resolutions,
+                            tileSize: 256
+                        }),
+                    }),
+                    extent: lmproj.getExtent()
+                }); 
+                this.olMap.addLayer(newLayer);
+		}
+	}
     
 };
 
-//Carte.createMap("baseMap");
-Carte.createMap("magnaCarta");
+Carte.createMap("baseMap");
+//Carte.createMap("magnaCarta");
 //Carte.showCountriesColors(true); // pour afficher la surcouche des pays en couleur
+//Carte.showNewPyramide(true);
 
 // Cette fonctione me sers uniquement pour le dev, pour créer des objets sans avoir à créer les routes, etc...
 Carte.olMap.on('click', function(e) { //console.log(e.coordinate);
@@ -630,8 +659,6 @@ Carte.olMap.on('click', function(e) { //console.log(e.coordinate);
     var convert = new ol.format.GeoJSON;
     var geojson = convert.writeGeometry(newPoint);
     
-//    var str = "INSERT INTO geo_picto (`type`, geojson, url, rotation) VALUES ('exploration', '" + geojson +"', 'img/pictos/exploration.svg', 0);";
-//  var str = "INSERT INTO geo_picto (`type`, geojson, url, rotation) VALUES ('ville', '" + geojson +"', 'cercle', 0);" ;
 console.log(geojson);
     //console.log(str);
 });
