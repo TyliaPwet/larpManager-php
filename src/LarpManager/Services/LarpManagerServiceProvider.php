@@ -93,6 +93,7 @@ use LarpManager\Services\Converter\TitreConverter;
 use LarpManager\Services\Converter\TokenConverter;
 use LarpManager\Services\Converter\TriggerConverter;
 use LarpManager\Services\Converter\UserConverter;
+use LarpManager\Services\Converter\MapmanagerConverter;
 
 /**
  * LarpManager\LarpManagerServiceProvider
@@ -442,6 +443,11 @@ class LarpManagerServiceProvider implements ServiceProviderInterface
 		// Connaissance converter
 		$app['converter.connaissance'] = $app->share(function($app) {
 			return new ConnaissanceConverter($app['orm.em']);
+		});
+		
+		// Mapmanager converter
+		$app['converter.mapmanager'] = $app->share(function($app) {
+			return new MapmanagerConverter($app['orm.em']);
 		});
 	}
 

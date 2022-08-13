@@ -1,0 +1,631 @@
+{% extends "layout_fs.twig" %}
+
+{% block title %}{{ geomap.nom }}{% endblock title %}
+       
+{% block style %}
+
+	    <link rel="stylesheet" href="{{ app.request.basepath }}/ol/ol.css" />
+	    <link rel="stylesheet" href="{{ app.request.basepath }}/css/carte.css" />
+	
+{% endblock %}
+
+{% block content %}
+<div class="clearfix">
+	<form class="form-inline">
+      	<label>Couche de travail &nbsp;</label>
+      	<select id="action_select">
+       		<option value="none" selected>-- Aucune --</option>
+       			{% for layer in layers %}
+       		<option value="{{ layer.ordre}}-{{ layer.categ.code }}">{{ layer.categ.code }}</option>
+       			{% endfor %}
+      	</select>    	
+    </form>
+    
+	<div class="mapbox">
+		<div id="map"></div>
+	</div> 		
+</div>
+{% endblock %}
+
+{% block javascript %}
+
+<script src="{{ app.request.basepath }}/ol/ol.js"></script>
+<script src="{{ app.request.basepath }}/js/carte_util.js"></script>
+
+<script>
+var geomapId = {{ geomap.id }}; 
+var configSrc = '/mapmanager/config/get';
+var featuresSrc = '/mapmanager/features';
+
+
+
+var Carte = {
+    olMap: null,			// l'objet ol.Map qui décrit la carte
+    maxResolution: null,	// initialisé dans createMap
+    resolutions: null, 		// initialisé dans createMap ; tableau des résolutions de la map (<=> aux différents niveaux de zoom) 
+    config: null,			// la config de la carte récupérée dans la bdd, base de construction de la carte ol.Map
+    projection: null, 		// initialisé dans createMap; la projection spécifique "à plat" utilisée n'est pas standard et doit être définie pour openLayers
+    
+    initMap: function(mapId) { 
+    	var self = this;
+    	
+    	$.ajax({
+            dataType: "json",
+            url: configSrc + '/' + geomapId,
+            success: function(data) {
+            	self.config = data;
+            	self.createMap();
+            	self.loadBackgroundLayer();
+            	self.loadVectorLayers();    
+        	}
+        }).error(function() {
+            console.log("erreur de lecture de la config, impossible de générer la carte");
+        });
+    },
+
+    createMap: function(){
+        var self = this;
+        
+        var mapMaxX = 16384; // taille du background image
+        var mapMaxY = 11264; // à rendre paramétrable par la suite si d'autrtes fonds image sont utilisés
+        var mapCenter = [mapMaxX / 2, mapMaxY / 2];
+        self.projection = new ol.proj.Projection({
+            code: 'LMPROJ',
+            units: 'pixels',
+            extent: [0, 0, mapMaxX, mapMaxY]
+        });
+
+        self.maxResolution = mapMaxX / 256;    // 16384 / 256 = 64
+        self.resolutions = [];
+        for (var z = 0; z <= 6; z++) {
+            self.resolutions[z] = self.maxResolution / Math.pow(2, z); 					// 64, 32, 16, 8, 4, 2, 1 (7 niveaux)
+        }
+
+        this.olMap = new ol.Map({
+            target: 'map',
+            view: new ol.View({
+                projection: self.projection, 
+                zoom: 3, 	// à rendre paramétrable?
+                minZoom: {{ geomap.zmin }},
+                maxZoom: {{ geomap.zmax }},
+                center: mapCenter, 
+                extent: self.projection.getExtent(),
+                enableRotation: false
+            })
+        });
+    },
+    
+    loadBackgroundLayer: function () {
+	    var backgroundLayer = new ol.layer.Tile({
+		    source: new ol.source.TileImage({
+		        tileUrlFunction: function(tileCoord, pixelRatio, projection) { 
+		            var z = tileCoord[0];
+		            var x = tileCoord[1];
+		            var y = -tileCoord[2] - 1;
+		            return '{{ app.request.basepath }}/img/map_clean/' + z + '/' + x + '/' + y + '.png';
+		        },
+		        projection: this.projection,
+		        tileGrid: new ol.tilegrid.TileGrid({
+		            origin: ol.extent.getTopLeft(this.projection.getExtent()),
+		            resolutions: this.resolutions,
+		            tileSize: 256
+		        }),
+		    }),
+		    extent: this.projection.getExtent()
+        }); 
+        this.olMap.addLayer(backgroundLayer);   
+    },
+    
+    loadVectorLayers: function () {
+    	var self = this;
+
+    	// on crée une couche vecteur pour chaque layer dans la config 
+        $(self.config.layers).each(function(key, confLayer){
+            var lay = new ol.layer.Vector({
+                name: confLayer.categ,
+                source: new ol.source.Vector({ features: new ol.Collection([]) })
+            });
+            lay.setProperties({	'geomType' : confLayer.geomtype });
+            self.olMap.addLayer(lay);
+                       
+            // On crée le style par défaut pour les éléments de cette couche, tel que défini dans la config
+            var styleFunc = self.createStyleFunc(confLayer);
+            lay.setStyle(styleFunc);
+                       
+            // Enfin, on crée les features           
+            $.ajax({
+                dataType: "json",
+                url: featuresSrc + '/get/' + confLayer.categ,
+                success: function(data) { 
+                    $(data).each(function(key, obj) { 
+                        if (obj.geojson != null)
+                        {	
+                        	// on crée la feature avec sa géométrie
+                            var parsedGeom = JSON.parse(obj.geojson);		
+							var newFeature, geom;
+
+                            switch (confLayer.geomtype) {
+                                case "Surface": 
+                                	geom = new ol.geom.Polygon(parsedGeom.coordinates);
+                                    break;
+                                case "Label":
+                                case "Picto":
+                                	geom = new ol.geom.Point(parsedGeom.coordinates);
+                                    break;
+                                case "LineString" :
+                                	geom = new ol.geom.LineString(parsedGeom.coordinates);
+                                    break;
+                                default:
+                                    console.log("type de geometrie non traité");
+                                    break;
+                            }
+                            newFeature = new ol.Feature({ geometry: geom });
+                            newFeature.bddId = obj.id;					
+                            
+                            // on récupère les propriétés spécifiques à l'objet (pour le style individuel notamment)
+							if (obj.properties != null) {
+								var parsedProps = JSON.parse(obj.properties);
+								if(parsedProps.hasOwnProperty('texte')) { newFeature.texte = parsedProps.texte; }
+								if(parsedProps.hasOwnProperty('rotation')) { newFeature.angle = Util.toRadians(parsedProps.rotation); }
+							}
+							
+							// on ajoute à la carte pour l'affichage
+                            Util.transform(newFeature.getGeometry(), 'EPSG:4326', 'LMPROJ');
+                            lay.getSource().addFeature(newFeature);
+                        }
+                });
+            }
+            }).error(function() {
+                console.log("erreur chargement json");
+            });
+        });
+    },
+    
+	createStyleFunc : function(layer) { 
+		// A faire : gestion d'erreurs
+		var self = this;
+		var styleFunc;
+		
+		var props = JSON.parse(layer.style);
+		
+		 switch(layer.geomtype){
+            case "Label": 
+                styleFunc = function(feat, reso){
+                    var zoomLevel = Math.log2(self.maxResolution / reso);
+                    var divFactor = Math.pow(2, self.config.map.zmax - zoomLevel);
+
+                    var txt = props.textTransformation === "toUpper" ? feat.texte.toUpperCase() : feat.texte; 
+                    var lignes = txt.split('#');
+                    var styles = [];
+                    
+                    if(zoomLevel>=layer.zmin && zoomLevel<=layer.zmax) {                       
+                        $(lignes).each(function(key, value) { 
+                            if (key==0) {
+                                styles.push(new ol.style.Style ({
+                                    text: new ol.style.Text({ 
+                                        font: props.fontWeight +' '+props.fontSize/divFactor +'px '+ props.fontFamily,
+                                        text: value,
+                                        stroke: new ol.style.Stroke ({ color: Util.hexToRgba(props.strokeColor, props.strokeOpacity), width: props.strokeWidth}),
+                                        fill: new ol.style.Fill({ color: Util.hexToRgba(props.fillColor, props.fillOpacity) }),
+                                        rotation: feat.angle
+                                    })
+                                }));
+                            } else {
+                                styles.push(new ol.style.Style ({
+                                    text: new ol.style.Text({ 
+                                        font: props.fontWeight +' '+props.fontSize/divFactor +'px '+ props.fontFamily,
+                                        text: value,
+                                        stroke: new ol.style.Stroke ({ color: Util.hexToRgba(props.strokeColor, props.strokeOpacity), width: props.strokeWidth}),
+                                        fill: new ol.style.Fill({ color: Util.hexToRgba(props.fillColor, props.fillOpacity) }),
+                                        rotation: feat.angle
+                                    }),
+                                    geometry: function(feature) {
+                                            // on crée un point d'ancrage décalé de x pixels (dans la config) pour les lignes suivantes
+                                            var coordinates = feature.getGeometry().getCoordinates();
+                                            coordinates[1] = coordinates[1] - props.interligne *key;
+                                            return new ol.geom.Point(coordinates);
+                                        }
+                                    }) 
+                                );
+                            }
+                        });
+                        if (lignes.length==1) { return styles[0]; } else { return styles; }
+                    }
+                    else return null;
+                };
+                break;
+            case "Surface": console.log("surface trouvée");
+                styleFunc = function(feat, reso){
+                    var zoomLevel = Math.log2(self.maxResolution / reso);
+                    
+                    if(zoomLevel>=layer.zmin && zoomLevel<=layer.zmax) { 
+                    	var leStyle = new ol.style.Style();                   	
+                    	if (props.fillColor !== undefined) { 
+                    		leStyle.setFill(new ol.style.Fill({ color: Util.hexToRgba(props.fillColor, props.fillOpacity) })); 
+                    	}
+
+                    	return leStyle;
+                    } 
+                    else return null;
+                };
+                break;
+            case "Picto":
+                styleFunc = function(feat, reso) {
+                    var zoomLevel = Math.log2(self.maxResolution / reso);
+                    var divFactor = Math.pow(2, self.config.map.zmax - zoomLevel);
+                    
+                    if(zoomLevel>=layer.zmin && zoomLevel<=layer.zmax) {
+                        // on regarde quel type d'image on a
+                        var imgStyle = null; 
+                        switch (props.imgSrc) {
+                            case 'cercle' :
+                                imgStyle = new ol.style.Circle({
+                                    radius : props.pointRadius/divFactor,
+                                    fill : new ol.style.Fill ({color: Util.hexToRgba(props.fillColor, props.fillOpacity) })
+                                });
+                            break;
+                            default :
+                                imgStyle = new ol.style.Icon({
+                                    src: '{{ app.request.basepath }}/' + props.imgSrc,
+                                    scale: 1/divFactor
+                                });
+                        }
+                        return new ol.style.Style ({
+                            image: imgStyle
+                        });
+                    } 
+                    else return null;
+                };
+                break;
+            case "LineString":
+                styleFunc = function(feat, reso){
+                    var zoomLevel = Math.log2(self.maxResolution / reso);
+                    
+                    if(zoomLevel>=layer.zmin && zoomLevel<=layer.zmax) {//console.log(props);
+                        var found = props.zooms.indexOf(zoomLevel);
+		                
+		                if (found !== -1) {
+				            var lineStyle = new ol.style.Style ({
+				                stroke: new ol.style.Stroke ({ 
+				                    color: Util.hexToRgba(props.strokeColor, props.strokeOpacity),
+				                    width: props.strokeWidth[found]
+				                })
+				            });
+				            if (props.strokeDashArray !== undefined) { lineStyle.getStroke().setLineDash(props.strokeDashArray[found]);}
+				            if (props.strokeCap !== undefined) {lineStyle.getStroke().setLineCap(props.strokeCap);}
+				            return lineStyle;
+		    			}
+        			}
+        			else return null;
+                }; 
+                break;
+            default:
+                console.log("style: type de géométrie non géré");
+        } 
+        return styleFunc;	
+	},
+    /*
+    removeAllInteractions: function() { 
+    	if (this.currentInteractions.length > 0) {
+	    	while(this.currentInteractions.length > 0) {
+	    		this.olMap.removeInteraction(this.currentInteractions.pop());
+	    	}
+    	}	
+    },
+       
+    initTranslateInteraction : function () { 
+        var self = this;
+        var translate = new ol.interaction.Translate({ 
+                layers: function(layer) {	                
+            		if (layer.get('geomTranslate')!== undefined) {
+            			return layer.get('geomTranslate');
+            		} else return false;
+            	},
+                hitTolerance: 5
+        });
+        self.olMap.addInteraction(translate);
+        self.currentInteractions.push(translate);
+        
+        translate.on('translateend', function (e) { 
+            var newGeom = e.features.getArray()[0].getGeometry().clone();
+            Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
+            var convert = new ol.format.GeoJSON;
+            var geojson = convert.writeGeometry(newGeom);
+            
+			var bddId = e.features.getArray()[0].bddId;
+			var categ = e.features.getArray()[0].categ;
+            
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: "worldmap/features/update",
+                data: {geom: geojson, id: bddId, categ: categ},
+                success: function(data) {
+                	console.log(data);
+                    //alert("la geographie a été enregistrée");
+                }
+            }).error(function() {
+                alert("désolé, une erreur est survenue");
+            });
+        });       
+    },
+            
+    initModifyLabelInteraction: function() {
+    	var self = this;
+    	
+    	var select = new ol.interaction.Select({
+    		layers: function(layer) { 
+        		if (layer.get('geomModify')!== undefined && layer.get('geomType')=='Label') { 
+        			return layer.get('geomModify');  
+        		} else return false;
+        	}
+        	// A FAIRE : empêcher la sélection multiple
+    	});
+    	self.olMap.addInteraction(select);
+    	self.currentInteractions.push(select);
+    	
+    	select.on('select', function(e) { // l'event est appelé au moment de la sélection et de la déselection 
+    		// au moment de la sélection on affiche un dialogue pour saisir le nouveau label
+    		if (e.selected.length > 0) { 
+				var reponse = prompt("Utilisez # pour un retour à la ligne", e.selected[0].texte);
+				if (reponse != null && reponse != '') { 
+					$.ajax({
+		                type: "POST",
+		                dataType: 'json',
+ 		                url: "worldmap/features/update",
+		                data: {texte: reponse, id: e.selected[0].bddId, categ: e.selected[0].categ},
+		                success: function(data) {
+		                	e.selected[0].texte = reponse;
+		                	console.log(data);
+		                    //alert("la geographie a été enregistrée");
+		                }
+		            }).error(function() {
+		                alert("désolé, une erreur est survenue");
+		            });
+				}
+			}
+			
+			// au moment de las déselection, on force le recalcul du style de la feature modifiée
+			if (e.deselected.length > 0) {
+				e.deselected[0].changed();
+			}
+
+    	});
+    },
+    
+    initModifyLabelRotationInteraction: function() {
+    	var self = this;
+    	
+    	var select = new ol.interaction.Select({
+    		layers: function(layer) { 
+        		if (layer.get('geomModify')!== undefined && layer.get('geomType')=='Label') { 
+        			return layer.get('geomModify');  
+        		} else return false;
+        	}
+        	// A FAIRE : empêcher la sélection multiple
+    	});
+    	self.olMap.addInteraction(select);
+    	self.currentInteractions.push(select);
+    	
+    	select.on('select', function(e) { // l'event est appelé au moment de la sélection et de la déselection 
+    		// au moment de la sélection on affiche un dialogue pour saisir le nouveau label
+    		if (e.selected.length > 0) { 
+				var reponse = prompt("angle en degrés", Math.round(Util.toDegrees(e.selected[0].angle)));
+				if (reponse != null && reponse != '') { 
+				
+					$.ajax({
+		                type: "POST",
+		                dataType: 'json',
+ 		                url: "worldmap/features/update",
+		                data: {rotation: reponse, id: e.selected[0].bddId, categ: e.selected[0].categ},
+		                success: function(data) {
+		                	e.selected[0].angle = Util.toRadians(reponse);
+		                	console.log(data);
+		                    //alert("la geographie a été enregistrée");
+		                }
+		            }).error(function() {
+		                alert("désolé, une erreur est survenue");
+		            });
+				}
+			}
+			
+			// au moment de las déselection, on force le recalcul du style de la feature modifiée
+			if (e.deselected.length > 0) {
+				e.deselected[0].changed();
+			}
+
+    	});
+    },
+    
+    initModifyInteraction: function(geomType, categ) {
+        var self = this;
+        var featureId, featureRevision;
+        
+		// Avant de pouvoir modify une feature il faut la sélectionner 
+		var select = new ol.interaction.Select({
+    		layers: function(layer) { 
+        		if (layer.get('geomModify')!== undefined && (layer.get('geomType')===geomType)) { 
+        			if (geomType==='Polygon') { // pour les polygones on ne peutt modifier qu'une categ à la fois, puor éviter les pb de sélection de feature superposées
+        				if (layer.get('name') !== categ) {
+        					return false;
+    					}
+        			}
+        			return layer.get('geomModify');  
+        		} else return false;
+        	}
+    	});
+    	self.olMap.addInteraction(select);
+    	self.currentInteractions.push(select);
+    	
+        var modify = new ol.interaction.Modify({
+            features: select.getFeatures(),
+            deleteCondition: function(event) {
+            return ol.events.condition.shiftKeyOnly(event) &&
+                ol.events.condition.singleClick(event);
+            }
+        });
+        self.olMap.addInteraction(modify);
+    	self.currentInteractions.push(modify);
+    	
+        select.on('select', function (e) {  	
+        	if (e.deselected.length > 0) {
+        		var newGeom = e.deselected[0].getGeometry().clone();
+		        Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
+		        var convert = new ol.format.GeoJSON;
+		        var geojson = convert.writeGeometry(newGeom);
+		        /*
+		        if (e.deselected[0].categ ==='fief') { // les territoires sont formatés un peu différemment pour l'instant (tant que la page /world est utilisée)
+		        	geojson = '{"type":"Feature","properties":{},"geometry":' + geojson + '}';
+	        	}
+*//*
+        		$.ajax({
+	                type: "POST",
+	                dataType: 'json',
+	                url: "worldmap/features/update",
+	                data: {id: e.deselected[0].bddId, categ: e.deselected[0].categ, geom: geojson},
+	                success: function(data) {
+	                	console.log(data);
+	                    //alert("la geographie a été enregistrée");
+	                }
+	            }).error(function(err) {
+	                console.log(err); //alert("désolé, une erreur est survenue");
+	            });
+        	}
+        });
+    },
+    
+    initDrawInteraction : function(geomType, categ) {
+    	var destinationLayer = null;
+		this.olMap.getLayers().forEach( function(elem, index, tab) {
+			if(elem.getProperties()['name']===categ) {
+			destinationLayer = elem; } });
+  	
+        var drawInt = new ol.interaction.Draw({ 
+                source: destinationLayer.getSource(), // où seront placées les features créées
+                type: geomType,
+                style: this.createStyleFunc(geomType, DefaultStyleProperties.zooms, DefaultStyleProperties) // style pour le dessin, disparait quand la feature est ajoutée à sa source de destination
+        });  
+        this.olMap.addInteraction(drawInt);
+        this.currentInteractions.push(drawInt);
+        
+        drawInt.setProperties({'categ' : categ});
+        
+        drawInt.on('drawend', function(e) {
+            var newGeom = e.feature.getGeometry().clone();
+            Util.transform(newGeom, 'LMPROJ', 'EPSG:4326');
+            var convert = new ol.format.GeoJSON;
+            var geojson = convert.writeGeometry(newGeom);
+            	
+			const words = categ.split('_');
+			if (words[0] === 'label') {
+				var reponse = prompt("Saisissez le texte à afficher : ");
+				e.feature.texte = reponse;	
+				e.feature.angle = 0;
+				var datas = {categ: this.getProperties()['categ'], geom:geojson, texte:reponse};
+			} else {
+				var datas = {categ: this.getProperties()['categ'], geom:geojson}
+			}
+			e.feature.categ = categ;			
+
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: "worldmap/features/add",
+                data: datas,
+                success: function(data) {
+                	e.feature.bddId = data.id;
+                }
+            }).error(function(err) {
+                console.log(err); //alert("désolé, une erreur est survenue");
+            });
+            
+          
+			console.log(str);
+        }, drawInt);
+
+		
+
+    },      
+    
+    
+    showCountriesColors : function (show) { // affichage des pays en couleur transparente comme sur la prod, pour voir le rendu uniquement ---- juste pour mon dev ----
+        
+        if (show) {
+            var lay = new ol.layer.Vector({
+                name: "surcouche",
+                source: new ol.source.Vector({ features: new ol.Collection([]) })
+            });
+            //this.olMap.addLayer(lay);
+            this.olMap.getLayers().insertAt(2,lay);
+            
+            $.ajax({
+                dataType: "json",
+                url: "world/countriesjson",
+                success: function(data) {
+                    $(data).each(function(key, obj) {
+                        if (obj.geom != null)
+                        {	
+                            var parsedGeom = JSON.parse(obj.geom);		
+                            $(parsedGeom.geometry.coordinates[0]).each(function(toto, coords) {
+                                Util.LonLatToLM(coords);
+                            });
+                            var newFeature = new ol.Feature({
+                                geometry: new ol.geom.Polygon(parsedGeom.geometry.coordinates)
+                            });
+                            var style = new ol.style.Style({
+                                fill: new ol.style.Fill({ color: Util.hexToRgba(obj.color, 0.2) })
+                            });
+                            newFeature.setStyle(style);
+                            lay.getSource().addFeature(newFeature);
+                        }
+                });
+            }
+            }).error(function() {
+                console.log("erreur chargement json");
+            });
+            
+        }
+    },
+    
+    showNewPyramide : function(show) {
+	    if (show) {
+		    var lmproj = new ol.proj.Projection({
+                    code: 'LMPROJ',
+                    units: 'pixels',
+                    extent: [0, 0, 16384, 11264]
+                });
+				var resolutions = [];
+                for (var z = 0; z <= 6; z++) {
+                    resolutions[z] = 64 / Math.pow(2, z); 					// 64, 32, 16, 8, 4, 2, 1 (7 niveaux)
+                }
+			    var newLayer = new ol.layer.Tile({
+                    source: new ol.source.TileImage({
+                        tileUrlFunction: function(tileCoord, pixelRatio, projection) { 
+                            var z = tileCoord[0];
+                            var x = tileCoord[1];
+                            var y = -tileCoord[2] - 1;
+                            return '{{ app.request.basepath }}/img/map_custom/' + z + '/' + x + '/' + y + '.png';
+                        },
+                        projection: lmproj,
+                        tileGrid: new ol.tilegrid.TileGrid({
+                            origin: ol.extent.getTopLeft(lmproj.getExtent()),
+                            resolutions: resolutions,
+                            tileSize: 256
+                        }),
+                    }),
+                    extent: lmproj.getExtent()
+                }); 
+                this.olMap.addLayer(newLayer);
+		}
+	}
+    */
+};
+
+Carte.initMap();
+//Carte.showCountriesColors(true); // pour afficher la surcouche des pays en couleur
+//Carte.showNewPyramide(true);
+
+
+</script>
+
+{% endblock %}

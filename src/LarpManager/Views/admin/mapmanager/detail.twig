@@ -1,0 +1,33 @@
+{% extends "layout.twig" %}
+
+{% block title %}Cartographie{% endblock title %}
+
+{% block content %}
+
+	<ol class="breadcrumb">
+		<li><a href="{{ path('homepage') }}">Accueil</a></li>
+		<li><a href="{{ path('mapmanager') }}">Liste des cartes</a></li>
+		<li class="active">{{ geomap.nom }}</li>
+	</ol>
+
+	
+	<div class="well well-sm">		
+		<ul class="list-group">
+			<li class="list-group-item">
+				{% for layer in geomap.layers %}
+				<div class="row">
+					<div class="col-md-8">
+						{{ layer.ordre }} &nbsp;&nbsp;|&nbsp;&nbsp;
+						{{ layer.categ.geomtype.code }} &nbsp;&nbsp;|&nbsp;&nbsp;
+						{{ layer.categ.code }} &nbsp;&nbsp;|&nbsp;&nbsp;
+						{{ layer.zmin }} &nbsp;&nbsp;|&nbsp;&nbsp;
+						{{ layer.zmax }} &nbsp;&nbsp;|&nbsp;&nbsp;
+						{{ layer.stylejson|default('Non défini') }}
+					</div>
+				</div>
+				{% endfor %}
+		    </li>
+	 	</ul>
+	</div>
+		
+{% endblock %}

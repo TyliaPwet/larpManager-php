@@ -219,7 +219,7 @@ else
  			   }),
  		),
 		'secured_area' => array(	// le reste necessite d'être connecté
-			'pattern' => '^/[annonce|debriefing|objet|strategie|intrigue|rumeur|question|restriction|economie|monnaie|quality|rule|message|notification|statistique|billet|etatCivil|restauration|stock|droit|forum|groupe|gn|groupeGn|personnage|territoire|appelation|langue|ressource|religion|age|genre|level|competence|competenceFamily]/.*$',
+			'pattern' => '^/[annonce|debriefing|objet|strategie|intrigue|rumeur|question|restriction|economie|monnaie|quality|rule|message|notification|statistique|billet|etatCivil|restauration|stock|droit|forum|groupe|gn|groupeGn|personnage|territoire|appelation|langue|ressource|religion|age|genre|level|competence|competenceFamily|mapmanager]/.*$',
 		    'anonymous' => false,
 			'remember_me' => array(),
 			'form' => array(
@@ -302,6 +302,7 @@ else
 	$app->mount('/question', new LarpManager\QuestionControllerProvider());
     $app->mount('/lignee', new LarpManager\LigneeControllerProvider());
     $app->mount('/connaissance', new LarpManager\ConnaissanceControllerProvider());
+    $app->mount('/mapmanager', new LarpManager\MapmanagerControllerProvider());
 		
 
 	/**
@@ -380,6 +381,7 @@ else
 		array('^/rule/.*$', 'ROLE_REGLE'),
 		array('^/lignee/.*$', 'ROLE_SCENARISTE'),
 		array('^/connaissance/.*$', 'ROLE_USER'),
+		array('^/mapmanager/.*$', 'ROLE_ADMIN'),
 	);
 }
 
