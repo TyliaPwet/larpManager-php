@@ -43,7 +43,10 @@ class MapmanagerControllerProvider implements ControllerProviderInterface
 		$controllers->match('/','LarpManager\Controllers\MapmanagerController::indexAction')
 			->bind("mapmanager")
 			->method('GET');
-						
+		
+
+
+					
 		$controllers->match('/detail/{geomap}','LarpManager\Controllers\MapmanagerController::detailAction')
 			->assert('geomap', '\d+')
 			->convert('geomap', 'converter.mapmanager:convertMap')
@@ -61,14 +64,19 @@ class MapmanagerControllerProvider implements ControllerProviderInterface
 			->convert('geomap', 'converter.mapmanager:convertMap')
 			->bind("mapmanager.test")
 			->method('GET');
+		
+		
+		
+		
+		
+		
 			
 		$controllers->match('/config/get/{geomap}','LarpManager\Controllers\MapmanagerController::getConfig')
 					->assert('geomap', '\d+')
 					->convert('geomap', 'converter.mapmanager:convertMap')
 					->method('GET')
 					->bind('mapmanager.config.get');
-		
-		       					
+			       					
 		$controllers->match('/features/get/{categ}','LarpManager\Controllers\MapmanagerController::getFeatures')
 					->convert('categ', 'converter.mapmanager:convertCateg')
 					->method('GET')

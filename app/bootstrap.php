@@ -302,8 +302,7 @@ else
 	$app->mount('/question', new LarpManager\QuestionControllerProvider());
     $app->mount('/lignee', new LarpManager\LigneeControllerProvider());
     $app->mount('/connaissance', new LarpManager\ConnaissanceControllerProvider());
-    $app->mount('/mapmanager', new LarpManager\MapmanagerControllerProvider());
-		
+    $app->mount('/mapmanager', new LarpManager\MapmanagerControllerProvider());		
 
 	/**
 	 * Gestion de la hierarchie des droits
@@ -381,7 +380,7 @@ else
 		array('^/rule/.*$', 'ROLE_REGLE'),
 		array('^/lignee/.*$', 'ROLE_SCENARISTE'),
 		array('^/connaissance/.*$', 'ROLE_USER'),
-		array('^/mapmanager/.*$', 'ROLE_ADMIN'),
+		array('^/mapmanager/.*$', 'ROLE_CARTOGRAPHE'),
 	);
 }
 

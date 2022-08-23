@@ -79,10 +79,11 @@ var Carte = {
             	self.createMap();
             	self.loadBackgroundLayer();
             	self.loadVectorLayers(); 
-            	self.showCountriesColors(); 
+            	//self.showCountriesColors(); 
             	//self.showFiefsColors();   
-//            	self.showRegionsColors(); 
-            	//self.showNewPyramide();
+            	//self.showRegionsColors(); 
+            	self.showNewPyramide();
+            	//self.showSpecial();
         	}
         }).error(function() {
             console.log("erreur de lecture de la config, impossible de générer la carte");
@@ -680,7 +681,7 @@ var Carte = {
         });
     },
     
-    showRegionsColors : function () { // affichage des fiefs en couleur transparente comme sur la prod, pour aide au tracé des frontières
+    showRegionsColors : function () { // affichage des régions en couleur transparente comme sur la prod
         var lay = new ol.layer.Vector({
             name: "surfregion",
             source: new ol.source.Vector({ features: new ol.Collection([]) })
@@ -705,7 +706,7 @@ var Carte = {
                         });
                         if(obj.color!=null) {
                         var style = new ol.style.Style({
-                            fill: new ol.style.Fill({ color: Util.hexToRgba(obj.color, 0.2) })
+                            fill: new ol.style.Fill({ color: Util.hexToRgba(obj.color, 0.5) })
                         });
                         newFeature.setStyle(style);}
                         lay.getSource().addFeature(newFeature);
@@ -715,6 +716,36 @@ var Carte = {
         }).error(function() {
             console.log("erreur chargement json");
         });
+    },
+    
+    showSpecial : function () { // affichage d'une géométrie
+        var lay = new ol.layer.Vector({
+            name: "surfspecial",
+            source: new ol.source.Vector({ features: new ol.Collection([]) })
+        });
+        lay.setProperties({	'geomType': "Polygon" });
+        //this.olMap.addLayer(lay);
+        this.olMap.getLayers().insertAt(2,lay);
+        
+        var parsedGeom = {
+        	"type":"Feature",
+        	"properties":{},
+        	"geometry":{
+        		"type":"Polygon",
+        		"coordinates":[[[97,-63.625],[97.5,-64.4375],[99.1875,-64.1875],[99.8125,-64.5],[99,-65.5],[98.75,-66.5625],[93.875,-69.875],[97.5,-69.875],[96.125,-71],[93.25,-72.3125],[91.5625,-72.5],[90.5,-72.875],[88.875,-75.5],[84.5,-75.625],[83.6875,-76.25],[82.8125,-76.3125],[83.75,-79.125],[81.9375,-77.1875],[80.5625,-77.8125],[79.5625,-78.75],[78.0625,-78.5625],[76,-78.75],[74.4375,-78.1875],[73.0625,-78.0625],[72.8125,-76.9375],[73.5625,-76.625],[74,-75.5],[77.125,-74.625],[77.125,-73.6875],[81.1875,-72.5625],[82.75,-72.5],[83.4375,-70.8125],[84.875,-70.6875],[86.25,-69.9375],[86.9375,-69.1875],[88.6875,-68.9375],[88.3125,-67.5],[89.125,-67.4375],[89.9375,-68],[91.8125,-67.75],[91.3125,-67],[92.75,-66.5625],[92.75,-65.25],[93.875,-65.4375],[94.8125,-65.4375],[95.375,-64.625],[97,-63.625]]]
+    		}
+		};
+        $(parsedGeom.geometry.coordinates[0]).each(function(toto, coords) {
+            Util.LonLatToLM(coords);
+        });
+        var newFeature = new ol.Feature({
+            geometry: new ol.geom.Polygon(parsedGeom.geometry.coordinates)
+        });
+        var style = new ol.style.Style({
+	        fill: new ol.style.Fill({ color: Util.hexToRgba("#2548AC", 0.8) })
+		});
+        newFeature.setStyle(style);
+        lay.getSource().addFeature(newFeature);  
     },
     
     initModifyPourProdInteraction: function(geomType, categ) { 
