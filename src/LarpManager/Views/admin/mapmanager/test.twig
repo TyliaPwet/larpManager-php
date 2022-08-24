@@ -82,7 +82,7 @@ var Carte = {
             	//self.showCountriesColors(); 
             	//self.showFiefsColors();   
             	//self.showRegionsColors(); 
-            	self.showNewPyramide();
+            	//self.showNewPyramide();
             	//self.showSpecial();
         	}
         }).error(function() {
@@ -588,23 +588,45 @@ var Carte = {
         
         $.ajax({
             dataType: "json",
-            url: "{{ app.request.basepath }}/countries.json",
+            url: "{{ app.request.basepath }}/countries_multi.json",
             success: function(data) {
                 $(data).each(function(key, obj) {
                     if (obj.geom != null)
                     {	
-                        var parsedGeom = JSON.parse(obj.geom);		
-                        $(parsedGeom.geometry.coordinates[0]).each(function(toto, coords) {
-                            Util.LonLatToLM(coords);
-                        });
-                        var newFeature = new ol.Feature({
-                            geometry: new ol.geom.Polygon(parsedGeom.geometry.coordinates)
-                        });
+                        var parsedGeom = JSON.parse(obj.geom);
+                        if(parsedGeom.geometry.type=="Polygon") {	
+				            $(parsedGeom.geometry.coordinates[0]).each(function(toto, coords) {
+				                Util.LonLatToLM(coords);
+				            });
+				            var newFeature = new ol.Feature({
+				                geometry: new ol.geom.Polygon(parsedGeom.geometry.coordinates)
+				            });
+
                         var style = new ol.style.Style({
-                            fill: new ol.style.Fill({ color: Util.hexToRgba(obj.color, 0.2) })
+                            fill: new ol.style.Fill({ color: Util.hexToRgba(obj.color, 0.6) })
                         });
                         newFeature.setStyle(style);
                         lay.getSource().addFeature(newFeature);
+
+                        } else {
+                        	
+                        	$(parsedGeom.geometry.coordinates).each(function (tata, titi) {
+                        		$(titi[0]).each(function (indx, coords) {
+                        			Util.LonLatToLM(coords);
+                        		});
+                        	});
+                        	
+				            var newFeature = new ol.Feature({
+				                geometry: new ol.geom.MultiPolygon(parsedGeom.geometry.coordinates)
+				            });
+
+                        var style = new ol.style.Style({
+                            fill: new ol.style.Fill({ color: Util.hexToRgba(obj.color, 0.6) })
+                        });
+                        newFeature.setStyle(style);
+                        lay.getSource().addFeature(newFeature);
+
+                        }
                     }
             });
         }
