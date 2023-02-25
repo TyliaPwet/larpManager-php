@@ -53,21 +53,21 @@ class MapmanagerControllerProvider implements ControllerProviderInterface
 			->bind("mapmanager.detail")
 			->method('GET');
 
+	/* page non fonctionnelle, à terminer ultérieurement
 		$controllers->match('/gestion/{geomap}','LarpManager\Controllers\MapmanagerController::gestionAction')
 			->assert('geomap', '\d+')
 			->convert('geomap', 'converter.mapmanager:convertMap')
 			->bind("mapmanager.gestion")
-			->method('GET');
-			
+			->method('GET'); */
+	
+	/* page fonctionnelle mais gestion des menus en dur, à améliorer dans la page /gestion/ et supprimer celle-ci ensuite*/		
 		$controllers->match('/test/{geomap}','LarpManager\Controllers\MapmanagerController::testAction')
 			->assert('geomap', '\d+')
 			->convert('geomap', 'converter.mapmanager:convertMap')
 			->bind("mapmanager.test")
 			->method('GET');
 		
-		
-		
-		
+				
 		
 		
 			

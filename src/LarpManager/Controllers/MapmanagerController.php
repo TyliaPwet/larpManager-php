@@ -52,29 +52,14 @@ class MapmanagerController
 			'maps' => $maps
 		));
 	}
-/*
-	public function indexCategsAction(Request $request, Application $app)
-	{
-		$categs = $app['orm.em']->getRepository('LarpManager\Entities\GeoCateg')->findAll();
-	
-		return $app['twig']->render('admin\mapmanager\indexcategs.twig', array(
-			'categs' => $categs
-		));
-	}
-	*/
-	/**
-	 * Détail d'une carte
-	 * 
-	 * @param Request $request
-	 * @param Application $app
-	 */
+
 	public function detailAction(Request $request, Application $app, GeoMap $geomap)
 	{		
 		return $app['twig']->render('admin\mapmanager\map.twig', array(
 				'geomap' => $geomap
 		));
 	}
-	
+/*	
 	public function gestionAction(Request $request, Application $app, GeoMap $geomap)
 	{	
 		$layers = $geomap->getLayers();
@@ -84,7 +69,7 @@ class MapmanagerController
 				'layers' => $layers
 		));
 	}
-	
+	*/
 	public function testAction(Request $request, Application $app, GeoMap $geomap)
 	{	
 				
@@ -92,17 +77,8 @@ class MapmanagerController
 				'geomap' => $geomap
 		));
 	}
-	/*
-	public function detailCategAction(Request $request, Application $app, GeoCateg $categ)
-	{	
-		$objs = $app['orm.em']->getRepository('LarpManager\Entities\GeoObj')->findByCateg($categ->getId());
-			
-		return $app['twig']->render('admin\mapmanager\detailcateg.twig', array(
-				'categ' => $categ,
-				'objs' => $objs
-		));
-	}
-	*/
+	
+	
 	/**
 	 * Config d'une carte
 	 * 
@@ -212,4 +188,32 @@ class MapmanagerController
 		return $app->json($res); 
 	}
 	
+	
+	/*
+	public function indexCategsAction(Request $request, Application $app)
+	{
+		$categs = $app['orm.em']->getRepository('LarpManager\Entities\GeoCateg')->findAll();
+	
+		return $app['twig']->render('admin\mapmanager\indexcategs.twig', array(
+			'categs' => $categs
+		));
+	}
+	*/
+	/**
+	 * Détail d'une carte
+	 * 
+	 * @param Request $request
+	 * @param Application $app
+	 */
+	 /*
+	public function detailCategAction(Request $request, Application $app, GeoCateg $categ)
+	{	
+		$objs = $app['orm.em']->getRepository('LarpManager\Entities\GeoObj')->findByCateg($categ->getId());
+			
+		return $app['twig']->render('admin\mapmanager\detailcateg.twig', array(
+				'categ' => $categ,
+				'objs' => $objs
+		));
+	}
+	*/
 }

@@ -21,8 +21,9 @@
 						{{ map.description|markdown }}
 					</div>
 					<div class="col-md-4">
-						<a href="{{ path('mapmanager.detail',{'geomap':map.id}) }}"><i class="fa fa-eye"></i>Voir</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-						<a href="{{ path('mapmanager.gestion',{'geomap':map.id}) }}"><i class="fa fa-eye"></i>Gérer</a>
+						<!--<a href="{{ path('mapmanager.gestion',{'geomap':map.id}) }}"><i class="fa fa-pencil"></i>Modifier</a>&nbsp;|&nbsp;-->
+						<a href="{{ path('mapmanager.detail',{'geomap':map.id}) }}"><i class="fa fa-eye"></i>Voir</a>
+						
 					</div>
 				</div>
 		    </li>

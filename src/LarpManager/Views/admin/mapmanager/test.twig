@@ -20,9 +20,9 @@
        		<option value="modifyLabelRotation">Modifier angle labels</option>
        		<option value="modifyLine">Modifier tracés linéaires (caravane...)</option>
        		<option value="modifyPays">Modifier surface pays</option>
-       		<option value="modifyRegions">Modifier surface régions</option>
+       		<!--<option value="modifyRegions">Modifier surface régions</option>-->
        		<option value="modifyFiefs">Modifier surface fiefs</option>
-       		<option value="modifySea">Modifier zone maritime</option>
+       		<option value="modifySea">Modifier zone d'eau</option>
        		<option value="addVille">Ajouter pictos ville</option>
        		<option value="addCapitale">Ajouter pictos capitale</option>
        		<option value="addExplo">Ajouter pictos exploration</option>
@@ -33,15 +33,23 @@
        		<option value="addLabelRiviere">Ajouter un label rivière</option>
        		<option value="addLabelPasse">Ajouter un label passe, sente, gué...</option>
        		<option value="addLabelSea">Ajouter un label maritime</option>
-       		<option value="addCaravane">Ajouter route commerciale</option>
+       		<option value="addCaravane">Ajouter une route commerciale</option>
        		<option value="addRiviere">Ajouter un tracé de rivière</option>
        		<option value="addLimPays">Ajouter une frontière pays</option>
        		<option value="addLimFief">Ajouter une frontière fief</option>
-       		<option value="addSea">Ajouter une zone maritime</option>
+       		<option value="addCanal">Ajouter un tracé de canal</option>
+       		<option value="addSea">Ajouter une zone d'eau</option>
        		<option value="addLimSea">Ajouter une limite maritime</option>
       	</select>    	
     </form>
-    
+    <form class="form-inline">
+    	<label>Couche d'aide &nbsp;</label>
+    	<select id="aide_select">
+       		<option value="none" selected>-- Aucune --</option>
+       		<option value="countries">Pays</option>
+       		<option value="fiefs">Fiefs</option>
+   		</select>
+    </form>
 	<div class="mapbox">
 		<div id="map"></div>
 	</div> 		
@@ -79,7 +87,8 @@ var Carte = {
             	self.createMap();
             	self.loadBackgroundLayer();
             	self.loadVectorLayers();
-	           	self.showColors("regions", 0.5);
+	           	self.initColorLayer("countries",2,0.4);
+	           	self.initColorLayer("fiefs",3,0.4);
             	//self.showNewPyramide();
         	}
         }).error(function() {
@@ -573,15 +582,17 @@ var Carte = {
         }, drawInt);
     },      
     
-    showColors : function (typeTerritoire, opacity) { // ---- juste pour mon dev ----
-        var lay = new ol.layer.Vector({
-            name: "surfcliquable",
+    initColorLayer : function (typeTerritoire, idx, opacity) {
+	        var lay = new ol.layer.Vector({
+            name: "surf"+typeTerritoire,
             source: new ol.source.Vector({ features: new ol.Collection([]) })
         });
         lay.setProperties({	'geomType': 'Polygon' });
         //this.olMap.addLayer(lay);
-        this.olMap.getLayers().insertAt(2,lay);
-        var url = "{{ app.request.basepath }}/" + typeTerritoire + ".json"; 
+        this.olMap.getLayers().insertAt(idx,lay);
+		this.olMap.getLayers().getArray()[idx].setVisible(false);
+        //var url = "{{ app.request.basepath }}/" + typeTerritoire + ".json";
+        var url = "world/" + typeTerritoire + ".json";  
         $.ajax({
             dataType: "json",
             url: url,
@@ -589,7 +600,9 @@ var Carte = {
                 $(data).each(function(key, obj) {
                     if (obj.geom != null)
                     {	
-                        var parsedGeom = JSON.parse(obj.geom);
+                        var parsedGeom = JSON.parse(obj.geom); //console.log(obj.id, obj.name, parsedGeom.geometry.type);
+                        if (obj.color === null) {obj.color="#000000";}
+                        //obj.color= "#0000FF";
                         if(parsedGeom.geometry.type=="Polygon") {	
 				            $(parsedGeom.geometry.coordinates[0]).each(function(toto, coords) {
 				                Util.LonLatToLM(coords);
@@ -629,8 +642,26 @@ var Carte = {
         }).error(function() {
             console.log("erreur chargement json");
         });
+
     },
     
+    showColorLayer : function (typeTerritoire) {
+    	switch (typeTerritoire) {
+    		case "none" :
+    			this.olMap.getLayers().getArray()[2].setVisible(false);
+    			this.olMap.getLayers().getArray()[3].setVisible(false);    	
+    			break;
+    		case "countries":
+    			this.olMap.getLayers().getArray()[2].setVisible(true);
+    			this.olMap.getLayers().getArray()[3].setVisible(false);    	
+    			break;
+			case "fiefs":
+			    this.olMap.getLayers().getArray()[2].setVisible(false);
+    			this.olMap.getLayers().getArray()[3].setVisible(true);    	
+    			break;
+    	}    	
+    },
+       
     showNewPyramide : function() {   
 	    var lmproj = new ol.proj.Projection({
             code: 'LMPROJ',
@@ -753,11 +784,19 @@ actionSelect.onchange = function() {
 			Carte.initDrawInteraction('LineString','lim_pays'); break;
 		case "addLimFief" :
 			Carte.initDrawInteraction('LineString','lim_fief'); break;
+		case "addCanal" :
+			Carte.initDrawInteraction('LineString','canal'); break;
 		case "addSea" :
 			Carte.initDrawInteraction('Polygon','zonedeau'); break;
 		case "addLimSea" :
 			Carte.initDrawInteraction('LineString','lim_sea'); break;
 	}
+};
+
+var aideSelect = document.getElementById('aide_select');
+
+aideSelect.onchange = function() {
+	Carte.showColorLayer(aideSelect.value);
 };
 </script>
 

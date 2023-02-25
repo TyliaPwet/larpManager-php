@@ -62,9 +62,9 @@
 					<li><a href="{{ path('religion') }}">Religions</a></li>
 					{% if is_granted('ROLE_CARTOGRAPHE', app.user) %}<li><a href="{{ path('culture') }}">Cultures</a></li>{% endif %}
 					<li><a href="{{ path('world') }}">Carte</a></li>
-					{% if is_granted('ROLE_CARTOGRAPHE', app.user) %}
+					{% if is_granted('ROLE_ADMIN', app.user) %}
 						<hr />
-						<li><a href="{{ path('mapmanager') }}">Cartographie</a></li>				
+						<li><a href="{{ path('mapmanager') }}">Cartographie(beta)</a></li>				
 					{% endif %}
 				</ul>
 			</li>

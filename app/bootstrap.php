@@ -380,7 +380,7 @@ else
 		array('^/rule/.*$', 'ROLE_REGLE'),
 		array('^/lignee/.*$', 'ROLE_SCENARISTE'),
 		array('^/connaissance/.*$', 'ROLE_USER'),
-		array('^/mapmanager/.*$', 'ROLE_CARTOGRAPHE'),
+		array('^/mapmanager/.*$', 'ROLE_ADMIN'),
 	);
 }
 
